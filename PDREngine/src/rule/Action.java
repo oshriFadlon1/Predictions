@@ -1,18 +1,19 @@
 package rule;
 
 import entity.Entity;
+import enums.Operation;
 import property.PropertyForEntity;
 
 public class Action {
     private Entity OperationOnEntity;
 
-    private String typeOperation;
+    private Operation operationType;
 
     private PropertyForEntity propertyForEntity;
 
-    public Action(Entity operationOnEntity, String typeOperation, PropertyForEntity propertyForEntity) {
+    public Action(Entity operationOnEntity, Operation operationType, PropertyForEntity propertyForEntity) {
         OperationOnEntity = operationOnEntity;
-        this.typeOperation = typeOperation;
+        this.operationType = operationType;
         this.propertyForEntity = propertyForEntity;
     }
 
