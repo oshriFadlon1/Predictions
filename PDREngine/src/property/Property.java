@@ -38,4 +38,11 @@ public class Property {
     public void setPropertyRange(Range propertyRange) {
         this.propertyRange = propertyRange;
     }
+
+    @Override
+    public String toString() {
+        return  "\nName: " + propertyName +
+                "\nType: " + propertyType +
+                "\nRange: " + propertyRange.toString();
+    }
 }

@@ -40,4 +40,22 @@ public class Entity {
     public void setProprties(List<PropertyForEntity> proprties) {
         this.properties = proprties;
     }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "Name: " + entityName +
+                "\npopulation: " + population +
+                "\nproperties: " + allProperties() ;
+    }
+
+    private String allProperties() {
+        StringBuilder str = new StringBuilder();
+        for (PropertyForEntity property: properties) {
+            str.append("\nproperty for entity:");
+            str.append(property.toString());
+        }
+
+        return str.toString();
+    }
 }

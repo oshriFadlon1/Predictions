@@ -24,13 +24,6 @@ public class Action {
         OperationOnEntity = operationOnEntity;
     }
 
-    public String getTypeOperation() {
-        return typeOperation;
-    }
-
-    public void setTypeOperation(String typeOperation) {
-        this.typeOperation = typeOperation;
-    }
 
     public PropertyForEntity getPropertyForEntity() {
         return propertyForEntity;
@@ -38,5 +31,22 @@ public class Action {
 
     public void setPropertyForEntity(PropertyForEntity propertyForEntity) {
         this.propertyForEntity = propertyForEntity;
+    }
+
+    public Operation getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(Operation operationType) {
+        this.operationType = operationType;
+    }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "OperationOnEntity=" + OperationOnEntity +
+                ", operationType=" + operationType +
+                ", propertyForEntity=" + propertyForEntity +
+                '}';
     }
 }

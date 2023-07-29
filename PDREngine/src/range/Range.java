@@ -24,4 +24,10 @@ public class Range {
     public void setTo(int to) {
         this.to = to;
     }
+
+    @Override
+    public String toString() {
+        return "from: " + from +
+                ", to:" + to;
+    }
 }
