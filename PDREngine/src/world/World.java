@@ -1,6 +1,7 @@
 package world;
 
 import entity.Entity;
+import exceptions.GeneralException;
 import property.Property;
 import rule.Rule;
 import termination.Termination;

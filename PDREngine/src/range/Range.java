@@ -23,7 +23,7 @@ public class Range {
 
 
 
-    public void setTo(int to) {
+    public void setTo(float to) {
         this.to = to;
     }
 

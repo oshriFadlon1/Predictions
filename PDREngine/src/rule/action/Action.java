@@ -5,9 +5,11 @@ import enums.Operation;
 import property.PropertyForEntity;
 
 public class Action {
-    private Entity OperationOnEntity;
+
 
     private Operation operationType;
+
+
 
     //private PropertyForEntity propertyForEntity;
 

@@ -62,6 +62,7 @@ public class MainUi {
                     System.out.println("current world are moved");
                     break;
                 case 4:
+                    System.out.println(engine.getOldSimulationsInfo());
                     //present simulation from the past
                     break;
 
