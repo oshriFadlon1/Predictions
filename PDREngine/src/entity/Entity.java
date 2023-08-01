@@ -1,5 +1,6 @@
 package entity;
 
+import exceptions.GeneralException;
 import property.PropertyForEntity;
 
 import java.util.ArrayList;
@@ -33,18 +34,27 @@ public class Entity {
         this.population = population;
     }
 
-    public List<PropertyForEntity> getProprties() {
+    public List<PropertyForEntity> getProperties() {
         return properties;
     }
 
-    public void setProprties(List<PropertyForEntity> proprties) {
-        this.properties = proprties;
+    public void setProperties(List<PropertyForEntity> properties) {
+        this.properties = properties;
     }
 
+    public void addProperty(PropertyForEntity propertyToAdd) throws GeneralException{
+
+        for (PropertyForEntity property: this.properties) {
+            if (property.getPropertyName().equals(propertyToAdd.getPropertyName()))
+            {
+                throw new GeneralException("Property name already exsits for entity " + this.entityName);
+            }
+        }
+        this.properties.add(propertyToAdd);
+    }
     @Override
     public String toString() {
-        return "Entity{" +
-                "Name: " + entityName +
+        return "Name: " + entityName +
                 "\npopulation: " + population +
                 "\nproperties: " + allProperties() ;
     }

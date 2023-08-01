@@ -1,6 +1,8 @@
 package rule;
 
 
+import rule.action.Action;
+
 import java.util.*;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class Rule {
     private List<Action> actions;
 
     public Rule(String ruleName, ActivationForRule activation, List<Action> actions) {
-        ruleName = ruleName;
+        this.ruleName = ruleName;
         this.activation = activation;
         this.actions = actions;
     }
@@ -22,7 +24,7 @@ public class Rule {
     }
 
     public void setRuleName(String ruleName) {
-        ruleName = ruleName;
+        this.ruleName = ruleName;
     }
 
     public ActivationForRule getActivation() {

@@ -11,6 +11,11 @@ public class Value {
         this.init = init;
     }
 
+    public Value(Boolean randomInit) {
+        this.randomInit = randomInit;
+        this.init = null;
+    }
+
     public Boolean getRandomInit() {
         return randomInit;
     }

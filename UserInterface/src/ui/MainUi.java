@@ -7,10 +7,12 @@ import engine.MainEngine;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import static tests.TestClass.createWorld;
+
 public class MainUi {
     public static void main(String[] args) {
 
-        boolean userLoadFile = false;
+        boolean userLoadFile = true;
         MainEngine engine = new MainEngine();
         System.out.println("Hello and welcome to the simulation runner app.");
         System.out.println("-----------------------------------------------");
@@ -27,14 +29,15 @@ public class MainUi {
             }
 
             if (userChoice == 1) {
-                DtoResponse response = engine.parseXmlToSimulation(getFileXmlPath());
-               //only if we succeeded loiading xml file.
-                if (response.getResponse().equals(Constans.SUCCEED_LOAD_FILE))
-                {
-                    userLoadFile = true;
-                }
-                System.out.println(response.getResponse());
-
+//                DtoResponse response = engine.parseXmlToSimulation(getFileXmlPath());
+//               //only if we succeeded loiading xml file.
+//                if (response.getResponse().equals(Constans.SUCCEED_LOAD_FILE))
+//                {
+//                    userLoadFile = true;
+//                }
+//                System.out.println(response.getResponse());
+                createWorld(engine);
+                System.out.println("create simulation");
             }
 
 
@@ -51,10 +54,12 @@ public class MainUi {
     private static void switchUserChoice(MainEngine engine, int userChoice) {
             switch (userChoice){
                 case 2:
-                    //present simulation details
+                    System.out.println(engine.printCurrentWorld());
                     break;
                 case 3:
                     //run simulation
+                    engine.moveWorld();
+                    System.out.println("current world are moved");
                     break;
                 case 4:
                     //present simulation from the past

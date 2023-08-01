@@ -15,6 +15,12 @@ public class Property {
         this.propertyRange = new Range(propertyRange.getFrom(),propertyRange.getTo());
     }
 
+    public Property(String propertyName, String propertyType) {
+        this.propertyName = propertyName;
+        this.propertyType = propertyType;
+        this.propertyRange = null;
+    }
+
     public String getPropertyName() {
         return propertyName;
     }
@@ -41,8 +47,9 @@ public class Property {
 
     @Override
     public String toString() {
+        String str =this.propertyRange!=null?"\nRange: " + propertyRange.toString():"";
         return  "\nName: " + propertyName +
-                "\nType: " + propertyType +
-                "\nRange: " + propertyRange.toString();
+                "\nType: " + propertyType + str;
+
     }
 }

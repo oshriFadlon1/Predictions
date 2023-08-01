@@ -10,6 +10,11 @@ public class PropertyForEntity extends Property{
         this.propValue = propValue;
     }
 
+    public PropertyForEntity(String propertyName, String propertyType, Value propValue) {
+        super(propertyName, propertyType);
+        this.propValue = propValue;
+    }
+
     public Value getPropValue() {
         return propValue;
     }

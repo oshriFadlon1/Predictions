@@ -12,7 +12,7 @@ public class MainEngine {
 
     private List<World> oldSimulation; // old simulation with results
 
-    private Map<Integer, String> simulationId2CurrentTimeAndDate;
+    private Map<Integer, String> simulationId2CurrentTimeAndDate;// get old World simulation info need to take index from map - 1;
 
 
     public MainEngine() {
@@ -21,8 +21,49 @@ public class MainEngine {
         this.simulationId2CurrentTimeAndDate = new HashMap<>();
     }
 
+    public List<World> getAllSimulations() {
+        return allSimulations;
+    }
+
+    public void setAllSimulations(List<World> allSimulations) {
+        this.allSimulations = allSimulations;
+    }
+
+    public List<World> getOldSimulation() {
+        return oldSimulation;
+    }
+
+    public void setOldSimulation(List<World> oldSimulation) {
+        this.oldSimulation = oldSimulation;
+    }
+
+    public Map<Integer, String> getSimulationId2CurrentTimeAndDate() {
+        return simulationId2CurrentTimeAndDate;
+    }
+
+    public void setSimulationId2CurrentTimeAndDate(Map<Integer, String> simulationId2CurrentTimeAndDate) {
+        this.simulationId2CurrentTimeAndDate = simulationId2CurrentTimeAndDate;
+    }
+
     private void RunSingleSimulation(int simulationId) {
 
+    }
+
+    public void addWorld(World juiceWrld)
+    {
+        this.allSimulations.add(juiceWrld);
+    }
+
+    public String  printCurrentWorld(){
+        if (!allSimulations.isEmpty())
+        {
+            return allSimulations.get(0).toString();
+        }
+        return null;
+    }
+    public void moveWorld() {
+        oldSimulation.add(this.allSimulations.remove(0));
+        simulationId2CurrentTimeAndDate.put(oldSimulation.size(), getCurrentTimeAndDateInTheFormat());
     }
 
     private String getCurrentTimeAndDateInTheFormat() {
@@ -31,6 +72,18 @@ public class MainEngine {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh.mm.ss");
 
         return sdf.format(currentDate);
+    }
+
+    public String getOldSimulationsInfo(){
+        StringBuilder res = new StringBuilder();
+        for(Integer key: simulationId2CurrentTimeAndDate.keySet()){
+            res.append(key).append(": ");
+            String value = simulationId2CurrentTimeAndDate.get(key);
+            res.append(value);
+            res.append("\n");
+        }
+
+        return res.toString();
     }
 
     public DtoResponse parseXmlToSimulation(String xmlPath) {

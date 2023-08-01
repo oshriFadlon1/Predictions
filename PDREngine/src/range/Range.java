@@ -1,25 +1,27 @@
 package range;
 
 public class Range {
-    private int from;
-    private int to;
+    private float from;
+    private float to;
 
-    public Range(int from, int to) {
+    public Range(float from, float to) {
         this.from = from;
         this.to = to;
     }
 
-    public int getFrom() {
+    public float getFrom() {
         return from;
     }
 
-    public void setFrom(int from) {
+    public float getTo() {
+        return to;
+    }
+
+    public void setFrom(float from) {
         this.from = from;
     }
 
-    public int getTo() {
-        return to;
-    }
+
 
     public void setTo(int to) {
         this.to = to;
