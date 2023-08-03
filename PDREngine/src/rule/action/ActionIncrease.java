@@ -2,7 +2,7 @@ package rule.action;
 
 import enums.Operation;
 
-public class ActionIncrease extends Action{
+public class ActionIncrease extends Action {
 
     private float increaseBy;
     private String entityName;

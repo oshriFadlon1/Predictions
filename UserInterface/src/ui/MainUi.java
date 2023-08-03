@@ -1,27 +1,27 @@
 package ui;
 
-import constans.Constans;
-import dto.DtoResponse;
-import engine.MainEngine;
+import dto.DtoOldSimulationResponse;
+import engineContorller.EngineController;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static tests.TestClass.createWorld;
-
 public class MainUi {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
+        EngineController engineController = new EngineController();
         boolean userLoadFile = true;
-        MainEngine engine = new MainEngine();
+
+        String xmlPath;
+
         System.out.println("Hello and welcome to the simulation runner app.");
         System.out.println("-----------------------------------------------");
-        int userChoice = getUserChoice();
+        int userChoice = getUserChoice(1,5);
         while (userChoice != 5) {
             if ( 1 < userChoice && userChoice < 5)
             {
                 if (userLoadFile) {
-                    switchUserChoice(engine, userChoice);
+                    switchUserChoice(userChoice, engineController);
                 }
                 else {
                     System.out.println("Cannot do current action before loading XML file. Need to load XML file first.");
@@ -29,46 +29,46 @@ public class MainUi {
             }
 
             if (userChoice == 1) {
-//                DtoResponse response = engine.parseXmlToSimulation(getFileXmlPath());
-//               //only if we succeeded loiading xml file.
-//                if (response.getResponse().equals(Constans.SUCCEED_LOAD_FILE))
-//                {
-//                    userLoadFile = true;
-//                }
-//                System.out.println(response.getResponse());
-                createWorld(engine);
-                System.out.println("create simulation");
+                xmlPath = getFileXmlPath();
+                engineController.checkXmlFileValidation(xmlPath);
+
             }
-
-
-            userChoice = getUserChoice();
+            userChoice = getUserChoice(1,5);
         }
-
-
-
-        //main loop
-        //user chose 1 read xml, call function
 
     }
 
-    private static void switchUserChoice(MainEngine engine, int userChoice) {
+    private static void switchUserChoice(int userChoice, EngineController engineController) {
             switch (userChoice){
                 case 2:
-                    System.out.println(engine.printCurrentWorld());
+                    System.out.println(engineController.showCurrentSimulation());
                     break;
                 case 3:
                     //run simulation
-                    engine.moveWorld();
+                    //engineController.moveWorld();
                     System.out.println("current world are moved");
                     break;
                 case 4:
-                    System.out.println(engine.getOldSimulationsInfo());
-                    //present simulation from the past
+                    DtoOldSimulationResponse response = engineController.getAllOldSimulationsInfo();
+                    System.out.println(response.getAllInfoSimulation());
+                    if(response.getNumberOfSimulations() == 0){
+                        System.out.println("No simulations to show.");
+                    }
+                    else{
+                        System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getNumberOfSimulations()));
+                        int userSimulationChoice = getUserChoice(1,response.getNumberOfSimulations() );
+                        System.out.println("Please choose from the following display options: \n1. By quantity.\n2. By histogram");
+                        int userSimulationDisplayChoice = getUserChoice(1,2);
+                        engineController.printPastSimulation(userSimulationChoice,userSimulationDisplayChoice);
+                    }
+
+                    //if there are no simulations existing, then write that there are no simulation and go on.
+                    //we will ask for an input from the user in order to select the simulation that he wants to present
+                    // simulation from the past
                     break;
 
             }
     }
-
 
     private static String getFileXmlPath() {
         System.out.println("Please enter path for the wanted Xml file");
@@ -76,13 +76,12 @@ public class MainUi {
     }
 
 
-    private static int getUserChoice(){
+    private static int getUserChoice(int from, int to){
         int userChoice, counter = 0;
-
         do {
             if (counter != 0)
             {
-                System.out.println("please choose number between 1 to 5");
+                System.out.println(String.format("Please choose number between %d to %d",from,to));
             }
             printMenu();
             try {
@@ -94,10 +93,12 @@ public class MainUi {
             }
             counter++;
 
-        }while(!(0 < userChoice && userChoice < 6)); // if we do the bonus need to be 8
+        }while(!(from <= userChoice && userChoice <= to)); // if we do the bonus need to be 8
 
         return userChoice;
     }
+
+
 
     private static void printMenu() {
         System.out.println("1. Load XML file");

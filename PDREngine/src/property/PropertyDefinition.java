@@ -2,20 +2,20 @@ package property;
 
 import range.Range;
 
-public class Property {
+public class PropertyDefinition {
     private String propertyName;
 
     private String propertyType;
 
     private Range propertyRange;
 
-    public Property(String propertyName, String propertyType, Range propertyRange) {
+    public PropertyDefinition(String propertyName, String propertyType, Range propertyRange) {
         this.propertyName = propertyName;
         this.propertyType = propertyType;
         this.propertyRange = new Range(propertyRange.getFrom(),propertyRange.getTo());
     }
 
-    public Property(String propertyName, String propertyType) {
+    public PropertyDefinition(String propertyName, String propertyType) {
         this.propertyName = propertyName;
         this.propertyType = propertyType;
         this.propertyRange = null;

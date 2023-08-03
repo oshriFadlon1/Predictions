@@ -6,6 +6,16 @@ public class DtoResponse {
     private World currentWorldSimulation;
     private String response;
 
+    public DtoResponse(World currentWorldSimulation, String response) {
+        this.currentWorldSimulation = currentWorldSimulation;
+        this.response = response;
+    }
+
+    public DtoResponse(String response) {
+        this.currentWorldSimulation = null;
+        this.response = response;
+    }
+
     public World getCurrentWorldSimulation() {
         return currentWorldSimulation;
     }

@@ -1,6 +1,9 @@
 package engine;
 
+import dto.DtoOldSimulationResponse;
 import dto.DtoResponse;
+import entity.EntityDefinition;
+import entity.EntityInstance;
 import world.World;
 import exceptions.GeneralException;
 
@@ -8,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MainEngine {
+    private static final String XML_PATH_EX = "C:\\java_projects\\Predictions\\PDREngine\\src\\resources\\ex1-cigarets.xml";
+    private static final String XML_RES_FILE = "shema.genereated";
+
     private List<World> allSimulations; // current running simulation
 
     private List<World> oldSimulation; // old simulation with results
@@ -46,10 +52,6 @@ public class MainEngine {
         this.simulationId2CurrentTimeAndDate = simulationId2CurrentTimeAndDate;
     }
 
-    private void RunSingleSimulation(int simulationId) {
-
-    }
-
     public void addWorld(World juiceWrld)
     {
         this.allSimulations.add(juiceWrld);
@@ -75,7 +77,8 @@ public class MainEngine {
         return sdf.format(currentDate);
     }
 
-    public String getOldSimulationsInfo(){
+    public DtoOldSimulationResponse getOldSimulationsInfo(){
+
         StringBuilder res = new StringBuilder();
         for(Integer key: simulationId2CurrentTimeAndDate.keySet()){
             res.append(key).append(": ");
@@ -84,21 +87,67 @@ public class MainEngine {
             res.append("\n");
         }
 
-        return res.toString();
+        return new DtoOldSimulationResponse(res.toString(), this.simulationId2CurrentTimeAndDate.size());
     }
 
-    public DtoResponse parseXmlToSimulation(String xmlPath) {
-//
-//        try {
-//            call function tryToReadXml(xmlPath)
-        // succed to load xml info create DtoResponse (null, Constans.SUCCEED_LOAD_FILE);
-//        } catch (generalException e) {
-//            return new DtoResponse(null, e.exceptionMessage)
-//        }
+    public String getSimulationsByQuantity(int indexOfSimulation){
+
+        World world = this.oldSimulation.get(indexOfSimulation - 1 );
+        StringBuilder result = new StringBuilder();
+        Map<String, EntityDefinition> allEntityDefinitions = new HashMap<>();
+
+        for(EntityInstance entityInstance: world.getAllEntities()){
+            EntityDefinition entityDefinition = entityInstance.getDefinitionOfEntity();
+            String entityName = entityDefinition.getEntityName();
+            if(!allEntityDefinitions.containsKey(entityName)){
+                allEntityDefinitions.put(entityName, entityDefinition);
+            }
+        }
+
+        for(String key: allEntityDefinitions.keySet()){
+            result.append("Name: ");
+            result.append(key);
+            result.append("Population of entity at the start of the simulation: ");
+            result.append(allEntityDefinitions.get(key).getStartPopulation());
+            result.append("Population of entity at the end of the simulation: ");
+            result.append(allEntityDefinitions.get(key).getEndPopulation());
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        parseXmlToSimulation(XML_PATH_EX);
+    }
+
+    public static DtoResponse parseXmlToSimulation(String xmlPath) {
+        File file = new File(XML_PATH_EX);
+          if (!file.exists()) {
+          return new DtoResponse(null, "File don't exist in this path");
+          }
+
+        String fileName = file.getName();
+        if(!fileName.toLowerCase().endsWith(".xml")){
+            return new DtoResponse(null, "File don't ending with .xml ");
+        }
+
+        try {
+           tryToReadXml(XML_PATH_EX);
+//         succeed to load xml info create DtoResponse (currentWorldFromXmlAfterParse, Constans.SUCCEED_LOAD_FILE);
+        } catch (GeneralException e) {
+            return new DtoResponse(null, e.getErrorMsg());
+        }
+        catch(JAXBException | FileNotFoundException e){
+
+        }
         return null;
     }
-    public void tryToReadXml(String xmlPath) throws GeneralException{
+    public static void tryToReadXml(String xmlPath) throws GeneralException, JAXBException, FileNotFoundException {
         //here we will try to read the xml.
+        // we will create a new world and extract all the info from the xml file
+        InputStream inputStream = new FileInputStream(new File(xmlPath));
+        JAXBContext jc = JAXBContext.newInstance(XML_RES_FILE);
+        Unmarshaller u = jc.createUnmarshaller();
+        System.out.println((World)u.unmarshal(inputStream));
     }
 
 }

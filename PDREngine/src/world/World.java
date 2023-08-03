@@ -1,46 +1,42 @@
 package world;
 
-import entity.Entity;
+import entity.EntityInstance;
 import exceptions.GeneralException;
-import property.Property;
+import property.Environment;
+import property.PropertyDefinition;
 import rule.Rule;
 import termination.Termination;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class World {
-    private List<Entity> allEntities;
-    //private List<Rule> allRules;
-    private List<Property> allEnviroments;
+    private List<EntityInstance> allEntities;
+    private Map<String, Rule> allRules;
+    private Map<String, Environment> allEnvironments;
     private Termination termination;
 
     public World(Termination termination) {
         this.allEntities = new ArrayList<>();
-        //this.allRules = new ArrayList<>();
-        this.allEnviroments = new ArrayList<>();
+        this.allRules = new HashMap<>();
+        this.allEnvironments = new HashMap<>();
         this.termination = termination;
     }
 
-    public World(List<Entity> allEntities, List<Rule> allRules, List<Property> allEnviroments) {
+    public World(List<EntityInstance> allEntities, Map<String, Rule> allRules, Map<String, Environment> allEnvironments, Termination termination) {
         this.allEntities = allEntities;
-        //this.allRules = allRules;
-        this.allEnviroments = allEnviroments;
+        this.allRules = allRules;
+        this.allEnvironments = allEnvironments;
         this.termination = termination;
     }
 
-    public World(List<Entity> allEntities, List<Rule> allRules, List<Property> allEnviroments, Termination termination) {
-        this.allEntities = allEntities;
-        //this.allRules = allRules;
-        this.allEnviroments = allEnviroments;
-        this.termination = termination;
-    }
-
-    public List<Entity> getAllEntities() {
+    public List<EntityInstance> getAllEntities() {
         return allEntities;
     }
 
-    public void setAllEntities(List<Entity> allEntities) {
+    public void setAllEntities(List<EntityInstance> allEntities) {
         this.allEntities = allEntities;
     }
 
@@ -52,12 +48,13 @@ public class World {
 //        this.allRules = allRules;
 //    }
 
-    public List<Property> getAllEnviroments() {
-        return allEnviroments;
+
+    public Map<String, Environment> getAllEnvironments() {
+        return allEnvironments;
     }
 
-    public void setAllEnviroments(List<Property> allEnviroments) {
-        this.allEnviroments = allEnviroments;
+    public void setAllEnvironments(Map<String, Environment> allEnvironments) {
+        this.allEnvironments = allEnvironments;
     }
 
     public Termination getTermination() {
@@ -68,14 +65,16 @@ public class World {
         this.termination = termination;
     }
 
-    public void addEnviroment(Property env) throws GeneralException {
-        if(this.allEnviroments.contains(env))
-            throw new GeneralException("Current enviroment already exists");
-
-        this.allEnviroments.add(env);
+    public void addEnvironment(Environment environmentDataMember) throws GeneralException {
+        if(this.allEnvironments.containsKey(environmentDataMember.getEnvPropertyDefinition().getPropertyName()))
+        {
+            throw new GeneralException("Current environment already exists");
+        }
+        
+        this.allEnvironments.put(environmentDataMember.getEnvPropertyDefinition().getPropertyName(),environmentDataMember);
     }
 
-    public void addEntity(Entity ent) throws GeneralException{
+    public void addEntity(EntityInstance ent) throws GeneralException{
         if(this.allEntities.contains(ent))
             throw new GeneralException("Current entity already exists");
         this.allEntities.add(ent);
@@ -86,7 +85,7 @@ public class World {
         StringBuilder result = new StringBuilder();
         int entityCount = 1;
         int ruleCount = 1;
-        for(Entity currEntity: allEntities){
+        for(EntityInstance currEntity: allEntities){
             result.append(String.format("Entity #%d: \n", entityCount));
             result.append(currEntity.toString()).append("\n");
             entityCount++;

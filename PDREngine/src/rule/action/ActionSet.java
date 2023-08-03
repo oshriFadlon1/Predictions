@@ -1,8 +1,9 @@
 package rule.action;
 
+import entity.EntityInstance;
 import enums.Operation;
 
-public class ActionSet extends Action{
+public class ActionSet extends Action {
 
     private String entityName;
     private String propertyName;
@@ -37,5 +38,10 @@ public class ActionSet extends Action{
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    @Override
+    public void Invoke(EntityInstance entityInstance) {
+
     }
 }
