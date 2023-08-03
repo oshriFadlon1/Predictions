@@ -1,8 +1,9 @@
 package rule.action;
 
+import entity.EntityInstance;
 import enums.Operation;
 
-public class ActionKill extends Action{
+public class ActionKill extends Action {
 
     private String entityName;
 
@@ -18,5 +19,10 @@ public class ActionKill extends Action{
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
+    }
+
+    @Override
+    public void Invoke(EntityInstance entityInstance) {
+
     }
 }
