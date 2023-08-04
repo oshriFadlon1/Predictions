@@ -1,6 +1,6 @@
 package engineContorller;
 
-import dto.DtoOldSimulationResponse;
+//import dto.DtoOldSimulationResponse;
 import dto.DtoResponse;
 import engine.MainEngine;
 import interfaces.InterfaceMenu;
@@ -44,10 +44,10 @@ public class EngineController implements InterfaceMenu{
             return null;
     }
 
-    public DtoOldSimulationResponse getAllOldSimulationsInfo()
-    {
-        return engine.getOldSimulationsInfo();
-    }
+//    public DtoOldSimulationResponse getAllOldSimulationsInfo()
+//    {
+//        return engine.getOldSimulationsInfo();
+//    }
 
     public DtoResponse checkXmlFileValidation(String xmlPath){
 

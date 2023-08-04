@@ -42,6 +42,6 @@ public class ActionDecrease extends Action {
 
     @Override
     public void Invoke(EntityInstance entityInstance) {
-
+        System.out.println("bla");
     }
 }

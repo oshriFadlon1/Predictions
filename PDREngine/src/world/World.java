@@ -18,6 +18,7 @@ public class World {
     private Map<String, Environment> allEnvironments;
     private Termination termination;
 
+
     public World(Termination termination) {
         this.allEntities = new ArrayList<>();
         this.allRules = new HashMap<>();

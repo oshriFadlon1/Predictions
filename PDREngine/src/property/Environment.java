@@ -6,6 +6,8 @@ public class Environment {
     public Environment(PropertyDefinition envPropertyDefinition) {
         this.envPropertyDefinition = envPropertyDefinition;
     }
+    public Environment(){}
+
     public PropertyDefinition getEnvPropertyDefinition() {
         return envPropertyDefinition;
     }
