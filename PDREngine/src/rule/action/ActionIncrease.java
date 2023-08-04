@@ -1,5 +1,6 @@
 package rule.action;
 
+import entity.EntityInstance;
 import enums.Operation;
 
 public class ActionIncrease extends Action {
@@ -39,4 +40,8 @@ public class ActionIncrease extends Action {
         this.propertyName = propertyName;
     }
 
+    @Override
+    public void Invoke(EntityInstance entityInstance) {
+        System.out.println();
+    }
 }

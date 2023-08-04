@@ -17,4 +17,6 @@ public abstract  class Action {
     public void setOperationType(Operation operationType) {
         this.operationType = operationType;
     }
+
+    public abstract void Invoke(EntityInstance entityInstance);
 }
