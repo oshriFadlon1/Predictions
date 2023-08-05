@@ -6,8 +6,8 @@ import enums.Operation;
 public abstract  class Action {
     private Operation operationType;
 
-    public Action(Operation operationType) {
-        this.operationType = operationType;
+    public Action(String operationType) {
+        this.operationType = Operation.valueOf(operationType.toUpperCase());
     }
 
     public Operation getOperationType() {

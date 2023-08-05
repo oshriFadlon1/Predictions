@@ -1,23 +1,24 @@
 package property;
 
+import enums.Type;
 import range.Range;
 
 public class PropertyDefinition {
     private String propertyName;
 
-    private String propertyType;
+    private Type propertyType;
 
     private Range propertyRange;
 
     public PropertyDefinition(String propertyName, String propertyType, Range propertyRange) {
         this.propertyName = propertyName;
-        this.propertyType = propertyType;
+        this.propertyType = Type.valueOf(propertyType.toUpperCase());
         this.propertyRange = new Range(propertyRange.getFrom(),propertyRange.getTo());
     }
 
     public PropertyDefinition(String propertyName, String propertyType) {
         this.propertyName = propertyName;
-        this.propertyType = propertyType;
+        this.propertyType = Type.valueOf(propertyType.toUpperCase());
         this.propertyRange = null;
     }
 
@@ -29,11 +30,11 @@ public class PropertyDefinition {
         this.propertyName = propertyName;
     }
 
-    public String getPropertyType() {
+    public Type getPropertyType() {
         return propertyType;
     }
 
-    public void setPropertyType(String propertyType) {
+    public void setPropertyType(Type propertyType) {
         this.propertyType = propertyType;
     }
 

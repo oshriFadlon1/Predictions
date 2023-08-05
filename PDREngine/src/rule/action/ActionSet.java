@@ -9,7 +9,7 @@ public class ActionSet extends Action {
     private String propertyName;
     private Object value;
 
-    public ActionSet(Operation operationType, String entityName, String propertyName, Object value) {
+    public ActionSet( String entityName, String propertyName, Object value, String operationType) {
         super(operationType);
         this.entityName = entityName;
         this.propertyName = propertyName;
