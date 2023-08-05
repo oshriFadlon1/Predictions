@@ -9,7 +9,7 @@ public class ActionDecrease extends Action {
     private String entityName;
     private String propertyName;
 
-    public ActionDecrease(Operation operationType, float increaseBy, String entityName, String propertyName) {
+    public ActionDecrease(float increaseBy, String entityName, String propertyName, String operationType) {
         super(operationType);
         this.increaseBy = increaseBy;
         this.entityName = entityName;

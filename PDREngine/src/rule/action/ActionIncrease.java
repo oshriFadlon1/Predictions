@@ -9,7 +9,7 @@ public class ActionIncrease extends Action {
     private String entityName;
     private String propertyName;
 
-    public ActionIncrease(float increaseBy, String entityName, String propertyName, Operation operationType){
+    public ActionIncrease(float increaseBy, String entityName, String propertyName, String operationType){
         super(operationType);
         this.increaseBy = increaseBy;
         this.entityName = entityName;
@@ -42,6 +42,6 @@ public class ActionIncrease extends Action {
 
     @Override
     public void Invoke(EntityInstance entityInstance) {
-        System.out.println();
+
     }
 }

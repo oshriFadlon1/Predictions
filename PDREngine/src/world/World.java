@@ -1,9 +1,9 @@
 package world;
 
+import entity.EntityDefinition;
 import entity.EntityInstance;
 import exceptions.GeneralException;
 import property.Environment;
-import property.PropertyDefinition;
 import rule.Rule;
 import termination.Termination;
 
@@ -13,42 +13,42 @@ import java.util.List;
 import java.util.Map;
 
 public class World {
-    private List<EntityInstance> allEntities;
-    private Map<String, Rule> allRules;
     private Map<String, Environment> allEnvironments;
+    private Map<EntityDefinition,List<EntityInstance>> allEntities;
+    private Map<String, Rule> allRules;
     private Termination termination;
 
 
     public World(Termination termination) {
-        this.allEntities = new ArrayList<>();
+        this.allEntities = new HashMap<>();
         this.allRules = new HashMap<>();
         this.allEnvironments = new HashMap<>();
         this.termination = termination;
     }
 
-    public World(List<EntityInstance> allEntities, Map<String, Rule> allRules, Map<String, Environment> allEnvironments, Termination termination) {
+    public World(Map<String, Environment> allEnvironments, Map<EntityDefinition, List<EntityInstance>> allEntities,
+                 Map<String, Rule> allRules,  Termination termination) {
         this.allEntities = allEntities;
         this.allRules = allRules;
         this.allEnvironments = allEnvironments;
         this.termination = termination;
     }
 
-    public List<EntityInstance> getAllEntities() {
+    public Map<EntityDefinition, List<EntityInstance>> getAllEntities() {
         return allEntities;
     }
 
-    public void setAllEntities(List<EntityInstance> allEntities) {
+    public void setAllEntities(Map<EntityDefinition, List<EntityInstance>> allEntities) {
         this.allEntities = allEntities;
     }
 
-//    public List<Rule> getAllRules() {
-//        return allRules;
-//    }
-//
-//    public void setAllRules(List<Rule> allRules) {
-//        this.allRules = allRules;
-//    }
+    public Map<String, Rule> getAllRules() {
+        return allRules;
+    }
 
+    public void setAllRules(Map<String, Rule> allRules) {
+        this.allRules = allRules;
+    }
 
     public Map<String, Environment> getAllEnvironments() {
         return allEnvironments;
@@ -75,30 +75,30 @@ public class World {
         this.allEnvironments.put(environmentDataMember.getEnvPropertyDefinition().getPropertyName(),environmentDataMember);
     }
 
-    public void addEntity(EntityInstance ent) throws GeneralException{
-        if(this.allEntities.contains(ent))
-            throw new GeneralException("Current entity already exists");
-        this.allEntities.add(ent);
-    }
+//    public void addEntity(EntityInstance ent) throws GeneralException{
+//        if(this.allEntities.contains(ent))
+//            throw new GeneralException("Current entity already exists");
+//        this.allEntities.add(ent);
+//    }
 
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        int entityCount = 1;
-        int ruleCount = 1;
-        for(EntityInstance currEntity: allEntities){
-            result.append(String.format("Entity #%d: \n", entityCount));
-            result.append(currEntity.toString()).append("\n");
-            entityCount++;
-        }
-        result.append("\n");
+//    @Override
+//    public String toString() {
+//        StringBuilder result = new StringBuilder();
+//        int entityCount = 1;
+//        int ruleCount = 1;
+//        for(EntityInstance currEntity: allEntities){
+//            result.append(String.format("Entity #%d: \n", entityCount));
+//            result.append(currEntity.toString()).append("\n");
+//            entityCount++;
+//        }
+//        result.append("\n");
 //        for(Rule currRule: allRules) {
 //            result.append(String.format("Rule #%d: \n", ruleCount));
 //            result.append(currRule.toString()).append("\n");
 //            ruleCount++;
 //        }
-
-        result.append(termination.toString());
-        return result.toString();
-    }
+//
+//        result.append(termination.toString());
+//        return result.toString();
+//    }
 }

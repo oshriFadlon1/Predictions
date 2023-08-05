@@ -34,7 +34,7 @@ public class EngineController implements InterfaceMenu{
     public String printPastSimulation(int indexOfSimulation, int userDisplay) {
             if (userDisplay == 1)
             {
-                return engine.getSimulationsByQuantity(indexOfSimulation);
+                //return engine.getSimulationsByQuantity(indexOfSimulation);
             }
 
             if (userDisplay == 2)

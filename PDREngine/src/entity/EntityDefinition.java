@@ -1,15 +1,22 @@
 package entity;
 
+
+import property.PropertyDefinitionEntity;
+
+import java.util.Map;
+
 public class EntityDefinition {
     private String entityName;
     private int startPopulation;
     private int endPopulation;
 
-    public EntityDefinition(String name, int population) {
-        this.entityName = name;
-        this.startPopulation = population;
-        this.endPopulation = startPopulation;
+    private Map<String, PropertyDefinitionEntity> propertyDefinition;
 
+    public EntityDefinition(String entityName, int startPopulation, Map<String, PropertyDefinitionEntity> propertyDefinition) {
+        this.entityName = entityName;
+        this.startPopulation = startPopulation;
+        this.endPopulation = startPopulation;
+        this.propertyDefinition = propertyDefinition;
     }
 
     public String getEntityName() {
@@ -36,6 +43,13 @@ public class EntityDefinition {
         this.startPopulation = startPopulation;
     }
 
+    public Map<String, PropertyDefinitionEntity> getPropertyDefinition() {
+        return propertyDefinition;
+    }
+
+    public void setPropertyDefinition(Map<String, PropertyDefinitionEntity> propertyDefinition) {
+        this.propertyDefinition = propertyDefinition;
+    }
 
     @Override
     public String toString() {

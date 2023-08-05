@@ -8,7 +8,7 @@ public class ActionKill extends Action {
     private String entityName;
 
 
-    public ActionKill(Operation operationType, String entityName) {
+    public ActionKill(String entityName, String operationType) {
         super(operationType);
         this.entityName = entityName;
     }
