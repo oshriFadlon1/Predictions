@@ -26,11 +26,10 @@ public class WorldInstance {
     private Map<String, Rule> allRules;
     private Termination termination;
 
-    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, Map<String, List<EntityInstance>> allEntities, Map<String, Rule> allRules, Termination termination) {
+    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments) {
         this.allEnvironments = allEnvironments;
-        this.allEntities = allEntities;
-        this.allRules = allRules;
-        this.termination = termination;
+        this.allEntities = new HashMap<>();
+        this.allRules = new HashMap<>();
     }
 
     public Map<String, EnvironmentInstance> getAllEnvironments() {
@@ -77,24 +76,29 @@ public class WorldInstance {
     public DtoResponseTermination runSimulation(WorldDefinition worldDefinitionForSimulation) throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
+
+//        initializing all entity instances
         List<EntityDefinition> allEntityDefinitions = worldDefinitionForSimulation.getEntityDefinitions();
         for(EntityDefinition currentEntityDefinition: allEntityDefinitions){
             String entityDefinitionName = currentEntityDefinition.getEntityName();
             for (int i = 0; i < currentEntityDefinition.getStartPopulation(); i++) {
                 EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityDefinition, i);
+                if (i == 0){
+                    allEntities.put(entityDefinitionName,new ArrayList<>());
+                }
                 allEntities.get(entityDefinitionName).add(newEntityInstance);
             }
         }
-        //need to remember to initialize environment vars from user input.
 
-        worldDefinitionForSimulation.getRules();//need to see what to do with this
+        this.allRules = worldDefinitionForSimulation.getRules();
+        this.termination = worldDefinitionForSimulation.getTermination();
 
         int currentTickCount = 0;
         Random random = new Random();
         long timeStarted = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
 
-        while (worldDefinitionForSimulation.getTermination().getTicks() < currentTickCount &&
+        while (worldDefinitionForSimulation.getTermination().getTicks() > currentTickCount &&
                 (currentTime - timeStarted) / 1000 < worldDefinitionForSimulation.getTermination().getSeconds()){
 
             for(String currentRuleName: allRules.keySet()){
@@ -113,9 +117,9 @@ public class WorldInstance {
                         // set the list of entities to the "context" object to invoke
                         necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
                         // create a copy of the entity instance list to run on it.
-                        List<EntityInstance> currentListOfEntityInstance = new ArrayList<>(currentEntityInstanceList);
+                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
                         // invoke each action on each entity
-                        for(EntityInstance currentEntityInstance: currentListOfEntityInstance){
+                        for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
                             for(AbstractAction currentActionToInvoke: allActionsForCurrentRule){
                                 necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
                                 currentActionToInvoke.invoke(necessaryVariables);
@@ -126,7 +130,7 @@ public class WorldInstance {
 
 
 
-                activitionTicksForCurrentRule++;
+                currentTickCount++;
                 currentTime = System.currentTimeMillis();
             }
         }

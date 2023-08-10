@@ -2,6 +2,7 @@ package ui;
 
 import dto.DtoEnvUiToEngine;
 import dto.DtoEnvironments;
+import dto.DtoResponseSimulationEnded;
 import engine.MainEngine;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
@@ -51,7 +52,7 @@ public class MainUi {
                     //run simulation
                     DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
                     Map<String, Object> environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
-                    interfaceMenu.runSimulations(environmentsForEngine);
+                    DtoResponseSimulationEnded dtoResponseSimulationEnded = interfaceMenu.runSimulations(environmentsForEngine);
                     //engineController.moveWorld();
                     System.out.println("current world is moved");
                     break;
@@ -94,14 +95,14 @@ public class MainUi {
                environmentList.put(environmentName, currEnvIns);
             }
             else{//evironmet is not randomly initialized
-                do{
-                    userInput = scanner.nextLine();
-                    if(!isFirstTime) {
-                        System.out.println("User input for environment variable is invalid. Please try again: ");
-                    }
+                System.out.println("Enter your choice: ");
+                userInput = scanner.nextLine();
+                while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu)){
 
-                    isFirstTime = false;
-                }while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu));
+                    System.out.println("User input for environment variable is invalid. Please try again. ");
+                    System.out.println("Enter your choice: ");
+                    userInput = scanner.nextLine();
+                }
 
                 Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropertyDef);
                 DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
@@ -123,12 +124,12 @@ public class MainUi {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
 
-        while(userInput != "y" && userInput != "n"){
+        while(!userInput.equalsIgnoreCase("y") && !userInput.equalsIgnoreCase("n") ){
             System.out.println("Invalid input. Please enter y/n");
             userInput = scanner.nextLine();
         }
 
-        if(userInput == "n"){
+        if(userInput.equalsIgnoreCase("n")){
             return false;
         }
 
@@ -172,5 +173,6 @@ public class MainUi {
         System.out.println("3. Start simulation");
         System.out.println("4. Show previous simulation");
         System.out.println("5. Exit");
+        System.out.println("----------------------------------");
     }
 }

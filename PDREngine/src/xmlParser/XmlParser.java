@@ -202,7 +202,7 @@ public class XmlParser {
                     actionToAdd = convertPrdActionToIncreaseAction(prdAction, entityDefinitionList);
                     break;
                 case DECREASE:
-                    actionToAdd = converPrdActionToDecreaseAction(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToDecreaseAction(prdAction, entityDefinitionList);
                     break;
                 case CALCULATION:
                     actionToAdd = convertPrdActionToCalculation(prdAction);
@@ -253,7 +253,7 @@ public class XmlParser {
         return new ActionIncrease(entityDefinition, prdAction.getBy(),entityProperty);
     }
 
-    private AbstractAction converPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
+    private AbstractAction convertPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
         String entityName = prdAction.getEntity();
         String entityPropName = prdAction.getProperty();
         String decreaseBy = prdAction.getBy();
