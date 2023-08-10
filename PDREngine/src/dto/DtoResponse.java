@@ -1,12 +1,12 @@
 package dto;
 
-import world.World;
+import world.WorldInstance;
 
 public class DtoResponse {
-    private World currentWorldSimulation;
+    private WorldInstance currentWorldSimulation;
     private String response;
 
-    public DtoResponse(World currentWorldSimulation, String response) {
+    public DtoResponse(WorldInstance currentWorldSimulation, String response) {
         this.currentWorldSimulation = currentWorldSimulation;
         this.response = response;
     }
@@ -16,11 +16,11 @@ public class DtoResponse {
         this.response = response;
     }
 
-    public World getCurrentWorldSimulation() {
+    public WorldInstance getCurrentWorldSimulation() {
         return currentWorldSimulation;
     }
 
-    public void setCurrentWorldSimulation(World currentWorldSimulation) {
+    public void setCurrentWorldSimulation(WorldInstance currentWorldSimulation) {
         this.currentWorldSimulation = currentWorldSimulation;
     }
 

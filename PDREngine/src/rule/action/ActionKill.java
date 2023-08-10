@@ -1,15 +1,15 @@
 package rule.action;
 
-import entity.EntityInstance;
+import entity.EntityDefinition;
 import enums.Operation;
+import necessaryVariables.NecessaryVariablesImpl;
 
-public class ActionKill extends Action {
+public class ActionKill extends AbstractAction {
 
     private String entityName;
 
-
-    public ActionKill(String entityName, String operationType) {
-        super(operationType);
+    public ActionKill(EntityDefinition entityDefinition, String entityName) {
+        super(Operation.KILL, entityDefinition);
         this.entityName = entityName;
     }
 
@@ -22,7 +22,17 @@ public class ActionKill extends Action {
     }
 
     @Override
-    public void Invoke(EntityInstance entityInstance) {
+    public void invoke(NecessaryVariablesImpl context) {
+        context.removeEntity(context.getPrimaryEntityInstance());
+    }
 
+    @Override
+    public Operation getActionType() {
+        return Operation.KILL;
+    }
+
+    @Override
+    public EntityDefinition getContextEntity() {
+        return super.getEntityDefinition();
     }
 }

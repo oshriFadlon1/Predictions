@@ -1,16 +1,20 @@
 package ui;
 
-import dto.DtoOldSimulationResponse;
-import engineContorller.EngineController;
+import dto.DtoEnvUiToEngine;
+import dto.DtoEnvironments;
+import engine.MainEngine;
+import environment.EnvironmentDefinition;
+import environment.EnvironmentInstance;
+import interfaces.InterfaceMenu;
+import property.PropertyDefinition;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class MainUi {
 
     public static void main(String[] args) {
-        EngineController engineController = new EngineController();
-        boolean userLoadFile = true;
+        InterfaceMenu interfaceMenu = new MainEngine();
+        boolean userLoadFile = false;
 
         String xmlPath;
 
@@ -21,7 +25,7 @@ public class MainUi {
             if ( 1 < userChoice && userChoice < 5)
             {
                 if (userLoadFile) {
-                    switchUserChoice(userChoice, engineController);
+                    switchUserChoice(userChoice, interfaceMenu);
                 }
                 else {
                     System.out.println("Cannot do current action before loading XML file. Need to load XML file first.");
@@ -30,37 +34,40 @@ public class MainUi {
 
             if (userChoice == 1) {
                 xmlPath = getFileXmlPath();
-                engineController.checkXmlFileValidation(xmlPath);
-
+                System.out.println(interfaceMenu.createWorldDefinition(xmlPath));
+                userLoadFile = true;
             }
             userChoice = getUserChoice(1,5);
         }
 
     }
 
-    private static void switchUserChoice(int userChoice, EngineController engineController) {
+    private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu) {
             switch (userChoice){
                 case 2:
-                    System.out.println(engineController.showCurrentSimulation());
+                    System.out.println(interfaceMenu.showCurrentSimulation().toString());
                     break;
                 case 3:
                     //run simulation
+                    DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
+                    Map<String, Object> environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
+                    interfaceMenu.runSimulations(environmentsForEngine);
                     //engineController.moveWorld();
-                    System.out.println("current world are moved");
+                    System.out.println("current world is moved");
                     break;
-                case 4:
-                    DtoOldSimulationResponse response = engineController.getAllOldSimulationsInfo();
-                    System.out.println(response.getAllInfoSimulation());
-                    if(response.getNumberOfSimulations() == 0){
-                        System.out.println("No simulations to show.");
-                    }
-                    else{
-                        System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getNumberOfSimulations()));
-                        int userSimulationChoice = getUserChoice(1,response.getNumberOfSimulations() );
-                        System.out.println("Please choose from the following display options: \n1. By quantity.\n2. By histogram");
-                        int userSimulationDisplayChoice = getUserChoice(1,2);
-                        engineController.printPastSimulation(userSimulationChoice,userSimulationDisplayChoice);
-                    }
+                    case 4:
+//                    DtoOldSimulationResponse response = interfaceMenu.getAllOldSimulationsInfo();
+//                    System.out.println(response.getAllInfoSimulation());
+//                    if(response.getNumberOfSimulations() == 0){
+//                        System.out.println("No simulations to show.");
+//                    }
+//                    else{
+//                        System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getNumberOfSimulations()));
+//                        int userSimulationChoice = getUserChoice(1,response.getNumberOfSimulations() );
+//                        System.out.println("Please choose from the following display options: \n1. By quantity.\n2. By histogram");
+//                        int userSimulationDisplayChoice = getUserChoice(1,2);
+//                        interfaceMenu.printPastSimulation(userSimulationChoice,userSimulationDisplayChoice);
+//                    }
 
                     //if there are no simulations existing, then write that there are no simulation and go on.
                     //we will ask for an input from the user in order to select the simulation that he wants to present
@@ -68,6 +75,65 @@ public class MainUi {
                     break;
 
             }
+    }
+
+    private static Map<String, Object> printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
+        Map<String, Object> environmentList = new HashMap<>();
+        String userInput;
+        Scanner scanner = new Scanner(System.in);
+        boolean isFirstTime = true;
+        for (String environmentName: environmentDefinitions.keySet()){
+            EnvironmentDefinition currEnvironmentDef = environmentDefinitions.get(environmentName);
+            System.out.println("Environment name: " + environmentName);
+            PropertyDefinition currPropertyDef = currEnvironmentDef.getEnvPropertyDefinition();
+            System.out.println(currPropertyDef);
+
+            if(!envHandleUserInput(currPropertyDef, interfaceMenu, currEnvironmentDef)){//environment is ranomly initialized
+               Object initVal = interfaceMenu.initializeRandomEnvironmentValues(currEnvironmentDef, currPropertyDef);
+               DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
+               environmentList.put(environmentName, currEnvIns);
+            }
+            else{//evironmet is not randomly initialized
+                do{
+                    userInput = scanner.nextLine();
+                    if(!isFirstTime) {
+                        System.out.println("User input for environment variable is invalid. Please try again: ");
+                    }
+
+                    isFirstTime = false;
+                }while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu));
+
+                Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropertyDef);
+                DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
+                environmentList.put(environmentName, currEnvIns);
+
+            }
+        }
+
+        return environmentList;
+    }
+
+    private static boolean isEnvInputValid(String userInput, PropertyDefinition propDef, InterfaceMenu interfaceMenu) {
+        return interfaceMenu.validateUserEnvInput(userInput, propDef);
+    }
+
+    private static boolean envHandleUserInput(PropertyDefinition propertyDef, InterfaceMenu interfaceMenu, EnvironmentDefinition currEnv) {
+        EnvironmentInstance environmentFromUser = null;
+        System.out.println("Would you like to insert a value for the following environment variable? y/n");
+        Scanner scanner = new Scanner(System.in);
+        String userInput = scanner.nextLine();
+
+        while(userInput != "y" && userInput != "n"){
+            System.out.println("Invalid input. Please enter y/n");
+            userInput = scanner.nextLine();
+        }
+
+        if(userInput == "n"){
+            return false;
+        }
+
+        return true;
+
     }
 
     private static String getFileXmlPath() {

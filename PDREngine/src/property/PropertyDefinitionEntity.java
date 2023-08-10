@@ -25,4 +25,10 @@ public class PropertyDefinitionEntity {
     public void setPropValue(Value propValue) {
         this.propValue = propValue;
     }
+
+    @Override
+    public String toString() {
+        return "\r\nproperty Definition: " + propertyDefinition.toString() +
+                "\r\nproperty Value: " + propValue.toString();
+    }
 }

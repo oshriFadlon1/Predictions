@@ -9,7 +9,6 @@ public class EntityDefinition {
     private String entityName;
     private int startPopulation;
     private int endPopulation;
-
     private Map<String, PropertyDefinitionEntity> propertyDefinition;
 
     public EntityDefinition(String entityName, int startPopulation, Map<String, PropertyDefinitionEntity> propertyDefinition) {
@@ -49,6 +48,17 @@ public class EntityDefinition {
 
     public void setPropertyDefinition(Map<String, PropertyDefinitionEntity> propertyDefinition) {
         this.propertyDefinition = propertyDefinition;
+    }
+
+    public boolean isPropertyNameExist(String propertryName){
+        for (String key : propertyDefinition.keySet()) {
+            PropertyDefinitionEntity propertyDefinitionEntity = propertyDefinition.get(key);
+            if (propertyDefinitionEntity.getPropertyDefinition().getPropertyName().equals(propertryName))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

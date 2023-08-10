@@ -1,12 +1,14 @@
-package property;
+package environment;
 
-public class Environment {
+import property.PropertyDefinition;
+
+public class EnvironmentDefinition {
     private PropertyDefinition envPropertyDefinition;
 
-    public Environment(PropertyDefinition envPropertyDefinition) {
+    public EnvironmentDefinition(PropertyDefinition envPropertyDefinition) {
         this.envPropertyDefinition = envPropertyDefinition;
     }
-    public Environment(){}
+    public EnvironmentDefinition(){}
 
     public PropertyDefinition getEnvPropertyDefinition() {
         return envPropertyDefinition;
