@@ -8,11 +8,13 @@ import java.util.Map;
 
 public class EntityInstance {
 
+    private int Id;
     private Map<String, PropertyInstance> allProperties;
 
     private EntityDefinition definitionOfEntity;
 
-    public EntityInstance(EntityDefinition definitionOfEntity) {
+    public EntityInstance(EntityDefinition definitionOfEntity,int Id) {
+        this.Id = Id;
         this.allProperties = new HashMap<>();
         this.definitionOfEntity = definitionOfEntity;
     }
@@ -33,32 +35,28 @@ public class EntityInstance {
         this.definitionOfEntity = definitionOfEntity;
     }
 
-    public void addProperty(PropertyInstance propertyToAdd) throws GeneralException {
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
+
+    public PropertyInstance getPropertyByName(String name)
+    {
+        return allProperties.get(name);
+    }
+
+    public void addProperty(PropertyInstance propertyToAdd){ //throws GeneralException {
 
         String propertyName = propertyToAdd.getPropertyDefinition().getPropertyName();
 
-        if(allProperties.containsKey(propertyName)){
-            throw new GeneralException(String.format("Property name %s already exists in entity %s.", propertyName, this.definitionOfEntity.getEntityName()));
-        }
+//        if(allProperties.containsKey(propertyName)){
+//            throw new GeneralException(String.format("Property name %s already exists in entity %s.", propertyName, this.definitionOfEntity.getEntityName()));
+//        }
 
         this.allProperties.put(propertyName, propertyToAdd);
     }
-//    @Override
-//    public String toString() {
-//        StringBuilder res = new StringBuilder();
-//
-//        for(String key: allProperties.keySet()){
-//            res.append(key).append(": ");
-//            String value = allProperties.get(key).getPropValue().toString();
-//            res.append(value);
-//            res.append("\n");
-//        }
-//        for(PropertyForEntity currentProperty: allProperties){
-//            result.append("Propery #" + propCounter + "\n");
-//            result.append(currentProperty.toString());
-//            propCounter++;
-//        }
-//
-//        return result.toString();
-//    }
+
 }

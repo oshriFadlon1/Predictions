@@ -2,9 +2,9 @@ package property;
 
 public class PropertyInstance {
     private PropertyDefinition propertyDefinition;
-    private Value propValue;
+    private Object propValue;
 
-    public PropertyInstance(PropertyDefinition propertyDefinition, Value propValue) {
+    public PropertyInstance(PropertyDefinition propertyDefinition, Object propValue) {
         this.propertyDefinition = propertyDefinition;
         this.propValue = propValue;
     }
@@ -21,12 +21,12 @@ public class PropertyInstance {
         this.propertyDefinition = propertyDefinition;
     }
 
-    public Value getPropValue() {
-        return propValue;
+    public void setPropValue(Object propValue) {
+        this.propValue = propValue;
     }
 
-    public void setPropValue(Value propValue) {
-        this.propValue = propValue;
+    public Object getPropValue() {
+        return propValue;
     }
 
     @Override

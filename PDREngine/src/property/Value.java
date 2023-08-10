@@ -4,9 +4,9 @@ public class Value {
 
     private Boolean randomInit;
 
-    private Object init;
+    private String init;
 
-    public Value(Boolean randomInit, Object init) {
+    public Value(Boolean randomInit, String init) {
         this.randomInit = randomInit;
         this.init = init;
     }
@@ -24,17 +24,17 @@ public class Value {
         this.randomInit = randomInit;
     }
 
-    public Object getInit() {
+    public String getInit() {
         return init;
     }
 
-    public void setInit(Object init) {
+    public void setInit(String init) {
         this.init = init;
     }
 
     @Override
     public String toString() {
-        return "\nrandominit:" + randomInit +
-                ", init: " + init;
+        return "\r\nrandom-init: " + randomInit +
+                "\r\ninit: " + init;
     }
 }

@@ -1,47 +1,79 @@
 package rule.action;
 
+import entity.EntityDefinition;
 import entity.EntityInstance;
 import enums.Operation;
+import enums.Type;
+import exceptions.GeneralException;
+import necessaryVariables.NecessaryVariablesImpl;
+import property.PropertyInstance;
+import utility.Utilities;
 
-public class ActionIncrease extends Action {
+public class ActionIncrease extends AbstractAction {
 
-    private float increaseBy;
-    private String entityName;
+    private String increaseBy;
     private String propertyName;
 
-    public ActionIncrease(float increaseBy, String entityName, String propertyName, String operationType){
-        super(operationType);
+    public ActionIncrease(EntityDefinition entityDefinition, String increaseBy, String propertyName){
+        super(Operation.INCREASE,entityDefinition);
         this.increaseBy = increaseBy;
-        this.entityName = entityName;
         this.propertyName = propertyName;
     }
 
-    public float getIncreaseBy(){
-        return this.increaseBy;
+    public String getIncreaseBy() {
+        return increaseBy;
     }
 
-    public void setIncreaseBy(float increaseBy){
+    public void setIncreaseBy(String increaseBy) {
         this.increaseBy = increaseBy;
     }
 
-    public String getEntityName(){
-        return this.entityName;
+    public String getPropertyName() {
+        return propertyName;
     }
 
-    public void setEntityName(String entityName){
-        this.entityName = entityName;
-    }
-
-    public String getPropertyName(){
-        return this.propertyName;
-    }
-
-    public void setPropertyName(String propertyName){
+    public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
 
     @Override
-    public void Invoke(EntityInstance entityInstance) {
+    public void invoke(NecessaryVariablesImpl context) {
+        PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
+        if (!Utilities.verifyNumericPropertyTYpe(propertyInstance)) {
+            throw new IllegalArgumentException("increase action can't operate on a none number property [" + propertyName);
+        }
 
+        Object x = propertyInstance.getPropValue();
+
+        Object y = null;
+        try {
+            y = context.getValueFromString(this.increaseBy);
+        } catch (GeneralException e) {
+            throw new IllegalArgumentException(e);
+        }
+        // actual calculation
+        Object result;// need to take the value from
+
+        if (propertyInstance.getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
+            result = (Integer)x + (Integer)y;
+        }
+        else {
+            result = (float)x + (float)y;
+        }
+
+        // updating result on the property
+        propertyInstance.setPropValue(result);
     }
+
+    @Override
+    public Operation getActionType() {
+        return Operation.INCREASE;
+    }
+
+    @Override
+    public EntityDefinition getContextEntity() {
+        return super.getEntityDefinition();
+    }
+
+
 }
