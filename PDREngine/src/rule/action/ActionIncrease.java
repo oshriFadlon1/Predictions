@@ -37,10 +37,10 @@ public class ActionIncrease extends AbstractAction {
     }
 
     @Override
-    public void invoke(NecessaryVariablesImpl context) {
+    public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         if (!Utilities.verifyNumericPropertyTYpe(propertyInstance)) {
-            throw new IllegalArgumentException("increase action can't operate on a none number property [" + propertyName);
+            throw new GeneralException("increase action can't operate on a none number property [" + propertyName);
         }
 
         Object x = propertyInstance.getPropValue();
@@ -49,7 +49,7 @@ public class ActionIncrease extends AbstractAction {
         try {
             y = context.getValueFromString(this.increaseBy);
         } catch (GeneralException e) {
-            throw new IllegalArgumentException(e);
+            throw e ;
         }
         // actual calculation
         Object result;// need to take the value from

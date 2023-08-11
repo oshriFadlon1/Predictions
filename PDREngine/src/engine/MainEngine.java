@@ -117,10 +117,11 @@ public class MainEngine implements InterfaceMenu {
     }
     private List<DtoResponseRules> getRulesInfoSimulation() {
         List<DtoResponseRules> dtoResponseRules = new ArrayList<>();
-        List<String> ActionName = new ArrayList<>();
+        List<String> ActionName;
         String ruleName = "";
         ActivationForRule activation = null;
         for (String key: worldDefinitionForSimulation.getRules().keySet()) {
+            ActionName = new ArrayList<>();
             Rule rule = worldDefinitionForSimulation.getRules().get(key);
             for (AbstractAction action:rule.getActions()) {
                 ActionName.add(action.getOperationType().name());

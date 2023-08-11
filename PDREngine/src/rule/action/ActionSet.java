@@ -38,7 +38,7 @@ public class ActionSet extends AbstractAction {
     }
 
     @Override
-    public void invoke(NecessaryVariablesImpl context) {
+    public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         String type = propertyInstance.getPropertyDefinition().getPropertyType().toLowerCase();
         Object result = null;
@@ -69,7 +69,7 @@ public class ActionSet extends AbstractAction {
             }
             propertyInstance.setPropValue(result);
         } catch (GeneralException e) {
-            throw new IllegalArgumentException(e);
+            throw e;
         }
     }
 

@@ -35,24 +35,24 @@ public class ActionCalculationDivide extends ActionCalculation {
 
 
     @Override
-    public void invoke(NecessaryVariablesImpl context) {
+    public void invoke(NecessaryVariablesImpl context) throws GeneralException {
 
         Object y = null,x = null,result = null;
         if ((!Utilities.isInteger(this.arg1) && !Utilities.isInteger(this.arg2)) ||
                 (!Utilities.isFloat(this.arg1) && !Utilities.isFloat(this.arg2)))
         {
-            throw new IllegalArgumentException("Divide action can't operate on a none number property [" + super.getPropertyPlacement());
+            throw new GeneralException("Divide action can't operate on a none number property [" + super.getPropertyPlacement());
         }
 
         try {
             x = context.getValueFromString(this.arg1);
             y = context.getValueFromString(this.arg2);
         } catch (GeneralException e) {
-            throw new IllegalArgumentException(e);
+            throw e;
         }
         double numericValue = ((Number) y).doubleValue();
         if (numericValue == 0.0) {
-            throw new IllegalArgumentException("Divide action can't operate on divide 0");
+            throw new GeneralException("Divide action can't operate on divide 0");
         }
 
         if (context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement()).getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){

@@ -2,6 +2,7 @@ package rule.action;
 
 import entity.EntityDefinition;
 import enums.Operation;
+import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
 public class ActionKill extends AbstractAction {
@@ -22,7 +23,7 @@ public class ActionKill extends AbstractAction {
     }
 
     @Override
-    public void invoke(NecessaryVariablesImpl context) {
+    public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         context.removeEntity(context.getPrimaryEntityInstance());
     }
 
