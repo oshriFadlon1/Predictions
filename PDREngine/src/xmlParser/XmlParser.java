@@ -4,6 +4,7 @@ import entity.EntityDefinition;
 import enums.Operation;
 import environment.EnvironmentDefinition;
 import exceptions.GeneralException;
+import interfaces.IConditionComponent;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.Value;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 public class XmlParser {
 
-    private String xmlPath;//= "C:\\java_projects\\Predictions\\PDREngine\\src\\resources\\error3.xml";
+    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\error3.xml";
     private static final String xmlFiles = "shema.genereated";
 
 
@@ -207,10 +208,10 @@ public class XmlParser {
                     actionToAdd = convertPrdActionToCalculation(prdAction, entityDefinitionList);
                     break;
                 case CONDITION:
-                    actionToAdd = convertPrdActionToCondition(prdAction);
+                    actionToAdd = convertPrdActionToCondition(prdAction,entityDefinitionList, environments);
                     break;
                 case SET:
-                    actionToAdd = convertPrdActionToSet(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToSet(prdAction, entityDefinitionList, environments);
                     break;
                 case KILL:
                     actionToAdd = convertPrdActionToKill(prdAction, entityDefinitionList);
@@ -349,11 +350,119 @@ public class XmlParser {
        return actionToDo;
     }
 
-    private IAction convertPrdActionToCondition(PRDAction prdAction) throws GeneralException{
-        return null;
+    private IAction convertPrdActionToCondition(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
+        String entityName = prdAction.getEntity();
+        String entityPropName = prdAction.getProperty();
+
+        EntityDefinition entityDefinitionTocheck = null;
+        boolean isEntityNameExist = false;
+        boolean isPropNameExist = false;
+
+        for(EntityDefinition entityDef: entityDefinitions){
+            if(entityDef.getEntityName().equals(entityName)){
+                isEntityNameExist = true;
+                entityDefinitionTocheck = entityDef;
+                break;
+            }
+        }
+
+        EntityDefinition checkedEntity = checkIfEntityNameExist(prdAction.getEntity(), entityDefinitions);
+        if(checkedEntity == null){
+            throw new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
+        }
+
+        if(!isEntityNameExist){
+            throw  new GeneralException("In " + prdAction.getType() + ", The required entity name " + entityName + " does not exist");
+        }
+        List<IAction> caseTrue = parseTrueConditionFromPRDThen(prdAction.getPRDThen().getPRDAction(),entityDefinitions,environments);
+        List<IAction> caseFalse = parseFalseConditionFromPRDElse(prdAction.getPRDElse(),entityDefinitions, environments);
+        IConditionComponent conditionComponent = parseConditionFromPRDCondition(prdAction.getPRDCondition(), checkedEntity);
+        return new ActionCondition(entityDefinitionTocheck, conditionComponent, caseTrue, caseFalse);
     }
 
-    private IAction convertPrdActionToSet(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
+    private boolean checkIfPropertyExsistFromCurrentEntity(String property, EntityDefinition entityDef) {
+        if(entityDef.isPropertyNameExist(property)){
+            return true;
+        }
+
+        return false;
+    }
+
+    private EntityDefinition checkIfEntityNameExist(String entity, List<EntityDefinition> entityDefinitions) {
+        EntityDefinition entityDefResult = null;
+        for(EntityDefinition currEntity: entityDefinitions){
+            if(entity.equalsIgnoreCase(currEntity.getEntityName())){
+                entityDefResult = currEntity;
+            }
+        }
+
+        return entityDefResult;
+    }
+
+    private IConditionComponent parseConditionFromPRDCondition(PRDCondition prdCondition, EntityDefinition entityDefinitions) throws GeneralException {
+        multipleCondition conditionComponent = new multipleCondition("and",null);
+        List<IConditionComponent> listOfCondition = new ArrayList<>();
+        for (PRDCondition condition : prdCondition.getPRDCondition()) {
+            listOfCondition.add(createSubConditions(condition, entityDefinitions));
+        }
+        conditionComponent.setSubConditions(listOfCondition);
+
+        return conditionComponent;
+    }
+
+    private IConditionComponent createSubConditions(PRDCondition prdCondition, EntityDefinition entityDefinitions) throws GeneralException {
+        IConditionComponent result = null;
+        if (prdCondition.getSingularity().equalsIgnoreCase("single")){
+            result = createSingleCondition(prdCondition, entityDefinitions);
+        }
+        if (prdCondition.getSingularity().equalsIgnoreCase("multiple")){
+            result = createMultipleCondition(prdCondition, entityDefinitions);
+        }
+        return result;
+    }
+
+    private IConditionComponent createMultipleCondition(PRDCondition prdCondition, EntityDefinition entityDefinitions) throws GeneralException {
+        List<IConditionComponent> listOfCondition = new ArrayList<>();
+        for (PRDCondition condition : prdCondition.getPRDCondition()) {
+            listOfCondition.add(createSubConditions(condition, entityDefinitions));
+        }
+        if (!Utilities.isOperatorFromMultipleCondition(prdCondition.getLogical())){
+            throw new GeneralException("In Multiple condition, operator " + prdCondition.getOperator() + " doesnt exist");
+        }
+        return new multipleCondition(prdCondition.getLogical(), listOfCondition);
+    }
+
+    private IConditionComponent createSingleCondition(PRDCondition prdCondition, EntityDefinition entityDefinitions) throws GeneralException {
+        if(!checkIfPropertyExsistFromCurrentEntity(prdCondition.getProperty(), entityDefinitions)){
+            throw new GeneralException("In single condition, in entity name " + entityDefinitions.getEntityName() + "property name " + prdCondition.getProperty() + " doesnt exist");
+        }
+        if (!Utilities.isOperatorFromSingleCondition(prdCondition.getOperator())){
+            throw new GeneralException("In single condition, operator " + prdCondition.getOperator() + " doesnt exist");
+        }
+        SingleCondition singleCondition = new SingleCondition(prdCondition.getProperty(),
+                prdCondition.getOperator(), prdCondition.getValue());
+        return singleCondition;
+    }
+
+
+    private List<IAction> parseFalseConditionFromPRDElse(PRDElse elseAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
+        // need to check if elseAction null
+        List<IAction> listOfAction = null;
+
+        if(elseAction != null){
+           listOfAction = createActionListFromPrdActions(elseAction.getPRDAction(), entityDefinitions, environments);
+        }
+
+        return listOfAction;
+    }
+
+    private List<IAction> parseTrueConditionFromPRDThen(List<PRDAction> thenAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
+        //then cannot be null.
+        List<IAction> listOfAction = createActionListFromPrdActions(thenAction, entityDefinitions, environments);
+        return listOfAction;
+    }
+
+    private IAction convertPrdActionToSet(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
         //alternative
 //        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
 //        if(errorMsg != ""){

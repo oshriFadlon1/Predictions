@@ -11,29 +11,37 @@ import java.util.List;
 
 public class ActionCondition extends AbstractAction {
     private IConditionComponent theCondition;
-    private List<AbstractAction> trueResult;
-    private List<AbstractAction> falseResult;
+    private List<IAction> trueResult;
+    private List<IAction> falseResult;
 
-    public ActionCondition(EntityDefinition entityDefinition, IConditionComponent theCondition) {
+    public ActionCondition(EntityDefinition entityDefinition, IConditionComponent theCondition, List<IAction> trueResult, List<IAction> falseResult) {
         super(Operation.CONDITION, entityDefinition);
         this.theCondition = theCondition;
-        this.trueResult = new ArrayList<>();
-        this.falseResult = new ArrayList<>();
+        this.trueResult = trueResult;
+        this.falseResult = falseResult;
     }
 
-    public List<AbstractAction> getTrueResult() {
+    public IConditionComponent getTheCondition() {
+        return theCondition;
+    }
+
+    public void setTheCondition(IConditionComponent theCondition) {
+        this.theCondition = theCondition;
+    }
+
+    public List<IAction> getTrueResult() {
         return trueResult;
     }
 
-    public void setTrueResult(List<AbstractAction> trueResult) {
+    public void setTrueResult(List<IAction> trueResult) {
         this.trueResult = trueResult;
     }
 
-    public List<AbstractAction> getFalseResult() {
+    public List<IAction> getFalseResult() {
         return falseResult;
     }
 
-    public void setFalseResult(List<AbstractAction> falseResult) {
+    public void setFalseResult(List<IAction> falseResult) {
         this.falseResult = falseResult;
     }
 
@@ -42,11 +50,11 @@ public class ActionCondition extends AbstractAction {
         try {
            boolean result = this.theCondition.getResultFromCondition(context);
             if (result) {
-                for (AbstractAction action : this.trueResult) {
+                for (IAction action : this.trueResult) {
                     action.invoke(context);
                 }
             } else {
-                for (AbstractAction action : this.falseResult) {
+                for (IAction action : this.falseResult) {
                     action.invoke(context);
                 }
             }
