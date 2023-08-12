@@ -11,9 +11,9 @@ public class ActionDecrease extends AbstractAction {
     private String decreaseBy;
     private String propertyName;
 
-    public ActionDecrease(EntityDefinition entityDefinition, String increaseBy, String propertyName) {
-        super(Operation.INCREASE, entityDefinition);
-        this.increaseBy = increaseBy;
+    public ActionDecrease(EntityDefinition entityDefinition, String decreaseBy, String propertyName) {
+        super(Operation.DECREASE, entityDefinition);
+        this.decreaseBy = decreaseBy;
         this.propertyName = propertyName;
     }
 

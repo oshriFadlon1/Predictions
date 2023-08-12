@@ -1,13 +1,13 @@
 package ui;
 
-import dto.DtoEnvUiToEngine;
-import dto.DtoEnvironments;
-import dto.DtoResponseSimulationEnded;
+import dto.*;
 import engine.MainEngine;
+import entity.EntityDefinition;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
 import property.PropertyDefinition;
+import property.PropertyDefinitionEntity;
 
 import java.util.*;
 
@@ -45,8 +45,9 @@ public class MainUi {
 
     private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu) {
             switch (userChoice){
-                case 2:
-                    System.out.println(interfaceMenu.showCurrentSimulation().toString());
+                case 2:DtoResponsePreview previewOfSimulation = interfaceMenu.showCurrentSimulation();
+                    printCurrentSimulationPreview(previewOfSimulation);
+                    //System.out.println(interfaceMenu.showCurrentSimulation().toString());
                     break;
                 case 3:
                     //run simulation
@@ -76,6 +77,37 @@ public class MainUi {
                     break;
 
             }
+    }
+
+    private static void printCurrentSimulationPreview(DtoResponsePreview simulationPreview){
+        DtoResponseEntities allEntitiesDto = simulationPreview.getDtoResponseEntities();
+        System.out.println("Entity:");
+        System.out.println("   Entity name: " + allEntitiesDto.getEntityName());
+        System.out.println("   Entity population: " + allEntitiesDto.getPopulation());
+        System.out.println("Properties for entity");
+        for (PropertyDefinitionEntity propertyDef: allEntitiesDto.getPropertyDefinitionEntityList()) {
+            System.out.println("        Property name: " + propertyDef.getPropertyDefinition().getPropertyName());
+            System.out.println("        Property type:" + propertyDef.getPropertyDefinition().getPropertyType());
+            if(propertyDef.getPropertyDefinition().getPropertyRange() != null) {
+                System.out.println("        Property range:" + propertyDef.getPropertyDefinition().getPropertyRange().getFrom() + " to " + propertyDef.getPropertyDefinition().getPropertyRange().getTo());
+            }
+            System.out.println("        Property randomly initialized:" + propertyDef.getPropValue().getRandomInit());
+        }
+
+        System.out.println("Rules");
+        for(DtoResponseRules currRule: simulationPreview.getDtoResponseRules()){
+            System.out.println("   Rule name: " + currRule.getRuleName());
+            System.out.println("   Rule activition: " + currRule.getTicks() + " ticks, " + currRule.getProbability() + " probability");
+            System.out.println("   Action count: " + currRule.getCountOfAction());
+            System.out.println("   Actions:");
+            for(String actionName: currRule.getActionNames()){
+                System.out.println("        Action name: " + actionName);
+            }
+        }
+
+        System.out.println("Simulation termination:");
+        System.out.println("   Seconds: " + simulationPreview.getDtoResponseTermination().getSeconds());
+        System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
     }
 
     private static Map<String, Object> printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
@@ -174,6 +206,6 @@ public class MainUi {
         System.out.println("3. Start simulation");
         System.out.println("4. Show previous simulation");
         System.out.println("5. Exit");
-        System.out.println("----------------------------------");
+        System.out.println("-----------------------------------------------");
     }
 }
