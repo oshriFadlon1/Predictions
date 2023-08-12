@@ -1,12 +1,13 @@
 package ui;
 
-import dto.DtoEnvUiToEngine;
-import dto.DtoEnvironments;
+import dto.*;
 import engine.MainEngine;
+import entity.EntityDefinition;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
 import property.PropertyDefinition;
+import property.PropertyDefinitionEntity;
 
 import java.util.*;
 
@@ -44,14 +45,15 @@ public class MainUi {
 
     private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu) {
             switch (userChoice){
-                case 2:
-                    System.out.println(interfaceMenu.showCurrentSimulation().toString());
+                case 2:DtoResponsePreview previewOfSimulation = interfaceMenu.showCurrentSimulation();
+                    printCurrentSimulationPreview(previewOfSimulation);
+                    //System.out.println(interfaceMenu.showCurrentSimulation().toString());
                     break;
                 case 3:
                     //run simulation
                     DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
                     Map<String, Object> environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
-                    interfaceMenu.runSimulations(environmentsForEngine);
+                    DtoResponseSimulationEnded dtoResponseSimulationEnded = interfaceMenu.runSimulations(environmentsForEngine);
                     //engineController.moveWorld();
                     System.out.println("current world is moved");
                     break;
@@ -77,6 +79,37 @@ public class MainUi {
             }
     }
 
+    private static void printCurrentSimulationPreview(DtoResponsePreview simulationPreview){
+        DtoResponseEntities allEntitiesDto = simulationPreview.getDtoResponseEntities();
+        System.out.println("Entity:");
+        System.out.println("   Entity name: " + allEntitiesDto.getEntityName());
+        System.out.println("   Entity population: " + allEntitiesDto.getPopulation());
+        System.out.println("Properties for entity");
+        for (PropertyDefinitionEntity propertyDef: allEntitiesDto.getPropertyDefinitionEntityList()) {
+            System.out.println("        Property name: " + propertyDef.getPropertyDefinition().getPropertyName());
+            System.out.println("        Property type:" + propertyDef.getPropertyDefinition().getPropertyType());
+            if(propertyDef.getPropertyDefinition().getPropertyRange() != null) {
+                System.out.println("        Property range:" + propertyDef.getPropertyDefinition().getPropertyRange().getFrom() + " to " + propertyDef.getPropertyDefinition().getPropertyRange().getTo());
+            }
+            System.out.println("        Property randomly initialized:" + propertyDef.getPropValue().getRandomInit());
+        }
+
+        System.out.println("Rules");
+        for(DtoResponseRules currRule: simulationPreview.getDtoResponseRules()){
+            System.out.println("   Rule name: " + currRule.getRuleName());
+            System.out.println("   Rule activition: " + currRule.getTicks() + " ticks, " + currRule.getProbability() + " probability");
+            System.out.println("   Action count: " + currRule.getCountOfAction());
+            System.out.println("   Actions:");
+            for(String actionName: currRule.getActionNames()){
+                System.out.println("        Action name: " + actionName);
+            }
+        }
+
+        System.out.println("Simulation termination:");
+        System.out.println("   Seconds: " + simulationPreview.getDtoResponseTermination().getSeconds());
+        System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
+    }
+
     private static Map<String, Object> printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
         Map<String, Object> environmentList = new HashMap<>();
         String userInput;
@@ -94,14 +127,14 @@ public class MainUi {
                environmentList.put(environmentName, currEnvIns);
             }
             else{//evironmet is not randomly initialized
-                do{
-                    userInput = scanner.nextLine();
-                    if(!isFirstTime) {
-                        System.out.println("User input for environment variable is invalid. Please try again: ");
-                    }
+                System.out.println("Enter your choice: ");
+                userInput = scanner.nextLine();
+                while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu)){
 
-                    isFirstTime = false;
-                }while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu));
+                    System.out.println("User input for environment variable is invalid. Please try again. ");
+                    System.out.println("Enter your choice: ");
+                    userInput = scanner.nextLine();
+                }
 
                 Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropertyDef);
                 DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
@@ -123,12 +156,12 @@ public class MainUi {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
 
-        while(userInput != "y" && userInput != "n"){
+        while(!userInput.equalsIgnoreCase("y") && !userInput.equalsIgnoreCase("n") ){
             System.out.println("Invalid input. Please enter y/n");
             userInput = scanner.nextLine();
         }
 
-        if(userInput == "n"){
+        if(userInput.equalsIgnoreCase("n")){
             return false;
         }
 
@@ -167,10 +200,12 @@ public class MainUi {
 
 
     private static void printMenu() {
+        System.out.println("-----------------------------------------------");
         System.out.println("1. Load XML file");
         System.out.println("2. Show simulation information");
         System.out.println("3. Start simulation");
         System.out.println("4. Show previous simulation");
         System.out.println("5. Exit");
+        System.out.println("-----------------------------------------------");
     }
 }

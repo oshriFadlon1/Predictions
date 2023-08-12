@@ -9,7 +9,7 @@ import property.*;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
-import rule.action.AbstractAction;
+import rule.action.IAction;
 import utility.Utilities;
 import world.WorldDefinition;
 import world.WorldInstance;
@@ -117,12 +117,13 @@ public class MainEngine implements InterfaceMenu {
     }
     private List<DtoResponseRules> getRulesInfoSimulation() {
         List<DtoResponseRules> dtoResponseRules = new ArrayList<>();
-        List<String> ActionName = new ArrayList<>();
+        List<String> ActionName;
         String ruleName = "";
         ActivationForRule activation = null;
         for (String key: worldDefinitionForSimulation.getRules().keySet()) {
+            ActionName = new ArrayList<>();
             Rule rule = worldDefinitionForSimulation.getRules().get(key);
-            for (AbstractAction action:rule.getActions()) {
+            for (IAction action:rule.getActions()) {
                 ActionName.add(action.getOperationType().name());
             }
             dtoResponseRules.add(new DtoResponseRules(rule.getRuleName(),
@@ -165,7 +166,8 @@ public class MainEngine implements InterfaceMenu {
     public DtoResponseSimulationEnded runSimulations(Map<String, Object> environmentsForEngine){
         DtoResponseSimulationEnded responseForUser = null;
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
-
+        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap);
+        this.allSimulations.add(worldInstance);
        try {
            for (WorldInstance currentSimulation : this.allSimulations) {
                currentSimulation.setAllEnvironments(environmentInstancesMap);

@@ -1,7 +1,7 @@
 package rule;
 
 
-import rule.action.AbstractAction;
+import rule.action.IAction;
 
 import java.util.*;
 import java.util.List;
@@ -11,9 +11,9 @@ public class Rule {
 
     private ActivationForRule activation;
 
-    private List<AbstractAction> actions;
+    private List<IAction> actions;
 
-    public Rule(String ruleName, ActivationForRule activation, List<AbstractAction> actions) {
+    public Rule(String ruleName, ActivationForRule activation, List<IAction> actions) {
         this.ruleName = ruleName;
         this.activation = activation;
         this.actions = actions;
@@ -35,11 +35,11 @@ public class Rule {
         this.activation = activation;
     }
 
-    public List<AbstractAction> getActions() {
+    public List<IAction> getActions() {
         return actions;
     }
 
-    public void setActions(List<AbstractAction> actions) {
+    public void setActions(List<IAction> actions) {
         this.actions = actions;
     }
 
@@ -47,13 +47,13 @@ public class Rule {
     public String toString(){
         int actionCounter = 1;
         StringBuilder result = new StringBuilder(String.format("Rule name: %s", this.ruleName));
-        Set<AbstractAction> withoutDuplicates = new HashSet<>(actions);
+        Set<IAction> withoutDuplicates = new HashSet<>(actions);
 
         result.append("\nActivition ticks:").append(this.activation.getTicks());
         result.append("\nActivition probability: ").append(this.activation.getProbability());
         result.append(String.format("\nActions number: %d", actions.size()));
 
-        for(AbstractAction currAction: withoutDuplicates) {
+        for(IAction currAction: withoutDuplicates) {
             result.append(String.format("\nAction #%d: %s", actionCounter, currAction.getOperationType()));
             actionCounter++;
         }

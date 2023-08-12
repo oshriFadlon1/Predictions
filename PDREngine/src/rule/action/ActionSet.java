@@ -1,14 +1,10 @@
 package rule.action;
 
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
-import utility.Utilities;
-
-import java.util.function.BooleanSupplier;
 
 public class ActionSet extends AbstractAction {
 
@@ -38,7 +34,7 @@ public class ActionSet extends AbstractAction {
     }
 
     @Override
-    public void invoke(NecessaryVariablesImpl context) {
+    public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         String type = propertyInstance.getPropertyDefinition().getPropertyType().toLowerCase();
         Object result = null;
@@ -69,12 +65,12 @@ public class ActionSet extends AbstractAction {
             }
             propertyInstance.setPropValue(result);
         } catch (GeneralException e) {
-            throw new IllegalArgumentException(e);
+            throw e;
         }
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.SET;
     }
 

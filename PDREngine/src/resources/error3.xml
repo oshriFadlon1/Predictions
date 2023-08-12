@@ -23,6 +23,10 @@
                     <PRD-range to="100" from="0"/>
                     <PRD-value random-initialize="false" init="0"/>
                 </PRD-property>
+                <PRD-property type="boolean">
+                    <PRD-name>lung-cancer-progress</PRD-name>
+                    <PRD-value random-initialize="false" init="true"/>
+                </PRD-property>
                 <PRD-property type="decimal">
                     <PRD-name>age</PRD-name>
                     <PRD-range to="50" from="15"/>

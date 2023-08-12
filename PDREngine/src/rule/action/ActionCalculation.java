@@ -1,8 +1,8 @@
 package rule.action;
 
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import enums.Operation;
+import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
 public abstract class ActionCalculation extends AbstractAction {
@@ -22,5 +22,5 @@ public abstract class ActionCalculation extends AbstractAction {
         this.propertyPlacement = propertyPlacement;
     }
 
-    public abstract void invoke(NecessaryVariablesImpl context);
+    public abstract void invoke(NecessaryVariablesImpl context) throws GeneralException;
 }

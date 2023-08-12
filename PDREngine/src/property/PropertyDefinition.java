@@ -53,4 +53,16 @@ public class PropertyDefinition {
                 (this.propertyRange!=null?"\r\nRange: " + propertyRange.toString():"");
 
     }
+
+    public boolean checkIfValueInRange(Object obj) {
+        if (this.propertyRange != null) {
+            if (obj instanceof Float || obj instanceof Integer) {
+                float from = this.propertyRange.getFrom();
+                float to = this.propertyRange.getTo();
+                float value = ((Number) obj).floatValue();
+                return to < value && value < from;
+            }
+        }
+        return false;
+    }
 }
