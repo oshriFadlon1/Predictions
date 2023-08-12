@@ -14,6 +14,7 @@ import rule.Rule;
 import rule.action.*;
 import shema.genereated.*;
 import termination.Termination;
+import utility.Utilities;
 import world.WorldDefinition;
 
 import javax.xml.bind.JAXBContext;
@@ -77,7 +78,7 @@ public class XmlParser {
         List<EntityDefinition> entityDefinitions = createEntityDefinitionsFromPrdEntity(prdWorld.getPRDEntities());
         createdWorld.setEntityDefinitions(entityDefinitions);
         // create the rules from xml object
-        Map<String, Rule> rules = createRulesFromPrdRules(prdWorld.getPRDRules(), entityDefinitions);
+        Map<String, Rule> rules = createRulesFromPrdRules(prdWorld.getPRDRules(), entityDefinitions, environments);
         createdWorld.setRules(rules);
 
         return createdWorld;
@@ -132,7 +133,7 @@ public class XmlParser {
         return entityDefinitions;
     }
 
-    private Map<String, Rule> createRulesFromPrdRules(PRDRules prdRules, List<EntityDefinition> entityDefinitionList) throws GeneralException{
+    private Map<String, Rule> createRulesFromPrdRules(PRDRules prdRules, List<EntityDefinition> entityDefinitionList, Map<String, EnvironmentDefinition> environments) throws GeneralException{
         Map<String, Rule> ruleMap = new HashMap<>();
         double probability = 1;
         int ticks = 1;
@@ -142,14 +143,16 @@ public class XmlParser {
             if(ruleMap.containsKey(prdRuleName)){
                 throw new GeneralException("Rule name already exists");
             }
-            if(prdRule.getPRDActivation().getProbability() != null){
-                probability = prdRule.getPRDActivation().getProbability();
-            }
-            if(prdRule.getPRDActivation().getTicks() != null){
-                ticks = prdRule.getPRDActivation().getTicks();
+            if(prdRule.getPRDActivation() != null) {
+                if (prdRule.getPRDActivation().getProbability() != null) {
+                    probability = prdRule.getPRDActivation().getProbability();
+                }
+                if (prdRule.getPRDActivation().getTicks() != null) {
+                    ticks = prdRule.getPRDActivation().getTicks();
+                }
             }
 
-            ruleMap.put(prdRuleName,new Rule(prdRuleName,new ActivationForRule(ticks, (float)probability),createActionListFromPrdActions(prdRule.getPRDActions(), entityDefinitionList)));
+            ruleMap.put(prdRuleName,new Rule(prdRuleName,new ActivationForRule(ticks, (float)probability),createActionListFromPrdActions(prdRule.getPRDActions().getPRDAction(), entityDefinitionList, environments)));
         }
         return ruleMap;
     }
@@ -192,20 +195,20 @@ public class XmlParser {
         return mapEntityPropertyDefinitionToEntityPropertyDefinition;
     }
 
-    private List<IAction> createActionListFromPrdActions(PRDActions prdActions, List<EntityDefinition> entityDefinitionList) throws GeneralException{
+    private List<IAction> createActionListFromPrdActions(List<PRDAction> prdActions, List<EntityDefinition> entityDefinitionList, Map<String, EnvironmentDefinition> environments) throws GeneralException{
         List<IAction> ListOfActions = new ArrayList<>();
         IAction actionToAdd = null;
-        for(PRDAction prdAction: prdActions.getPRDAction()){
+        for(PRDAction prdAction: prdActions){
             Operation typeOfAction = Operation.valueOf(prdAction.getType().toUpperCase());
             switch(typeOfAction){
                 case INCREASE:
-                    actionToAdd = convertPrdActionToIncreaseAction(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToIncreaseAction(prdAction, entityDefinitionList, environments);
                     break;
                 case DECREASE:
-                    actionToAdd = convertPrdActionToDecreaseAction(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToDecreaseAction(prdAction, entityDefinitionList, environments);
                     break;
                 case CALCULATION:
-                    actionToAdd = convertPrdActionToCalculation(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToCalculation(prdAction, entityDefinitionList, environments);
                     break;
                 case CONDITION:
                     actionToAdd = convertPrdActionToCondition(prdAction,entityDefinitionList, environments);
@@ -224,7 +227,7 @@ public class XmlParser {
         return ListOfActions;
     }
 
-    private IAction convertPrdActionToIncreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
+    private IAction convertPrdActionToIncreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
 
         //alternative
 //        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
@@ -252,13 +255,15 @@ public class XmlParser {
         }
 
         if (prdAction.getBy() == null){
-            throw new GeneralException(prdAction.getType() + " require a value to change the property value");
+            throw new GeneralException("In " + prdAction.getType() + " require a value to change the property value");
         }
+        //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
+        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
 
         return new ActionIncrease(entityDefinition, prdAction.getBy(),entityProperty);
     }
 
-    private IAction convertPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
+    private IAction convertPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
 
         //alternative
 //        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
@@ -297,9 +302,12 @@ public class XmlParser {
             throw new GeneralException("In " + prdAction.getType() + ", the field 'by' cannot be empty(null)");
         }
 
+        //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
+        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
+
         return new ActionDecrease(entityDefinitionTocheck,prdAction.getBy(),entityPropName);
     }
-    private IAction convertPrdActionToCalculation(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException {
+    private IAction convertPrdActionToCalculation(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException {
         //alternative
 //        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
 //        if(errorMsg != ""){
@@ -333,6 +341,9 @@ public class XmlParser {
         if(!entityDefinitionTocheck.isPropertyNameExist(resultProp)){
             throw new GeneralException("In " + prdAction.getType() + ", in entity name " + entityName + "property name " + resultProp + " doesnt exist");
         }
+
+        //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
+        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
 
        if(prdAction.getPRDDivide() == null){//action is multiply
             PRDMultiply prdMultiply = prdAction.getPRDMultiply();

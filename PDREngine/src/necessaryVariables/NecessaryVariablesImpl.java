@@ -120,7 +120,7 @@ public class NecessaryVariablesImpl implements NecessaryVariables {
             EnvironmentInstance requiredEnv = activeEnvironment.get(valueString);
             if (requiredEnv == null)
             {
-                throw new GeneralException("Environment instance don't have instance that his name is "+valueString);
+                throw new GeneralException("Environment instance doesn't have an instance that his name is "+valueString);
             }
             result = requiredEnv.getEnvValue();
         }
