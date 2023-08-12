@@ -67,7 +67,7 @@ public class ActionCalculationDivide extends ActionCalculation {
 
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.CALCULATION;
     }
 

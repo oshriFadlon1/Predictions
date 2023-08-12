@@ -1,14 +1,10 @@
 package rule.action;
 
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
-import utility.Utilities;
-
-import java.util.function.BooleanSupplier;
 
 public class ActionSet extends AbstractAction {
 
@@ -74,7 +70,7 @@ public class ActionSet extends AbstractAction {
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.SET;
     }
 

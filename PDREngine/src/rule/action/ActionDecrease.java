@@ -68,7 +68,7 @@ public class ActionDecrease extends AbstractAction {
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.DECREASE;
     }
 

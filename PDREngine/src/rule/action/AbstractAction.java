@@ -1,12 +1,11 @@
 package rule.action;
 
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
-public abstract  class AbstractAction implements Action {
+public abstract  class AbstractAction implements IAction {
     private final Operation operationType;
     private final EntityDefinition entityDefinition;
 
@@ -16,7 +15,7 @@ public abstract  class AbstractAction implements Action {
     }
 
     public Operation getOperationType() {
-        return operationType;
+        return this.operationType;
     }
 
     public EntityDefinition getEntityDefinition() {

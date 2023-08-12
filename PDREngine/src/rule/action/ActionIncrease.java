@@ -1,9 +1,7 @@
 package rule.action;
 
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import enums.Operation;
-import enums.Type;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
@@ -66,7 +64,7 @@ public class ActionIncrease extends AbstractAction {
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.INCREASE;
     }
 

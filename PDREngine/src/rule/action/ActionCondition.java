@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ActionCondition extends AbstractAction {
     private IConditionComponent theCondition;
-    private List<Action> trueResult;
-    private List<Action> falseResult;
+    private List<AbstractAction> trueResult;
+    private List<AbstractAction> falseResult;
 
     public ActionCondition(EntityDefinition entityDefinition, IConditionComponent theCondition) {
         super(Operation.CONDITION, entityDefinition);
@@ -21,19 +21,19 @@ public class ActionCondition extends AbstractAction {
         this.falseResult = new ArrayList<>();
     }
 
-    public List<Action> getTrueResult() {
+    public List<AbstractAction> getTrueResult() {
         return trueResult;
     }
 
-    public void setTrueResult(List<Action> trueResult) {
+    public void setTrueResult(List<AbstractAction> trueResult) {
         this.trueResult = trueResult;
     }
 
-    public List<Action> getFalseResult() {
+    public List<AbstractAction> getFalseResult() {
         return falseResult;
     }
 
-    public void setFalseResult(List<Action> falseResult) {
+    public void setFalseResult(List<AbstractAction> falseResult) {
         this.falseResult = falseResult;
     }
 
@@ -42,11 +42,11 @@ public class ActionCondition extends AbstractAction {
         try {
            boolean result = this.theCondition.getResultFromCondition(context);
             if (result) {
-                for (Action action : this.trueResult) {
+                for (AbstractAction action : this.trueResult) {
                     action.invoke(context);
                 }
             } else {
-                for (Action action : this.falseResult) {
+                for (AbstractAction action : this.falseResult) {
                     action.invoke(context);
                 }
             }
@@ -56,7 +56,7 @@ public class ActionCondition extends AbstractAction {
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.CONDITION;
     }
 

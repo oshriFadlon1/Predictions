@@ -22,7 +22,15 @@ public class PropertyInstance {
     }
 
     public void setPropValue(Object propValue) {
-        this.propValue = propValue;
+        if (this.propertyDefinition.getPropertyType().equalsIgnoreCase("float")||
+                this.propertyDefinition.getPropertyType().equalsIgnoreCase("decimal")){
+            if (this.propertyDefinition.checkIfValueInRange(propValue)){
+                this.propValue = propValue;
+            }
+        }
+        else {
+            this.propValue = propValue;
+        }
     }
 
     public Object getPropValue() {

@@ -168,6 +168,7 @@ public class MainUi {
 
 
     private static void printMenu() {
+        System.out.println("-----------------------------------------------");
         System.out.println("1. Load XML file");
         System.out.println("2. Show simulation information");
         System.out.println("3. Start simulation");

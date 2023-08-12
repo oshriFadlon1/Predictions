@@ -9,7 +9,7 @@ import property.*;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
-import rule.action.AbstractAction;
+import rule.action.IAction;
 import utility.Utilities;
 import world.WorldDefinition;
 import world.WorldInstance;
@@ -123,7 +123,7 @@ public class MainEngine implements InterfaceMenu {
         for (String key: worldDefinitionForSimulation.getRules().keySet()) {
             ActionName = new ArrayList<>();
             Rule rule = worldDefinitionForSimulation.getRules().get(key);
-            for (AbstractAction action:rule.getActions()) {
+            for (IAction action:rule.getActions()) {
                 ActionName.add(action.getOperationType().name());
             }
             dtoResponseRules.add(new DtoResponseRules(rule.getRuleName(),

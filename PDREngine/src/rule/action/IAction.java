@@ -5,8 +5,8 @@ import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
-public interface Action {
+public interface IAction {
         public void invoke(NecessaryVariablesImpl context) throws GeneralException;
-        public Operation getActionType();
+        public Operation getOperationType();
         public EntityDefinition getContextEntity();
 }

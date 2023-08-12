@@ -28,7 +28,7 @@ public class ActionKill extends AbstractAction {
     }
 
     @Override
-    public Operation getActionType() {
+    public Operation getOperationType() {
         return Operation.KILL;
     }
 

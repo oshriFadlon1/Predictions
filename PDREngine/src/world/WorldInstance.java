@@ -13,8 +13,7 @@ import property.Value;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
-import rule.action.AbstractAction;
-import sun.java2d.loops.FillRect;
+import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
 
@@ -103,7 +102,7 @@ public class WorldInstance {
 
             for(String currentRuleName: allRules.keySet()){
                 Rule currentRuleToInvokeOnEntities = allRules.get(currentRuleName);
-                List<AbstractAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
+                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
                 float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
                 ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
                 int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
@@ -120,7 +119,7 @@ public class WorldInstance {
                         List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
                         // invoke each action on each entity
                         for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
-                            for(AbstractAction currentActionToInvoke: allActionsForCurrentRule){
+                            for(IAction currentActionToInvoke: allActionsForCurrentRule){
                                 necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
                                 currentActionToInvoke.invoke(necessaryVariables);
                             }
