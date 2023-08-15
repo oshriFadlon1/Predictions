@@ -190,6 +190,16 @@ public class MainEngine implements InterfaceMenu {
        }
     }
 
+    private Integer moveSimulationToOldSimulations(int i) {
+        this.oldSimulation.add(allSimulations.remove(i));
+        int indexOfCurrentMovedWolrd = oldSimulation.size();
+        String dateInfo = getCurrentTimeAndDateInTheFormat();
+
+        this.simulationId2CurrentTimeAndDate.put(indexOfCurrentMovedWolrd, dateInfo);
+        return indexOfCurrentMovedWolrd;
+    }
+
+
     private Map<String, EnvironmentInstance> createAllEnvironmentInstances(Map<String, Object> environmentsForEngine) {
         Map<String, EnvironmentDefinition> allEnvDefs = this.worldDefinitionForSimulation.getAllEnvironments();
         Map<String, EnvironmentInstance> allEnvIns = new HashMap<>();
