@@ -79,6 +79,6 @@
 	</PRD-rules>
 	<PRD-termination>
 		<PRD-by-ticks count="480"/>
-		<PRD-by-second count="6000000"/>
+		<PRD-by-second count="10"/>
 	</PRD-termination>
 </PRD-world>
