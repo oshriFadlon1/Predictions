@@ -24,6 +24,7 @@ import java.util.*;
 public class MainEngine implements InterfaceMenu {
 
     private XmlParser xmlParser;
+    private WorldDefinition xmlWorldDefinition;
     private WorldDefinition worldDefinitionForSimulation;
     private List<WorldInstance> allSimulations; // current running simulation
 
@@ -144,8 +145,11 @@ public class MainEngine implements InterfaceMenu {
         String resultErrorMsgToUser;
         XmlParser xmlParserInCheck= new XmlParser(xmlPath);
         try {
-            this.worldDefinitionForSimulation = xmlParserInCheck.tryToReadXml();
-
+            this.xmlWorldDefinition = xmlParserInCheck.tryToReadXml();
+            this.worldDefinitionForSimulation = this.xmlWorldDefinition;
+            this.oldSimulation.clear();
+            this.simulationId2CurrentTimeAndDate.clear();
+            this.allSimulations.clear();
         }
         catch(JAXBException | IOException | GeneralException e){
             if(e instanceof  JAXBException || e instanceof IOException){
@@ -166,7 +170,9 @@ public class MainEngine implements InterfaceMenu {
     }
     //func 3
     @Override
-    public DtoResponseSimulationEnded runSimulations(Map<String, Object> environmentsForEngine){
+    public DtoResponseSimulationEnded runSimulations(DtoEnvUiToEngine envInputFromUser){
+        this.worldDefinitionForSimulation.resetEntityDefinition();
+        Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         DtoResponseSimulationEnded responseForUser = null;
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
         WorldInstance worldInstance = new WorldInstance(environmentInstancesMap);
@@ -269,8 +275,6 @@ public class MainEngine implements InterfaceMenu {
                 break;
             default:
                 break;
-
-                //case default maybe? throwing exception? i think we did that in the xml parsing
         }
         return initVal;
     }
@@ -302,7 +306,7 @@ public class MainEngine implements InterfaceMenu {
             case "string":
                 break;
             case "boolean":
-                if(userInput.toLowerCase() != "true" && userInput.toLowerCase() != "false"){
+                if(!userInput.equalsIgnoreCase("true")  && !userInput.equalsIgnoreCase("false")){
                     return false;
                 }
                 break;

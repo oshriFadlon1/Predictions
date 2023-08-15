@@ -16,7 +16,7 @@ public interface InterfaceMenu {
     //func 2
     DtoResponsePreview showCurrentSimulation();
     //func 3
-    DtoResponseSimulationEnded runSimulations(Map<String, Object> environmentsForEngine);
+    DtoResponseSimulationEnded runSimulations(DtoEnvUiToEngine envInputFromUser);
     //func 4
     DtoOldSimulationsMap getMapOfOldSimulation();
     //send environments

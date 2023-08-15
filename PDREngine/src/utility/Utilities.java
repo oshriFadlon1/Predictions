@@ -1,9 +1,11 @@
 package utility;
 
+import entity.EntityDefinition;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import property.PropertyDefinition;
+import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
 import range.Range;
 
