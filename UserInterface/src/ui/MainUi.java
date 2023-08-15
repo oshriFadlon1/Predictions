@@ -253,10 +253,12 @@ public class MainUi {
 
     private static void printCurrentSimulationPreview(DtoResponsePreview simulationPreview){
         DtoResponseEntities allEntitiesDto = simulationPreview.getDtoResponseEntities();
-        System.out.println("Entity:");
+        System.out.println("Entity: ");
+        System.out.println("--------");
         System.out.println("   Entity name: " + allEntitiesDto.getEntityName());
         System.out.println("   Entity population: " + allEntitiesDto.getPopulation());
-        System.out.println("Properties for entity");
+        System.out.println("Properties for entity: ");
+        System.out.println("-----------------------");
         for (PropertyDefinitionEntity propertyDef: allEntitiesDto.getPropertyDefinitionEntityList()) {
             System.out.println("        Property name: " + propertyDef.getPropertyDefinition().getPropertyName());
             System.out.println("        Property type:" + propertyDef.getPropertyDefinition().getPropertyType());
@@ -264,9 +266,11 @@ public class MainUi {
                 System.out.println("        Property range:" + propertyDef.getPropertyDefinition().getPropertyRange().getFrom() + " to " + propertyDef.getPropertyDefinition().getPropertyRange().getTo());
             }
             System.out.println("        Property randomly initialized:" + propertyDef.getPropValue().getRandomInit());
+            System.out.println();
         }
 
-        System.out.println("Rules");
+        System.out.println("Rules:");
+        System.out.println("-------");
         for(DtoResponseRules currRule: simulationPreview.getDtoResponseRules()){
             System.out.println("   Rule name: " + currRule.getRuleName());
             System.out.println("   Rule activition: " + currRule.getTicks() + " ticks, " + currRule.getProbability() + " probability");
@@ -275,23 +279,121 @@ public class MainUi {
             for(String actionName: currRule.getActionNames()){
                 System.out.println("        Action name: " + actionName);
             }
+            System.out.println();
         }
 
         System.out.println("Simulation termination:");
+        System.out.println("------------------------");
         System.out.println("   Seconds: " + simulationPreview.getDtoResponseTermination().getSeconds());
         System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
     }
 
-    private static Map<String, Object> printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
+    private static DtoEnvUiToEngine printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
         Map<String, Object> environmentList = new HashMap<>();
-        String userInput;
+
+        int userChoiceEnv;
         Scanner scanner = new Scanner(System.in);
-        boolean isFirstTime = true;
-        for (String environmentName: environmentDefinitions.keySet()){
-            EnvironmentDefinition currEnvironmentDef = environmentDefinitions.get(environmentName);
-            System.out.println("Environment name: " + environmentName);
-            PropertyDefinition currPropertyDef = currEnvironmentDef.getEnvPropertyDefinition();
-            System.out.println(currPropertyDef);
+        Map<Integer, String> numberToEnvironmentMap = createNumberToEnvironmentMap(environmentDefinitions);
+        Map<Integer, Boolean> idToIsInitializedByUser = createIdToIsInitializedMap(numberToEnvironmentMap);
+
+        printAllEnvironmentsAvailable(numberToEnvironmentMap);
+
+        System.out.println("Out of the following environment variables, please choose the one that you would like to initialize by yourself, or press " + (numberToEnvironmentMap.size() + 1) + " to continue");
+        userChoiceEnv = getUserChoice(1, numberToEnvironmentMap.size() + 1);
+        //handling user input and initializing environments from user input
+        int mapSize = numberToEnvironmentMap.size() + 1;
+        while (userChoiceEnv != mapSize) {
+
+            while (!validateWrongUserInput(userChoiceEnv, numberToEnvironmentMap.size() + 1)) {
+                System.out.println("Invalid choice. Please choose again.");
+                userChoiceEnv = getUserChoice(1, mapSize);
+            }
+
+            String environmentNameFromUser = numberToEnvironmentMap.get(userChoiceEnv);
+            EnvironmentDefinition currEnvDef = environmentDefinitions.get(environmentNameFromUser);
+            PropertyDefinition currPropDef = currEnvDef.getEnvPropertyDefinition();
+            presentPropertyDetails(currPropDef);
+            System.out.println("Please state your init value for current environment: " + environmentNameFromUser);
+            String userInput = scanner.next();
+            while (!isEnvInputValid(userInput, currPropDef, interfaceMenu)) {
+                System.out.println("User input for environment variable is invalid. Please try again. ");
+                System.out.println("Enter your choice: ");
+                userInput = scanner.next();
+            }
+            idToIsInitializedByUser.put(userChoiceEnv, true);
+            Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropDef);
+            environmentList.put(environmentNameFromUser, initVal);
+            printAllEnvironmentsAvailable(numberToEnvironmentMap);
+
+            System.out.println("Out of the following environment variables, please choose the one that you would like to initialize by yourself, or press " + mapSize + " to continue");
+            userChoiceEnv = scanner.nextInt();
+        }
+
+        //iterating over whatever environment definitions we have left, and random initializing each one
+        for(Integer id: idToIsInitializedByUser.keySet()){
+            if(idToIsInitializedByUser.get(id) == false) {
+                String envName = numberToEnvironmentMap.get(id);
+                EnvironmentDefinition envDef = environmentDefinitions.get(envName);
+                Object initVal = interfaceMenu.initializeRandomEnvironmentValues(envDef, envDef.getEnvPropertyDefinition());
+                environmentList.put(envName, initVal);
+            }
+        }
+
+        DtoEnvUiToEngine allEnvInstances = new DtoEnvUiToEngine(environmentList);
+        printEnvValueToUser(allEnvInstances);
+
+        return allEnvInstances;
+    }
+
+    private static void printEnvValueToUser(DtoEnvUiToEngine allEnvInstances) {
+        Object value;
+        for (String key : allEnvInstances.getEnvironmentToValue().keySet()) {
+            value = allEnvInstances.getEnvironmentToValue().get(key);
+
+            if (value instanceof Integer)
+            {
+                int valueInInt = ((Integer) value).intValue();
+                System.out.println("The value of "+key+": "+valueInInt);
+            }
+            if (value instanceof Float)
+            {
+                float valueInFloat = ((Float) value).floatValue();
+                System.out.println("The value of "+key+": "+valueInFloat);
+            }
+            if (value instanceof Boolean)
+            {
+                boolean valueInBool = ((Boolean) value).booleanValue();
+                System.out.println("The value of "+key+": "+valueInBool);
+            }
+            if (value instanceof String)
+            {
+                String valueInString = ((String) value).toString();
+                System.out.println("The value of "+key+": "+valueInString);
+            }
+        }
+    }
+
+    private static Map<Integer, Boolean> createIdToIsInitializedMap(Map<Integer, String> numberToEnvironmentMap) {
+        Map<Integer, Boolean> idToIsInit = new HashMap<>();
+
+        for(Integer currId: numberToEnvironmentMap.keySet()){
+            idToIsInit.put(currId, false);
+        }
+
+        return idToIsInit;
+    }
+
+    private static Map<Integer, String> updateNumbersMapAfterRemoving(Map<Integer, String> oldNumberToEnv){
+        Map<Integer, String> newNumberToEnv = new HashMap<>();
+        int currNumber = 1;
+
+        for(Integer currId: oldNumberToEnv.keySet()){
+            newNumberToEnv.put(currNumber, oldNumberToEnv.get(currId));
+            currNumber++;
+        }
+
+        return newNumberToEnv;
+    }
 
 //            if(!envHandleUserInput(currPropertyDef, interfaceMenu, currEnvironmentDef)){//environment is ranomly initialized
 //               Object initVal = interfaceMenu.initializeRandomEnvironmentValues(currEnvironmentDef, currPropertyDef);
@@ -323,31 +425,33 @@ public class MainUi {
             counter++;
         }
 
-        return environmentList;
+        return numberToEnv;
+    }
+
+    private static void printAllEnvironmentsAvailable(Map<Integer, String> allEnv) {
+        System.out.println("Environment variables available:");
+        for(Integer currId: allEnv.keySet()){
+            System.out.println("    " + currId + ": Environment name: " + allEnv.get(currId));
+        }
+    }
+
+
+
+
+    private static boolean validateWrongUserInput(int userChoice, int envListSize) {
+        return userChoice >= 1 && userChoice <= envListSize;
+    }
+
+    private static void presentPropertyDetails(PropertyDefinition propDef){
+        System.out.println("   " + propDef.getPropertyName());
+        System.out.println("   " + propDef.getPropertyType());
+            System.out.println("   " + propDef.getPropertyRange());
     }
 
     private static boolean isEnvInputValid(String userInput, PropertyDefinition propDef, InterfaceMenu interfaceMenu) {
         return interfaceMenu.validateUserEnvInput(userInput, propDef);
     }
 
-    private static boolean envHandleUserInput(PropertyDefinition propertyDef, InterfaceMenu interfaceMenu, EnvironmentDefinition currEnv) {
-        EnvironmentInstance environmentFromUser = null;
-        System.out.println("Would you like to insert a value for the following environment variable? y/n");
-        Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine();
-
-        while(!userInput.equalsIgnoreCase("y") && !userInput.equalsIgnoreCase("n") ){
-            System.out.println("Invalid input. Please enter y/n");
-            userInput = scanner.nextLine();
-        }
-
-        if(userInput.equalsIgnoreCase("n")){
-            return false;
-        }
-
-        return true;
-
-    }
 
     private static String getFileXmlPath() {
         System.out.println("Please enter path for the wanted Xml file");

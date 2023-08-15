@@ -1,21 +1,19 @@
 package dto;
 
 import environment.EnvironmentDefinition;
+import property.PropertyDefinition;
+import range.Range;
+
+import java.util.Map;
 
 public class DtoEnvUiToEngine {
-    private EnvironmentDefinition envDef;
-    private Object envValue;
+    Map<String, Object> environmentToValue;
 
-    public DtoEnvUiToEngine(EnvironmentDefinition envDef, Object envValue){
-        this.envDef = envDef;
-        this.envValue = envValue;
+    public DtoEnvUiToEngine(Map<String, Object> environmentToValue){
+        this.environmentToValue = environmentToValue;
     }
 
-    public EnvironmentDefinition getEnvDef(){
-        return this.envDef;
-    }
-
-    public Object getEnvValue(){
-        return this.envValue;
+    public Map<String, Object> getEnvironmentToValue(){
+        return this.environmentToValue;
     }
 }
