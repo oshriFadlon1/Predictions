@@ -16,7 +16,7 @@
     </PRD-evironment>
     <PRD-entities>
         <PRD-entity name="Smoker">
-            <PRD-population>100</PRD-population>
+            <PRD-population>1</PRD-population>
             <PRD-properties>
                 <PRD-property type="decimal">
                     <PRD-name>lung-cancer-progress</PRD-name>
@@ -26,12 +26,12 @@
                 <PRD-property type="decimal">
                     <PRD-name>age</PRD-name>
                     <PRD-range to="50" from="15"/>
-                    <PRD-value random-initialize="true"/>
+                    <PRD-value random-initialize="false" init="15"/>
                 </PRD-property>
                 <PRD-property type="decimal">
                     <PRD-name>cigarets-per-month</PRD-name>
                     <PRD-range to="500" from="0"/>
-                    <PRD-value random-initialize="true"/>
+                    <PRD-value random-initialize="false" init="450"/>
                 </PRD-property>
             </PRD-properties>
         </PRD-entity>
@@ -52,7 +52,7 @@
         </PRD-rule>
     </PRD-rules>
     <PRD-termination>
-        <PRD-by-ticks count="840"/>
+        <PRD-by-ticks count="25"/>
         <PRD-by-second count="10"/>
     </PRD-termination>
 </PRD-world>

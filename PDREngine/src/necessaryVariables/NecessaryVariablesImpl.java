@@ -71,14 +71,26 @@ public class NecessaryVariablesImpl implements NecessaryVariables {
     }
 
     public Object getValueFromString(String valueBy) throws GeneralException{
+        Object o = null;
+
         if (valueBy.contains("("))
         {
-            return valueFromFunctionHelper(valueBy);
+            o = valueFromFunctionHelper(valueBy);
+        }
+        else if (this.primaryEntityInstance.getAllProperties().get(valueBy) != null)
+        {
+            o = getvalueFromProperty(valueBy);
         }
         else {
-            return valueAsIs(valueBy);
+            o = valueAsIs(valueBy);
         }
 
+
+        return o;
+    }
+
+    private Object getvalueFromProperty(String valueBy) {
+        return this.primaryEntityInstance.getAllProperties().get(valueBy).getPropValue();
     }
 
     private Object valueAsIs(String valueBy) {

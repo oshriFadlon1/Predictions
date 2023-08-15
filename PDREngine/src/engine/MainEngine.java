@@ -2,6 +2,7 @@ package engine;
 import constans.Constans;
 import dto.*;
 import entity.EntityDefinition;
+import entity.EntityInstance;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
@@ -69,11 +70,6 @@ public class MainEngine implements InterfaceMenu {
     }
 
 
-    public void moveWorld() {
-        oldSimulation.add(this.allSimulations.remove(0));
-        simulationId2CurrentTimeAndDate.put(oldSimulation.size(), getCurrentTimeAndDateInTheFormat());
-    }
-
     private String getCurrentTimeAndDateInTheFormat() {
         Date currentDate = new Date();
 
@@ -102,14 +98,22 @@ public class MainEngine implements InterfaceMenu {
             }
             for (String key:entityDefinition.getPropertyDefinition().keySet()) {
                 PropertyDefinitionEntity propertyDefinitionEntity = entityDefinition.getPropertyDefinition().get(key);
-                propertyDefinitionEntityList.add(new PropertyDefinitionEntity(
-                        new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
-                        propertyDefinitionEntity.getPropertyDefinition().getPropertyType(),
-                                propertyDefinitionEntity.getPropertyDefinition().getPropertyRange()!=null?
-                                        new Range(propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getFrom(),
-                                                propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getTo()):null),
-                        new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
-                                propertyDefinitionEntity.getPropValue().getInit())));
+                if (propertyDefinitionEntity.getPropertyDefinition().getPropertyRange() == null){
+                    propertyDefinitionEntityList.add(new PropertyDefinitionEntity(
+                            new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
+                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyType()),
+                            new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
+                                    propertyDefinitionEntity.getPropValue().getInit())));
+                } else {
+                    propertyDefinitionEntityList.add(new PropertyDefinitionEntity(
+                            new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
+                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyType(),
+                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyRange()!=null?
+                                            new Range(propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getFrom(),
+                                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getTo()):null),
+                            new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
+                                    propertyDefinitionEntity.getPropValue().getInit())));
+                }
             }
             isTheFirst = true;
         }
@@ -120,9 +124,8 @@ public class MainEngine implements InterfaceMenu {
         List<String> ActionName;
         String ruleName = "";
         ActivationForRule activation = null;
-        for (String key: worldDefinitionForSimulation.getRules().keySet()) {
+        for (Rule rule: worldDefinitionForSimulation.getRules()) {
             ActionName = new ArrayList<>();
-            Rule rule = worldDefinitionForSimulation.getRules().get(key);
             for (IAction action:rule.getActions()) {
                 ActionName.add(action.getOperationType().name());
             }
@@ -169,10 +172,15 @@ public class MainEngine implements InterfaceMenu {
         WorldInstance worldInstance = new WorldInstance(environmentInstancesMap);
         this.allSimulations.add(worldInstance);
        try {
-           for (WorldInstance currentSimulation : this.allSimulations) {
+           //for (WorldInstance currentSimulation : this.allSimulations)
+           for (int i = 0; i < this.allSimulations.size(); i++) {
+               WorldInstance currentSimulation = this.allSimulations.get(i);
                currentSimulation.setAllEnvironments(environmentInstancesMap);
                DtoResponseTermination currSimulationTermination = currentSimulation.runSimulation(this.worldDefinitionForSimulation);
-               responseForUser = new DtoResponseSimulationEnded(currSimulationTermination, allSimulations.indexOf(currentSimulation));
+
+               Integer indexOfCurrentMovedSimulation = moveSimulationToOldSimulations(allSimulations.indexOf(currentSimulation));
+               responseForUser = new DtoResponseSimulationEnded(currSimulationTermination, indexOfCurrentMovedSimulation);
+               //here we will call function, move world to current simulation
            }
            return responseForUser;
        }
@@ -195,8 +203,32 @@ public class MainEngine implements InterfaceMenu {
 
     //func 4
     @Override
-    public String printPastSimulation(int indexOfSimulation, int userDisplay){
-        return null;
+    public DtoOldSimulationsMap getMapOfOldSimulation() {
+        return new DtoOldSimulationsMap(this.simulationId2CurrentTimeAndDate);
+    }
+
+    @Override
+    public List<DtoReviewOldSimulation> fetchChosenWorld(int userSimulationChoice) {
+        Map<String, EntityDefinition> entityDefsAvailable = new HashMap<>();
+        for(EntityDefinition currEntDef: this.worldDefinitionForSimulation.getEntityDefinitions()){
+            entityDefsAvailable.put(currEntDef.getEntityName(), currEntDef);
+        }
+
+        List<DtoReviewOldSimulation> resultOfOldSimulation = new ArrayList<>();
+        // fetch the required world
+        WorldInstance worldInstance = this.oldSimulation.get(userSimulationChoice - 1);
+
+        for (String nameOfEntity: worldInstance.getAllEntities().keySet()) {
+            List<EntityInstance> entityInstances = worldInstance.getAllEntities().get(nameOfEntity);
+            EntityDefinition currentEntityDefinition = entityDefsAvailable.get(nameOfEntity);
+            if (entityInstances.size() != 0)
+            {
+                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, entityInstances));
+            } else {
+                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, new ArrayList<>()));
+            }
+        }
+        return resultOfOldSimulation;
     }
 
     public DtoEnvironments sendEnvironmentsToUser(){
@@ -292,5 +324,6 @@ public class MainEngine implements InterfaceMenu {
         
         return initVal;
     }
+
 
 }

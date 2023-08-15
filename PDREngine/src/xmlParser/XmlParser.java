@@ -5,6 +5,7 @@ import enums.Operation;
 import environment.EnvironmentDefinition;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
+import potentialerror.PotentionalError;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.Value;
@@ -31,7 +32,9 @@ import java.util.Map;
 
 public class XmlParser {
 
-    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\error3.xml";
+    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\master-ex1.xml   ex1-cigarets.xml  error3.xml";
+
+    // C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\example.xml
     private static final String xmlFiles = "shema.genereated";
 
 
@@ -78,7 +81,7 @@ public class XmlParser {
         List<EntityDefinition> entityDefinitions = createEntityDefinitionsFromPrdEntity(prdWorld.getPRDEntities());
         createdWorld.setEntityDefinitions(entityDefinitions);
         // create the rules from xml object
-        Map<String, Rule> rules = createRulesFromPrdRules(prdWorld.getPRDRules(), entityDefinitions, environments);
+        List<Rule> rules = createRulesFromPrdRules(prdWorld.getPRDRules(), entityDefinitions, environments);
         createdWorld.setRules(rules);
 
         return createdWorld;
@@ -88,6 +91,7 @@ public class XmlParser {
 
     private Map<String , EnvironmentDefinition> createEnvironmentsFromPrdEnvironment(PRDEvironment prdEvironment) throws GeneralException{
         List<PRDEnvProperty> propertyList = prdEvironment.getPRDEnvProperty();
+        Range range = null;
         Map<String, EnvironmentDefinition> result = new HashMap<>();
         for(PRDEnvProperty environmentProperty: propertyList){
             String name = environmentProperty.getPRDName();
@@ -96,9 +100,14 @@ public class XmlParser {
             if(result.containsKey(name)){
                 throw new GeneralException("environment Property name " + name + " already exists");
             }
+            if(prdRange != null) {
+                range = new Range((float) prdRange.getFrom(), (float) prdRange.getTo());
+                result.put(name, new EnvironmentDefinition(new PropertyDefinition(name, type, range)));
+            }
+            else{
+                result.put(name, new EnvironmentDefinition(new PropertyDefinition(name, type)));
+            }
 
-            Range range = new Range((float)prdRange.getFrom(), (float)prdRange.getTo());
-            result.put(name, new EnvironmentDefinition(new PropertyDefinition(name, type, range)));
         }
 
         return result;
@@ -133,7 +142,8 @@ public class XmlParser {
         return entityDefinitions;
     }
 
-    private Map<String, Rule> createRulesFromPrdRules(PRDRules prdRules, List<EntityDefinition> entityDefinitionList, Map<String, EnvironmentDefinition> environments) throws GeneralException{
+    private List<Rule> createRulesFromPrdRules(PRDRules prdRules, List<EntityDefinition> entityDefinitionList, Map<String, EnvironmentDefinition> environments) throws GeneralException{
+        List<Rule> allRules = new ArrayList<>();
         Map<String, Rule> ruleMap = new HashMap<>();
         double probability = 1;
         int ticks = 1;
@@ -152,9 +162,11 @@ public class XmlParser {
                 }
             }
 
-            ruleMap.put(prdRuleName,new Rule(prdRuleName,new ActivationForRule(ticks, (float)probability),createActionListFromPrdActions(prdRule.getPRDActions().getPRDAction(), entityDefinitionList, environments)));
+            allRules.add(new Rule(prdRuleName, new ActivationForRule(ticks, (float)probability), createActionListFromPrdActions(prdRule.getPRDActions().getPRDAction(), entityDefinitionList, environments)));
+
+            //ruleMap.put(prdRuleName,new Rule(prdRuleName,new ActivationForRule(ticks, (float)probability),createActionListFromPrdActions(prdRule.getPRDActions().getPRDAction(), entityDefinitionList, environments)));
         }
-        return ruleMap;
+        return allRules;
     }
 
     private Map<String, PropertyDefinitionEntity> createEntityPropertiesDefinitionFromPrd(PRDProperties prdProperties, String entityName) throws GeneralException {
@@ -166,7 +178,7 @@ public class XmlParser {
         for (PRDProperty prdProperty: prdProperties.getPRDProperty()) {
             init = prdProperty.getPRDValue().getInit();
             randomInit = prdProperty.getPRDValue().isRandomInitialize();
-            if (prdProperty.getPRDRange() != null){
+            if (prdProperty.getPRDRange() != null) {
                 from = prdProperty.getPRDRange().getFrom();
                 to = prdProperty.getPRDRange().getTo();
             }
@@ -178,19 +190,25 @@ public class XmlParser {
             if (!randomInit && init == null) {
                 throw new GeneralException("In entity " + entityName + ", in property definition" + name + ", 'random-init' is false but init value is not specified");
             }
-            if (prdProperty.getPRDRange() != null  && from > to)
-            {
+            if (prdProperty.getPRDRange() != null && from > to) {
                 throw new GeneralException("In entity " + entityName + ", in property definition" + name + ", 'from' cannot be bigger than 'to'");
             }
-            if (prdProperty.getPRDRange() == null && randomInit)//
+            if (prdProperty.getPRDRange() == null && randomInit && (prdProperty.getType().equalsIgnoreCase("decimal") || prdProperty.getType().equalsIgnoreCase("float")))//
             {
-                throw new GeneralException("In entity" + entityName + "In property definition" + name + ", random init is true, but there is no range to randomize from");
+                throw new GeneralException("In entity " + entityName + " In property definition " + name + ", random init is true, but there is no range to randomize from");
             }
 
-            mapEntityPropertyDefinitionToEntityPropertyDefinition.put(name,
-                    new PropertyDefinitionEntity(
-                            new PropertyDefinition(name,type,new Range((float) from, (float) to)),
-                            new Value(randomInit,init)));
+            if (prdProperty.getPRDRange() != null){
+                mapEntityPropertyDefinitionToEntityPropertyDefinition.put(name,
+                        new PropertyDefinitionEntity(
+                                new PropertyDefinition(name, type, new Range((float) from, (float) to)),
+                                new Value(randomInit, init)));
+            } else {
+                mapEntityPropertyDefinitionToEntityPropertyDefinition.put(name,
+                        new PropertyDefinitionEntity(
+                                new PropertyDefinition(name, type),
+                                new Value(randomInit, init)));
+            }
         }
         return mapEntityPropertyDefinitionToEntityPropertyDefinition;
     }
@@ -228,12 +246,13 @@ public class XmlParser {
     }
 
     private IAction convertPrdActionToIncreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
-
-        //alternative
-//        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
-//        if(errorMsg != ""){
-//            throw new GeneralException(errorMsg);
+//        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
+//        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
+//            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
+//        EntityDefinition entityDefinition = potentionalError.getEntittyDef();
+//        PropertyDefinitionEntity propDef = potentionalError.getPropertyDef();
+//        String entityProperty = propDef.getPropertyDefinition().getPropertyName();
         String entityName = prdAction.getEntity();
         EntityDefinition entityDefinition = null;
         for(EntityDefinition entityDef: entityDefinitions){
@@ -258,18 +277,20 @@ public class XmlParser {
             throw new GeneralException("In " + prdAction.getType() + " require a value to change the property value");
         }
         //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
-        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
+        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments, entityDefinition);
 
         return new ActionIncrease(entityDefinition, prdAction.getBy(),entityProperty);
     }
 
     private IAction convertPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
-
-        //alternative
-//        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
-//        if(errorMsg != ""){
-//            throw new GeneralException(errorMsg);
+//        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
+//        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
+//            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
+
+//        EntityDefinition entityDefinitionTocheck = potentionalError.getEntittyDef();
+//        PropertyDefinitionEntity propDef = potentionalError.getPropertyDef();
+//        String entityPropName = propDef.getPropertyDefinition().getPropertyName();
         String entityName = prdAction.getEntity();
         String entityPropName = prdAction.getProperty();
         String decreaseBy = prdAction.getBy();
@@ -303,21 +324,19 @@ public class XmlParser {
         }
 
         //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
-        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
+        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments, entityDefinitionTocheck);
 
         return new ActionDecrease(entityDefinitionTocheck,prdAction.getBy(),entityPropName);
     }
     private IAction convertPrdActionToCalculation(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException {
-        //alternative
-//        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
-//        if(errorMsg != ""){
-//            throw new GeneralException(errorMsg);
+//        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
+//        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
+//            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
-
         ActionCalculation actionToDo = null;
-        String entityPropName = prdAction.getProperty();
-       String entityName = prdAction.getEntity();
-       String resultProp = prdAction.getResultProp();
+//       String entityPropName = prdAction.getProperty();
+        String entityName = prdAction.getEntity();
+        String resultProp = prdAction.getResultProp();
         boolean isEntityNameExist = false;
         EntityDefinition entityDefinitionTocheck = null;
 
@@ -334,27 +353,33 @@ public class XmlParser {
             throw  new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
         }
 
-        if(entityPropName == null){
-            throw new GeneralException("In " + prdAction.getType() + ", property name cannot be empty(null)");
-        }
+//        if(entityPropName == null){
+//            throw new GeneralException("In " + prdAction.getType() + ", property name cannot be empty(null)");
+//        }
 
         if(!entityDefinitionTocheck.isPropertyNameExist(resultProp)){
             throw new GeneralException("In " + prdAction.getType() + ", in entity name " + entityName + "property name " + resultProp + " doesnt exist");
         }
+        //EntityDefinition entityDefinitionTocheck = potentionalError.getEntittyDef();
+        if(!entityDefinitionTocheck.isPropertyNameExist(resultProp)){
+            throw new GeneralException("In " + prdAction.getType() + ", in entity name " + entityDefinitionTocheck.getEntityName() + "property name " + resultProp + " doesnt exist");
+        }
 
-        //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
-        Utilities.isValueCalculationNumeric(prdAction.getBy(), environments);
 
        if(prdAction.getPRDDivide() == null){//action is multiply
             PRDMultiply prdMultiply = prdAction.getPRDMultiply();
             String arg1 = prdMultiply.getArg1();
+            Utilities.isValueCalculationNumeric(arg1, environments, entityDefinitionTocheck);
             String arg2 = prdMultiply.getArg2();
+            Utilities.isValueCalculationNumeric(arg2, environments, entityDefinitionTocheck);
             actionToDo = new ActionCalculationMultiply(entityDefinitionTocheck, resultProp, arg1, arg2);
        }
        else{//action is divide
            PRDDivide prdDivide = prdAction.getPRDDivide();
            String arg1 = prdDivide.getArg1();
+           Utilities.isValueCalculationNumeric(arg1, environments, entityDefinitionTocheck);
            String arg2 = prdDivide.getArg2();
+           Utilities.isValueCalculationNumeric(arg2, environments, entityDefinitionTocheck);
            actionToDo = new ActionCalculationDivide(entityDefinitionTocheck, resultProp, arg1, arg2);
        }
 
@@ -413,9 +438,20 @@ public class XmlParser {
     private IConditionComponent parseConditionFromPRDCondition(PRDCondition prdCondition, EntityDefinition entityDefinitions) throws GeneralException {
         multipleCondition conditionComponent = new multipleCondition("and",null);
         List<IConditionComponent> listOfCondition = new ArrayList<>();
-        for (PRDCondition condition : prdCondition.getPRDCondition()) {
-            listOfCondition.add(createSubConditions(condition, entityDefinitions));
+        if (prdCondition.getPRDCondition().size() == 0)
+        {
+            IConditionComponent singleCondition = new SingleCondition(prdCondition.getProperty(), prdCondition.getOperator(), prdCondition.getValue());
+            listOfCondition.add(singleCondition);
+        } else {
+            for (PRDCondition condition : prdCondition.getPRDCondition()) {
+                listOfCondition.add(createSubConditions(condition, entityDefinitions));
+            }
         }
+        if (prdCondition.getLogical() != null)
+        {
+            conditionComponent.setLogical(prdCondition.getLogical());
+        }
+
         conditionComponent.setSubConditions(listOfCondition);
 
         return conditionComponent;
@@ -474,10 +510,9 @@ public class XmlParser {
     }
 
     private IAction convertPrdActionToSet(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments) throws GeneralException{
-        //alternative
-//        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
-//        if(errorMsg != ""){
-//            throw new GeneralException(errorMsg);
+//        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
+//        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
+//            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
         String entityName = prdAction.getEntity();
         String entityPropName = prdAction.getProperty();
@@ -506,55 +541,54 @@ public class XmlParser {
             throw new GeneralException("In " + prdAction.getType() + ", in entity name " + entityName + "property name " + entityPropName + " doesnt exist");
         }
 
+        //EntityDefinition entityDefinitionTocheck = potentionalError.getEntittyDef();
+        //PropertyDefinitionEntity propDefToCheck = potentionalError.getPropertyDef();
+        //String entityPropName = propDefToCheck.getPropertyDefinition().getPropertyName();
+
         return new ActionSet(entityDefinitionTocheck, entityPropName, prdAction.getValue());
     }
 
-    private IAction convertPrdActionToKill(PRDAction prdAction, List<EntityDefinition> entityDefinitions) {
-        //alternative
-//        String errorMsg = getErrorMsgFromPrdAction(prdAction, entityDefinitions);
-//        if(errorMsg != ""){
-//            throw new GeneralException(errorMsg);
-//        }
-
+    private IAction convertPrdActionToKill(PRDAction prdAction, List<EntityDefinition> entityDefinitions) throws GeneralException{
         String entityName = prdAction.getEntity();
-        EntityDefinition entityDefinitionTocheck = null;
-        for(EntityDefinition entityDef: entityDefinitions) {
-            if (entityDef.getEntityName().equals(entityName)) {
-                entityDefinitionTocheck = entityDef;
-                break;
-            }
-        }
-        return new ActionKill(entityDefinitionTocheck, entityName);
-    }
-
-    private String getErrorMsgFromPrdAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions){
-        String entityName = prdAction.getEntity();
-        String entityPropName = prdAction.getProperty();
-        EntityDefinition entityDefinitionTocheck = null;
-        boolean isEntityNameExist = false;
-        boolean isPropNameExist = false;
-
+        EntityDefinition entityDefinition = null;
         for(EntityDefinition entityDef: entityDefinitions){
             if(entityDef.getEntityName().equals(entityName)){
-                isEntityNameExist = true;
-                entityDefinitionTocheck = entityDef;
+                entityDefinition = entityDef;
                 break;
             }
         }
+        if(entityDefinition == null){
+            throw new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
+        }
+        return new ActionKill(entityDefinition, entityName);
+    }
 
-        if(!isEntityNameExist){
-            return "In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist";
+    private PotentionalError checkErrors(PRDAction prdAction, List<EntityDefinition> entityDefinitions){
+        PotentionalError returnObj = new PotentionalError();
+        String entityName = prdAction.getEntity();
+        EntityDefinition entityDefinition = null;
+        for(EntityDefinition entityDef: entityDefinitions){
+            if(entityDef.getEntityName().equals(entityName)){
+                entityDefinition = entityDef;
+                break;
+            }
+        }
+        if(entityDefinition == null){
+            returnObj.setErrorMsg("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
+            return returnObj;
+        }
+        returnObj.setEntittyDef(entityDefinition);
+        if (prdAction.getProperty() == null){
+           returnObj.setErrorMsg("In " + prdAction.getType() + ", property name" + prdAction.getProperty() + " cannot be empty(null)");
+           return returnObj;
+        }
+        if(!entityDefinition.isPropertyNameExist(prdAction.getProperty())){
+            returnObj.setErrorMsg("In " + prdAction.getType() + ", in entity name " + entityName + "property name " + prdAction.getProperty() + " doesnt exist");
+            return returnObj;
         }
 
-        if(entityPropName == null){
-            return "In " + prdAction.getType() + ", property name cannot be empty(null)";
-        }
-
-        if(!entityDefinitionTocheck.isPropertyNameExist(entityPropName)) {
-            return "In " + prdAction.getType() + ", in entity name " + entityName + "property name " + entityPropName + " doesnt exist";
-        }
-
-        return "";
+        returnObj.setPropertyDef(entityDefinition.getPropertyDefinition().get(prdAction.getProperty()));
+        return returnObj;
     }
 
 //    public double isNumber(String argument) throws NumberFormatException{

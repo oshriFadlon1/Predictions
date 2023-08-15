@@ -19,6 +19,12 @@ public class EntityInstance {
         this.definitionOfEntity = definitionOfEntity;
     }
 
+    public EntityInstance(int id, Map<String, PropertyInstance> allProperties) {
+        Id = id;
+        this.allProperties = allProperties;
+        this.definitionOfEntity = null;
+    }
+
     public Map<String, PropertyInstance> getAllProperties() {
         return allProperties;
     }

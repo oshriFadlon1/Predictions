@@ -2,14 +2,14 @@ package ui;
 
 import dto.*;
 import engine.MainEngine;
-import entity.EntityDefinition;
 import environment.EnvironmentDefinition;
-import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 
 import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class MainUi {
 
@@ -21,6 +21,7 @@ public class MainUi {
 
         System.out.println("Hello and welcome to the simulation runner app.");
         System.out.println("-----------------------------------------------");
+        printMenu();
         int userChoice = getUserChoice(1,5);
         while (userChoice != 5) {
             if ( 1 < userChoice && userChoice < 5)
@@ -38,45 +39,216 @@ public class MainUi {
                 System.out.println(interfaceMenu.createWorldDefinition(xmlPath));
                 userLoadFile = true;
             }
+            printMenu();
             userChoice = getUserChoice(1,5);
         }
 
     }
 
     private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu) {
-            switch (userChoice){
-                case 2:DtoResponsePreview previewOfSimulation = interfaceMenu.showCurrentSimulation();
-                    printCurrentSimulationPreview(previewOfSimulation);
-                    //System.out.println(interfaceMenu.showCurrentSimulation().toString());
-                    break;
-                case 3:
-                    //run simulation
-                    DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
-                    Map<String, Object> environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
-                    DtoResponseSimulationEnded dtoResponseSimulationEnded = interfaceMenu.runSimulations(environmentsForEngine);
-                    //engineController.moveWorld();
-                    System.out.println("current world is moved");
-                    break;
-                    case 4:
-//                    DtoOldSimulationResponse response = interfaceMenu.getAllOldSimulationsInfo();
-//                    System.out.println(response.getAllInfoSimulation());
-//                    if(response.getNumberOfSimulations() == 0){
-//                        System.out.println("No simulations to show.");
-//                    }
-//                    else{
-//                        System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getNumberOfSimulations()));
-//                        int userSimulationChoice = getUserChoice(1,response.getNumberOfSimulations() );
-//                        System.out.println("Please choose from the following display options: \n1. By quantity.\n2. By histogram");
-//                        int userSimulationDisplayChoice = getUserChoice(1,2);
-//                        interfaceMenu.printPastSimulation(userSimulationChoice,userSimulationDisplayChoice);
-//                    }
+        switch (userChoice){
+            case 2:DtoResponsePreview previewOfSimulation = interfaceMenu.showCurrentSimulation();
+                printCurrentSimulationPreview(previewOfSimulation);
+                break;
+            case 3:
+                //run simulation
+                DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
+                DtoEnvUiToEngine environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
+                DtoResponseSimulationEnded dtoResponseSimulationEnded = interfaceMenu.runSimulations(environmentsForEngine);
+                System.out.println("Simulation run ended.");
+                System.out.println("Simulation id: " + dtoResponseSimulationEnded.getSimulationId());
+                if (dtoResponseSimulationEnded.getErrorMsg() == null)
+                {
+                    System.out.println("Ending cause: ");
+                    System.out.println("Ticks: " + dtoResponseSimulationEnded.getEndingCause().isEndByTicks());
+                    System.out.println("Seconds: " + dtoResponseSimulationEnded.getEndingCause().isEndBySeconds());
+                } else {
+                    System.out.println("The run fail because " + dtoResponseSimulationEnded.getErrorMsg());
+                }
 
-                    //if there are no simulations existing, then write that there are no simulation and go on.
-                    //we will ask for an input from the user in order to select the simulation that he wants to present
-                    // simulation from the past
-                    break;
+                break;
+                case 4:
+                DtoOldSimulationsMap response = interfaceMenu.getMapOfOldSimulation();
+                if(response.getOldSimulationsMap().size() == 0){
+                    System.out.println("No simulations to show.");
+                }
+                else{
+                    System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getOldSimulationsMap().size()));
+                    displayMapToUser(response.getOldSimulationsMap());
+                    int userSimulationChoice = getUserChoice(1,response.getOldSimulationsMap().size());
 
+                    // send back to mainEngien to fetch user choice and get back a copy of the choose world
+                    List<DtoReviewOldSimulation> theChooseWorld = interfaceMenu.fetchChosenWorld(userSimulationChoice);
+
+                    displayChooseWorldSimulation(theChooseWorld);
+
+                }
+                break;
+
+        }
+    }
+
+    private static void displayChooseWorldSimulation(List<DtoReviewOldSimulation> theChooseWorld) {
+        
+        // display all entities in thw world the user choose
+        int index = 0;
+        System.out.println("Please choose the entity you like to display information on:");
+        for (DtoReviewOldSimulation dtoReviewOldSimulation : theChooseWorld) {
+            System.out.println((index+1) + ": " + theChooseWorld.get(index).getEntityDefinition().getEntityName());
+            index ++ ;
+        }
+        int userSimulationDisplayChoice = getUserChoice(1,index);
+        DtoReviewOldSimulation entityTheUserChoose = theChooseWorld.get(userSimulationDisplayChoice - 1);
+
+        System.out.println("Please choose from the following display options: \n1. By quantity.\n2. By histogram");
+        userSimulationDisplayChoice = getUserChoice(1,2);
+        if (userSimulationDisplayChoice == 1){
+            displayByQuantity(entityTheUserChoose);
+        }
+         else {
+             if (entityTheUserChoose.getEntityInstanceList().size() != 0){
+            System.out.println("you choose to display by histogram");
+            Set<String> proprtyNamesInSet = fetchPropertiesNames(entityTheUserChoose.getEntityInstanceList());
+            List<String> proprtyNamesInList = new ArrayList<>(proprtyNamesInSet);
+            System.out.println("Choose a property from the list below, which we will present the histogram by.");
+            index = 0;
+            for (String name : proprtyNamesInList) {
+                System.out.println((index+1) + ": " + proprtyNamesInList.get(index));
+                index ++;
             }
+            userSimulationDisplayChoice = getUserChoice(1,proprtyNamesInList.size());
+
+            String NameOfThePropertyUserChoose = proprtyNamesInList.get(userSimulationDisplayChoice - 1);
+            System.out.println("The property you choose is: " + NameOfThePropertyUserChoose);
+            List<Object> allResult = new ArrayList<>();
+            for (DtoEntityInstanceToUi entityInstance: entityTheUserChoose.getEntityInstanceList()) {
+                allResult.add(entityInstance.getNameOfProperty2Value().get(NameOfThePropertyUserChoose));
+            }
+            countPropertyByValue(allResult,
+                    entityTheUserChoose
+                            .getEntityDefinition()
+                            .getPropertyDefinition()
+                            .get(NameOfThePropertyUserChoose)
+                            .getPropertyDefinition()
+                            .getPropertyType());
+            }
+            else{
+                System.out.println("There are no instances to present.");
+            }
+         }
+
+    }
+
+    private static void countPropertyByValue(List<Object> allResult, String propertyType) {
+        switch (propertyType.toLowerCase()) {
+            case "decimal":
+                printHistogramInt(allResult);
+                break;
+            case "float":
+                printHistogramFloat(allResult);
+                break;
+            case "boolean":
+                printHistogramBoolean(allResult);
+                break;
+            case "string":
+                printHistogramString(allResult);
+                break;
+        }
+    }
+
+    private static void printHistogramString(List<Object> allResult) {
+        String valueInString;
+        Map<String, Integer> histogram = new HashMap<>();
+        for (Object o : allResult) {
+            valueInString = ((String) o).toString();
+            if (!histogram.containsKey(valueInString))
+            {
+                histogram.put(valueInString,1);
+            } else{
+                histogram.put(valueInString, histogram.get(valueInString) + 1);
+            }
+        }
+
+        for (String str : histogram.keySet()) {
+            System.out.println("value " + str + ": " + histogram.get(str));
+        }
+    }
+
+    private static void printHistogramBoolean(List<Object> allResult) {
+        boolean valueInBoolean;
+        Map<Boolean, Integer> histogram = new HashMap<>();
+        for (Object o : allResult) {
+            valueInBoolean = ((Boolean) o).booleanValue();
+            if (!histogram.containsKey(valueInBoolean))
+            {
+                histogram.put(valueInBoolean,1);
+            } else{
+                histogram.put(valueInBoolean, histogram.get(valueInBoolean) + 1);
+            }
+        }
+
+        for (Boolean aBoolean : histogram.keySet()) {
+            System.out.println("value " + aBoolean + ": " + histogram.get(aBoolean));
+        }
+    }
+
+    private static void printHistogramFloat(List<Object> allResult) {
+        float valueInFloat;
+        Map<Float, Integer> histogram = new HashMap<>();
+        for (Object o : allResult) {
+            valueInFloat = ((Float) o).floatValue();
+            if (!histogram.containsKey(valueInFloat))
+            {
+                histogram.put(valueInFloat,1);
+            } else{
+                histogram.put(valueInFloat, histogram.get(valueInFloat) + 1);
+            }
+        }
+
+        for (Float aFloat : histogram.keySet()) {
+            System.out.println("value " + aFloat + ": " + histogram.get(aFloat));
+        }
+    }
+
+    private static void printHistogramInt(List<Object> allResult) {
+        int valueInInt;
+        Map<Integer, Integer> histogram = new HashMap<>();
+        for (Object o : allResult) {
+            valueInInt = ((Integer) o).intValue();
+            if (!histogram.containsKey(valueInInt))
+            {
+                histogram.put(valueInInt,1);
+            } else{
+                histogram.put(valueInInt, histogram.get(valueInInt) + 1);
+            }
+        }
+
+        for (Integer integer : histogram.keySet()) {
+            System.out.println("value " + integer + ": " + histogram.get(integer));
+        }
+    }
+
+    private static void displayByQuantity(DtoReviewOldSimulation entityTheUserChoose) {
+        System.out.println("you choose to display by quantity");
+        System.out.println("Entity name: " + entityTheUserChoose.getEntityDefinition().getEntityName());
+        System.out.println("Population in the start of the simulation: " + entityTheUserChoose.getEntityDefinition().getStartPo());
+        System.out.println("Population in the end of the simulation: " + entityTheUserChoose.getEntityDefinition().getEndPro());
+    }
+
+    private static Set<String> fetchPropertiesNames(List<DtoEntityInstanceToUi> entityInstanceList) {
+        Set<String> nameOfProperties = new HashSet<>();
+        for (DtoEntityInstanceToUi EntityInstance : entityInstanceList) {
+            for (String nameOfProperty : EntityInstance.getNameOfProperty2Value().keySet()) {
+                nameOfProperties.add(nameOfProperty);
+            }
+        }
+        return nameOfProperties;
+    }
+
+    private static void displayMapToUser(Map<Integer, String> oldSimulationsMap) {
+        for (Integer integer : oldSimulationsMap.keySet()) {
+            System.out.println(integer + ") " + oldSimulationsMap.get(integer));
+        }
     }
 
     private static void printCurrentSimulationPreview(DtoResponsePreview simulationPreview){
@@ -121,26 +293,34 @@ public class MainUi {
             PropertyDefinition currPropertyDef = currEnvironmentDef.getEnvPropertyDefinition();
             System.out.println(currPropertyDef);
 
-            if(!envHandleUserInput(currPropertyDef, interfaceMenu, currEnvironmentDef)){//environment is ranomly initialized
-               Object initVal = interfaceMenu.initializeRandomEnvironmentValues(currEnvironmentDef, currPropertyDef);
-               DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
-               environmentList.put(environmentName, currEnvIns);
-            }
-            else{//evironmet is not randomly initialized
-                System.out.println("Enter your choice: ");
-                userInput = scanner.nextLine();
-                while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu)){
+//            if(!envHandleUserInput(currPropertyDef, interfaceMenu, currEnvironmentDef)){//environment is ranomly initialized
+//               Object initVal = interfaceMenu.initializeRandomEnvironmentValues(currEnvironmentDef, currPropertyDef);
+////               DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
+//               environmentList.put(environmentName, initVal);
+//            }
+//            else{//evironmet is not randomly initialized
+//                System.out.println("Enter your choice: ");
+//                userInput = scanner.nextLine();
+//                while(!isEnvInputValid(userInput, currPropertyDef, interfaceMenu)){
+//
+//                    System.out.println("User input for environment variable is invalid. Please try again. ");
+//                    System.out.println("Enter your choice: ");
+//                    userInput = scanner.nextLine();
+//                }
+//
+//                Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropertyDef);
+//                DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
+//                environmentList.put(environmentName, currEnvIns);
 
-                    System.out.println("User input for environment variable is invalid. Please try again. ");
-                    System.out.println("Enter your choice: ");
-                    userInput = scanner.nextLine();
-                }
 
-                Object initVal = interfaceMenu.initializeValueFromUserInput(userInput, currPropertyDef);
-                DtoEnvUiToEngine currEnvIns = new DtoEnvUiToEngine(currEnvironmentDef, initVal);
-                environmentList.put(environmentName, currEnvIns);
 
-            }
+    private static Map<Integer, String> createNumberToEnvironmentMap(Map<String, EnvironmentDefinition> envDefs) {
+        Map<Integer, String> numberToEnv = new HashMap<>();
+        int counter = 1;
+
+        for(String envName: envDefs.keySet()) {
+            numberToEnv.put(counter, envName);
+            counter++;
         }
 
         return environmentList;
@@ -182,7 +362,7 @@ public class MainUi {
             {
                 System.out.println(String.format("Please choose number between %d to %d",from,to));
             }
-            printMenu();
+            //printMenu();
             try {
                 Scanner scanner = new Scanner(System.in);
                 userChoice = scanner.nextInt();

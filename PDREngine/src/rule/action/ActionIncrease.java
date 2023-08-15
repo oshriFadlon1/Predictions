@@ -56,7 +56,7 @@ public class ActionIncrease extends AbstractAction {
             result = (Integer)x + (Integer)y;
         }
         else {
-            result = (float)x + (float)y;
+            result = ((Number)x).floatValue() + (float)y;
         }
 
         // updating result on the property
