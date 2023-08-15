@@ -18,6 +18,13 @@ public class EntityDefinition {
         this.propertyDefinition = propertyDefinition;
     }
 
+    public EntityDefinition(String entityName, int startPopulation, int endPopulation, Map<String, PropertyDefinitionEntity> propertyDefinition) {
+        this.entityName = entityName;
+        this.startPopulation = startPopulation;
+        this.endPopulation = endPopulation;
+        this.propertyDefinition = propertyDefinition;
+    }
+
     public String getEntityName() {
         return entityName;
     }

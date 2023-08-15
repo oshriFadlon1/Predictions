@@ -37,11 +37,11 @@ public class ActionCalculationMultiply extends ActionCalculation{
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         Object y = null,x = null,result = null;
-        if ((!Utilities.isInteger(this.arg1) && !Utilities.isInteger(this.arg2)) ||
-                (!Utilities.isFloat(this.arg1) && !Utilities.isFloat(this.arg2)))
-        {
-            throw new IllegalArgumentException("multiply action can't operate on a none number property [" + super.getPropertyPlacement());
-        }
+//        if ((!Utilities.isInteger(this.arg1) && !Utilities.isInteger(this.arg2)) ||
+//                (!Utilities.isFloat(this.arg1) && !Utilities.isFloat(this.arg2)))
+//        {
+//            throw new IllegalArgumentException("multiply action can't operate on a none number property " + super.getPropertyPlacement());
+//        }
 
         try {
             x = context.getValueFromString(this.arg1);

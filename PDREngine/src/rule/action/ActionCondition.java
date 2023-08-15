@@ -54,8 +54,10 @@ public class ActionCondition extends AbstractAction {
                     action.invoke(context);
                 }
             } else {
-                for (IAction action : this.falseResult) {
-                    action.invoke(context);
+                if (this.falseResult != null){
+                    for (IAction action : this.falseResult) {
+                        action.invoke(context);
+                    }
                 }
             }
         } catch (GeneralException e) {

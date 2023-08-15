@@ -74,49 +74,49 @@ public class Utilities {
     }
 
 
-    public static void isValueCalculationNumeric(String valueBy, Map<String, EnvironmentDefinition> environmentDefinitionMap) throws GeneralException {
-        if(isFloat(valueBy) || (isInteger(valueBy))){
+    public static void isValueCalculationNumeric(String valueBy, Map<String, EnvironmentDefinition> environmentDefinitionMap, EntityDefinition currEntity) throws GeneralException {
+
+        String copyOfValueBy = valueBy;
+
+        int openingParenthesisIndex = copyOfValueBy.indexOf("(");
+
+        int closingParenthesisIndex = copyOfValueBy.indexOf(")");
+
+        if (openingParenthesisIndex != -1 && closingParenthesisIndex != -1) {
+
+            // Extract the word "random" before the opening parenthesis
+            String word = copyOfValueBy.substring(0, openingParenthesisIndex).toLowerCase();
+            // Extract the number between the parentheses
+            String valueString = copyOfValueBy.substring(openingParenthesisIndex + 1, closingParenthesisIndex);
+            if (word.equals("random")) {
+                if (isInteger(valueString)) {
+                    return;
+                } else {
+                    throw new GeneralException("The function Random required numeric input but got" + valueString);
+                }
+            } else if (word.equals("environment")) {
+                EnvironmentDefinition requiredEnv = environmentDefinitionMap.get(valueString);
+                if (requiredEnv == null) {
+                    throw new GeneralException("Environment " + valueString + " doesnt exist");
+                } else {
+                    if (!requiredEnv.getEnvPropertyDefinition().getPropertyType().equalsIgnoreCase("decimal") &&
+                            !requiredEnv.getEnvPropertyDefinition().getPropertyType().equalsIgnoreCase("float")) {
+                        throw new GeneralException("Environment " + valueString + " is not of a numeric type");
+                    }
+                    return;
+                }
+            }
+        }
+        PropertyDefinitionEntity propertyDefinitionEntity = currEntity.getPropertyDefinition().get(valueBy);
+        if(propertyDefinitionEntity != null && (propertyDefinitionEntity.getPropertyDefinition().getPropertyType().equalsIgnoreCase("float") ||
+                propertyDefinitionEntity.getPropertyDefinition().getPropertyType().equalsIgnoreCase("decimal"))){
             return;
         }
 
-        int openingParenthesisIndex = valueBy.indexOf("(");
-
-        int closingParenthesisIndex = valueBy.indexOf(")");
-
-        if (openingParenthesisIndex == -1 || closingParenthesisIndex == -1){
-            throw new GeneralException("the value "+ valueBy + "is not a numeric or call to function in required form");
+        if((isInteger(valueBy)) || isFloat(valueBy)){
+            return;
         }
-
-        // Extract the word "random" before the opening parenthesis
-        String word = valueBy.substring(0, openingParenthesisIndex).toLowerCase();
-        // Extract the number between the parentheses
-        String valueString = valueBy.substring(openingParenthesisIndex + 1, closingParenthesisIndex);
-        if (word.equals("random"))
-        {
-            if (isInteger(valueString)) {
-                return;
-            }
-            else {
-                throw new GeneralException( "The function Random required numeric input but got" + valueString );
-            }
-        } else if (word.equals("environment")){
-            EnvironmentDefinition requiredEnv = environmentDefinitionMap.get(valueString);
-            if (requiredEnv == null)
-            {
-                throw new GeneralException("Environment " + valueString + "doesnt exist");
-            }
-            else{
-                if(!isPropertyNumeric(requiredEnv.getEnvPropertyDefinition())){
-                    throw new GeneralException("Environment " + valueString + " is not of a numeric type" );
-                }
-            }
-
-        }
-        return;
-    }
-
-    public static boolean isPropertyNumeric(PropertyDefinition propDef){
-        return isFloat(propDef.getPropertyType()) || isInteger(propDef.getPropertyType());
+        throw new GeneralException("the value " + valueBy + " is not a numeric or call to function in required form");
     }
 
     public static boolean isOperatorFromSingleCondition(String operator){

@@ -16,11 +16,11 @@ public class WorldDefinition {
 
     private List<EntityDefinition> entityDefinitions;
 
-    private Map<String, Rule> Rules;
+    private List<Rule> Rules;
 
     private Termination termination;
 
-    public WorldDefinition(Map<String, EnvironmentDefinition> allEnvironments, List<EntityDefinition> entityDefinitions, Map<String, Rule> rules, Termination termination) {
+    public WorldDefinition(Map<String, EnvironmentDefinition> allEnvironments, List<EntityDefinition> entityDefinitions, List<Rule> rules, Termination termination) {
         this.allEnvironments = allEnvironments;
         this.entityDefinitions = entityDefinitions;
         Rules = rules;
@@ -30,7 +30,7 @@ public class WorldDefinition {
     public WorldDefinition(Termination termination) {
         this.allEnvironments = new HashMap<>();
         this.entityDefinitions = new ArrayList<>();
-        Rules = new HashMap<>();
+        Rules = new ArrayList<>();
         this.termination = termination;
     }
 
@@ -50,11 +50,11 @@ public class WorldDefinition {
         this.entityDefinitions = entityDefinitions;
     }
 
-    public Map<String, Rule> getRules() {
+    public List<Rule> getRules() {
         return Rules;
     }
 
-    public void setRules(Map<String, Rule> rules) {
+    public void setRules(List<Rule> rules) {
         Rules = rules;
     }
 
@@ -66,5 +66,10 @@ public class WorldDefinition {
         this.termination = termination;
     }
 
+    public void resetEntityDefinition(){
+        for (EntityDefinition entityDefinition : this.entityDefinitions) {
+            entityDefinition.setEndPopulation(entityDefinition.getStartPopulation());
+        }
+    }
 
 }

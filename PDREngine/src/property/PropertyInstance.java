@@ -26,6 +26,8 @@ public class PropertyInstance {
                 this.propertyDefinition.getPropertyType().equalsIgnoreCase("decimal")){
             if (this.propertyDefinition.checkIfValueInRange(propValue)){
                 this.propValue = propValue;
+            } else {
+                this.propValue = this.propertyDefinition.getValueInRange(this.propertyDefinition.getPropertyType(),propValue);
             }
         }
         else {

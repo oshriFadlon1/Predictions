@@ -27,4 +27,12 @@ public class DtoResponseSimulationEnded {
     public void setSimulationId(int simulationId) {
         this.simulationId = simulationId;
     }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 }

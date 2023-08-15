@@ -1,12 +1,12 @@
 package interfaces;
 
-import dto.DtoEnvironments;
-import dto.DtoResponsePreview;
-import dto.DtoResponseSimulationEnded;
+import dto.*;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import property.PropertyDefinition;
+import world.WorldInstance;
 
+import java.util.List;
 import java.util.Map;
 
 public interface InterfaceMenu {
@@ -18,13 +18,18 @@ public interface InterfaceMenu {
     //func 3
     DtoResponseSimulationEnded runSimulations(Map<String, Object> environmentsForEngine);
     //func 4
-    String printPastSimulation(int indexOfSimulation, int userDisplay);
+    DtoOldSimulationsMap getMapOfOldSimulation();
     //send environments
     DtoEnvironments sendEnvironmentsToUser();
+    List<DtoReviewOldSimulation> fetchChosenWorld(int userSimulationChoice);
 
     Object initializeRandomEnvironmentValues(EnvironmentDefinition currEnv, PropertyDefinition propertyDef);
 
     boolean validateUserEnvInput(String userInput, PropertyDefinition propDef);
 
     Object initializeValueFromUserInput(String userInput, PropertyDefinition propDef);
+
+
+
+
 }

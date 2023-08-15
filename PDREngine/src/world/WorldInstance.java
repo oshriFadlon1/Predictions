@@ -22,13 +22,13 @@ import java.util.*;
 public class WorldInstance {
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
-    private Map<String, Rule> allRules;
+    private List<Rule> allRules;
     private Termination termination;
 
     public WorldInstance(Map<String, EnvironmentInstance> allEnvironments) {
         this.allEnvironments = allEnvironments;
         this.allEntities = new HashMap<>();
-        this.allRules = new HashMap<>();
+        this.allRules = new ArrayList<>();
     }
 
     public Map<String, EnvironmentInstance> getAllEnvironments() {
@@ -47,11 +47,11 @@ public class WorldInstance {
         this.allEntities = allEntities;
     }
 
-    public Map<String, Rule> getAllRules() {
+    public List<Rule> getAllRules() {
         return allRules;
     }
 
-    public void setAllRules(Map<String, Rule> allRules) {
+    public void setAllRules(List<Rule> allRules) {
         this.allRules = allRules;
     }
 
@@ -97,17 +97,16 @@ public class WorldInstance {
         long timeStarted = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
 
-        while (worldDefinitionForSimulation.getTermination().getTicks() > currentTickCount &&
+        while (worldDefinitionForSimulation.getTermination().getTicks() >= currentTickCount &&
                 (currentTime - timeStarted) / 1000 < worldDefinitionForSimulation.getTermination().getSeconds()){
 
-            for(String currentRuleName: allRules.keySet()){
-                Rule currentRuleToInvokeOnEntities = allRules.get(currentRuleName);
+            for(Rule currentRuleToInvokeOnEntities: allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
                 float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
                 ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
                 int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
                 float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
-                if(activitionProbabilityForCurrentRule > probabilityToCheckAgainstCurrentRuleProbability
+                if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
                         && (currentTickCount != 0 && currentTickCount % activitionTicksForCurrentRule == 0)){
                     //need to invoke the rule for each entity instance
                     for (String currentEntityName: allEntities.keySet()) {
@@ -128,18 +127,28 @@ public class WorldInstance {
                 }
 
 
-
-                currentTickCount++;
-                currentTime = System.currentTimeMillis();
             }
+            currentTickCount++;
+            currentTime = System.currentTimeMillis();
         }
 
-        if(worldDefinitionForSimulation.getTermination().getTicks() >= currentTickCount){
+        if(worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount){
             endedByTicks = true;
         }
-        if((currentTime - timeStarted) / 1000 > worldDefinitionForSimulation.getTermination().getSeconds()){
+        if((currentTime - timeStarted) / 1000 >= worldDefinitionForSimulation.getTermination().getSeconds()){
             endedBySeconds = true;
         }
+
+//        for(String currentEntityName: allEntities.keySet()){
+//
+//            for(EntityInstance entityInstance:allEntities.get(currentEntityName)){
+//                System.out.println(entityInstance.getId());
+//                for(String propName: entityInstance.getAllProperties().keySet()){
+//                    System.out.println(entityInstance.getAllProperties().get(propName));
+//                }
+//
+//            }
+//        }
 
         DtoResponseTermination responseOfSimulation = new DtoResponseTermination(endedByTicks, endedBySeconds);
         return responseOfSimulation;

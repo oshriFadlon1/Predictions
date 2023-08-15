@@ -60,9 +60,34 @@ public class PropertyDefinition {
                 float from = this.propertyRange.getFrom();
                 float to = this.propertyRange.getTo();
                 float value = ((Number) obj).floatValue();
-                return to < value && value < from;
+                return from <= value && value <= to;
             }
         }
         return false;
+    }
+
+    public Object getValueInRange(String propertyType, Object propValue) {
+        Object valueToReturn = null;
+        if (propertyType.equalsIgnoreCase("decimal")){
+            if (this.propertyRange.getFrom() > ((Number) propValue).floatValue())
+            {
+                Number floatToInt = (Number)this.propertyRange.getFrom();
+                valueToReturn = floatToInt.intValue();
+            } else {
+                Number floatToInt = (Number)this.propertyRange.getTo();
+                valueToReturn = floatToInt.intValue();
+            }
+        }
+        else {
+            if (this.propertyRange.getFrom() > ((Number) propValue).floatValue())
+            {
+                Number valueInFloat = (Number)this.propertyRange.getFrom();
+                valueToReturn = valueInFloat.floatValue();
+            } else {
+                Number valueInFloat = (Number)this.propertyRange.getTo();
+                valueToReturn = valueInFloat.floatValue();
+            }
+        }
+        return valueToReturn;
     }
 }

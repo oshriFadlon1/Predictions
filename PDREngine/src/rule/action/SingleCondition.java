@@ -44,6 +44,9 @@ public class SingleCondition implements IConditionComponent {
     @Override
     public boolean getResultFromCondition(NecessaryVariablesImpl context) throws GeneralException {
 
+        Float downCastProp = 1.0F, downCastCompereTo = 1.0F;
+
+
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         Object valueCompareTo = null;
         String type = propertyInstance.getPropertyDefinition().getPropertyType().toLowerCase();
@@ -62,7 +65,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = ((Integer)valueCompareTo).equals((Integer)propertyInstance.getPropValue());
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent");
                     }
                     break;
                 case "float":
@@ -70,7 +73,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = ((Float)valueCompareTo).equals((Float)propertyInstance.getPropValue());
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
                 case "boolean":
@@ -78,7 +81,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = ((Boolean)valueCompareTo).equals((Boolean)propertyInstance.getPropValue());
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
                 case "string":
@@ -86,7 +89,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = ((String)valueCompareTo).equalsIgnoreCase((String)propertyInstance.getPropValue());
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
             }
@@ -97,7 +100,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = !(((Integer)valueCompareTo).equals((Integer)propertyInstance.getPropValue()));
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent");
                     }
                     break;
                 case "float":
@@ -105,7 +108,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = !(((Float)valueCompareTo).equals((Float)propertyInstance.getPropValue()));
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
                 case "boolean":
@@ -113,7 +116,7 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = !(((Boolean)valueCompareTo).equals((Boolean)propertyInstance.getPropValue()));
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
                 case "string":
@@ -121,51 +124,98 @@ public class SingleCondition implements IConditionComponent {
                     {
                         result = !((String)valueCompareTo).equalsIgnoreCase((String)propertyInstance.getPropValue());
                     }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
                     break;
             }
             
         } else if (operator.equalsIgnoreCase("bt")) {
-            switch (type){
-                case "decimal":
-                    if(valueCompareTo instanceof Integer)
-                    {
-                        result = 0 > (((Integer)valueCompareTo).compareTo((Integer)propertyInstance.getPropValue()));
-                    }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent");
-                    }
-                    break;
-                case "float":
-                    if(valueCompareTo instanceof Float)
-                    {
-                        result = 0 > (((Float)valueCompareTo).compareTo((Float)propertyInstance.getPropValue()));
-                    }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
-                    }
-                    break;
+            if (type.equalsIgnoreCase("decimal") || type.equalsIgnoreCase("float")){
+                if(propertyInstance.getPropValue() instanceof Integer){
+                    downCastProp = ((Integer)propertyInstance.getPropValue()).floatValue();
+                }
+                 else if(propertyInstance.getPropValue() instanceof Float){
+                    downCastProp = ((Float) propertyInstance.getPropValue()).floatValue();
+                } else{
+                    throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
+                }
+                if(valueCompareTo instanceof Integer){
+                    downCastCompereTo = ((Integer)valueCompareTo).floatValue();
+                }
+                else if(valueCompareTo instanceof Float){
+                    downCastCompereTo = ((Float) valueCompareTo).floatValue();
+                } else {
+                    throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
+                }
+
+                result = downCastProp > downCastCompereTo;
+
+            } else {
+                throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
             }
+
+//            switch (type){
+//                case "decimal":
+//                    if(valueCompareTo instanceof Integer)
+//                    {
+//                        result = 0 > (((Integer)valueCompareTo).compareTo((Integer)propertyInstance.getPropValue()));
+//                    }else {
+//                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent");
+//                    }
+//                    break;
+//                case "float":
+//                    if(valueCompareTo instanceof Float)
+//                    {
+//                        result = 0 > (((Float)valueCompareTo).compareTo((Float)propertyInstance.getPropValue()));
+//                    }else {
+//                        throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
+//                    }
+//                    break;
+//            }
             
         } else if (operator.equalsIgnoreCase("lt")) {
-            switch (type){
-                case "decimal":
-                    if(valueCompareTo instanceof Integer)
-                    {
+            if (type.equalsIgnoreCase("decimal") || type.equalsIgnoreCase("float")){
+                if(propertyInstance.getPropValue() instanceof Integer){
+                    downCastProp = ((Integer)propertyInstance.getPropValue()).floatValue();
+                }
+                else if(propertyInstance.getPropValue() instanceof Float){
+                    downCastProp = ((Float) propertyInstance.getPropValue()).floatValue();
+                } else{
+                    throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
+                }
+                if(valueCompareTo instanceof Integer){
+                    downCastCompereTo = ((Integer)valueCompareTo).floatValue();
+                }
+                else if(valueCompareTo instanceof Float){
+                    downCastCompereTo = ((Float)valueCompareTo).floatValue();
+                } else {
+                    throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
+                }
 
-                        result = 0 < (((Integer)valueCompareTo).compareTo((Integer)propertyInstance.getPropValue()));
-                    }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent");
-                    }
-                    break;
-                case "float":
-                    if(valueCompareTo instanceof Float)
-                    {
-                        result = 0 < (((Float)valueCompareTo).compareTo((Float)propertyInstance.getPropValue()));
-                    }else {
-                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
-                    }
-                    break;
+                result = downCastProp < downCastCompereTo;
+            } else {
+                throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
             }
+
+//            switch (type){
+//                case "decimal":
+//                    if(valueCompareTo instanceof Integer)
+//                    {
+//
+//                        result = 0 < (((Integer)valueCompareTo).compareTo((Integer)propertyInstance.getPropValue()));
+//                    }else {
+//                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent");
+//                    }
+//                    break;
+//                case "float":
+//                    if(valueCompareTo instanceof Float)
+//                    {
+//                        result = 0 < (((Float)valueCompareTo).compareTo((Float)propertyInstance.getPropValue()));
+//                    }else {
+//                        throw new GeneralException("operator "+ this.operator + "can't compare between to diffrent types");
+//                    }
+//                    break;
+//            }
             
         }
         return result;
