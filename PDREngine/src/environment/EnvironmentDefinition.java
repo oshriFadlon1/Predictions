@@ -2,7 +2,9 @@ package environment;
 
 import property.PropertyDefinition;
 
-public class EnvironmentDefinition {
+import java.io.Serializable;
+
+public class EnvironmentDefinition implements Serializable {
     private PropertyDefinition envPropertyDefinition;
 
     public EnvironmentDefinition(PropertyDefinition envPropertyDefinition) {

@@ -1,6 +1,8 @@
 package property;
 
-public class PropertyInstance {
+import java.io.Serializable;
+
+public class PropertyInstance implements Serializable {
     private PropertyDefinition propertyDefinition;
     private Object propValue;
 

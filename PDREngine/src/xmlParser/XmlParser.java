@@ -115,9 +115,25 @@ public class XmlParser {
 
     private Termination createTerminationFromPrdTermination(PRDTermination prdTermination) throws GeneralException{
         List<Object> listOfTerminations = prdTermination.getPRDByTicksOrPRDBySecond();
-        PRDByTicks elem1 = (PRDByTicks)listOfTerminations.get(0);
-        PRDBySecond elem2 = (PRDBySecond)listOfTerminations.get(1);
-        Termination terminations = new Termination(elem1.getCount(), elem2.getCount());
+        Termination terminations = null;
+        PRDByTicks elem1 = null;
+        PRDBySecond elem2 = null;
+        if(listOfTerminations.size() == 2 ){
+            elem1 = (PRDByTicks)listOfTerminations.get(0);
+            elem2 = (PRDBySecond)listOfTerminations.get(1);
+            terminations = new Termination(elem1.getCount(), elem2.getCount());
+        }
+        else{
+            if(listOfTerminations.get(0) instanceof PRDByTicks){
+                elem1 = (PRDByTicks)listOfTerminations.get(0);
+                terminations = new Termination(elem1.getCount(), -1);
+
+            }
+            else{
+                elem2 = (PRDBySecond)listOfTerminations.get(0);
+                terminations = new Termination(-1, elem2.getCount());
+            }
+        }
         return terminations;
     }
 

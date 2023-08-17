@@ -3,10 +3,11 @@ package rule;
 
 import rule.action.IAction;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
-public class Rule {
+public class Rule implements Serializable {
     private String ruleName;
 
     private ActivationForRule activation;

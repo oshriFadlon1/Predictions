@@ -1,6 +1,8 @@
 package property;
 
-public class Value {
+import java.io.Serializable;
+
+public class Value implements Serializable {
 
     private Boolean randomInit;
 

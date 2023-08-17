@@ -3,10 +3,11 @@ package entity;
 import exceptions.GeneralException;
 import property.PropertyInstance;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityInstance {
+public class EntityInstance implements Serializable {
 
     private int Id;
     private Map<String, PropertyInstance> allProperties;

@@ -506,6 +506,8 @@ public class MainUi {
         System.out.println("3. Start simulation");
         System.out.println("4. Show previous simulation");
         System.out.println("5. Exit");
+        System.out.println("6. Save current system state");
+        System.out.println("7. Load system from file");
         System.out.println("-----------------------------------------------");
     }
 }

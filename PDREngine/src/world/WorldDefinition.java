@@ -6,12 +6,13 @@ import environment.EnvironmentDefinition;
 import rule.Rule;
 import termination.Termination;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WorldDefinition {
+public class WorldDefinition implements Serializable {
     private Map<String, EnvironmentDefinition> allEnvironments;
 
     private List<EntityDefinition> entityDefinitions;
