@@ -6,10 +6,10 @@ import exceptions.GeneralException;
 import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-public class ActionCondition extends AbstractAction {
+public class ActionCondition extends AbstractAction implements Serializable {
     private IConditionComponent theCondition;
     private List<IAction> trueResult;
     private List<IAction> falseResult;

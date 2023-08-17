@@ -6,7 +6,9 @@ import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 
-public class ActionSet extends AbstractAction {
+import java.io.Serializable;
+
+public class ActionSet extends AbstractAction implements Serializable {
 
     private String propertyName;
     private String value;

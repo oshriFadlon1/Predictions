@@ -7,7 +7,9 @@ import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 import utility.Utilities;
 
-public class ActionCalculationDivide extends ActionCalculation {
+import java.io.Serializable;
+
+public class ActionCalculationDivide extends ActionCalculation implements Serializable {
     private String arg1;
     private String arg2;
 
@@ -50,15 +52,15 @@ public class ActionCalculationDivide extends ActionCalculation {
         } catch (GeneralException e) {
             throw e;
         }
-        double numericValue = ((Number) y).doubleValue();
-        if (numericValue == 0.0) {
+        float numericValue = ((Number) y).floatValue();
+        if (numericValue == 0.0F) {
             throw new GeneralException("Divide action can't operate on divide 0");
         }
 
         if (context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement()).getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = (Integer)x / (Integer)y;
+            result = ((Number)x).intValue() / ((Number)y).intValue();
         }else {
-            result = (float)x / (float)y;
+            result = ((Number)x).floatValue() / ((Number)y).floatValue();
         }
         // updating result on the property
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement());

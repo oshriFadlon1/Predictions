@@ -4,9 +4,10 @@ import exceptions.GeneralException;
 import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class multipleCondition implements IConditionComponent {
+public class multipleCondition implements IConditionComponent, Serializable {
 
     private String logical;
     private List<IConditionComponent> subConditions;

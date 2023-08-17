@@ -141,7 +141,7 @@ public class MainEngine implements InterfaceMenu {
 
     //func 1
     @Override
-    public String createWorldDefinition(String xmlPath){
+    public DtoResponse createWorldDefinition(String xmlPath){
         String resultErrorMsgToUser;
         XmlParser xmlParserInCheck= new XmlParser(xmlPath);
         try {
@@ -153,15 +153,15 @@ public class MainEngine implements InterfaceMenu {
         }
         catch(JAXBException | IOException | GeneralException e){
             if(e instanceof  JAXBException || e instanceof IOException){
-                return "There was an error in reading the XML file.";
+                return new DtoResponse("There was an error in reading the XML file.",false);
             }
             else{
-                return ((GeneralException) e).getErrorMsg();
+                return new DtoResponse(((GeneralException) e).getErrorMsg(),false);
             }
         }
 
         this.xmlParser = xmlParserInCheck;
-        return Constans.SUCCEED_LOAD_FILE;
+        return new DtoResponse(Constans.SUCCEED_LOAD_FILE,true);
     }
     //func 2
     @Override
@@ -298,7 +298,7 @@ public class MainEngine implements InterfaceMenu {
                 }
                 else{
                     float valueOFInputFloat = Float.parseFloat(userInput);
-                    if(!(valueOFInputFloat >= propDef.getPropertyRange().getFrom() && valueOFInputFloat <= propDef.getPropertyRange().getFrom())){
+                    if(!(valueOFInputFloat >= propDef.getPropertyRange().getFrom() && valueOFInputFloat <= propDef.getPropertyRange().getTo())){
                         return false;
                     }
                 }
@@ -337,6 +337,46 @@ public class MainEngine implements InterfaceMenu {
         }
         
         return initVal;
+    }
+
+    @Override
+    public DtoResponse saveWorldState(String stringPath){
+        String path = stringPath+".dat";
+        try (ObjectOutputStream out =
+                     new ObjectOutputStream(
+                             new FileOutputStream(path))) {
+            out.writeObject(new DtoWorldState(this.worldDefinitionForSimulation,
+                    this.oldSimulation,
+                    this.simulationId2CurrentTimeAndDate));
+            out.flush();
+        }
+        catch (IOException ex){
+            return new DtoResponse("Failed to save the simulation from current path.", false);
+        }
+
+        return new DtoResponse("The Simulation saved succesfully", true);
+    }
+
+    @Override
+    public DtoResponse loadWorldState(String stringPath){
+        String path = stringPath+".dat";
+        try (ObjectInputStream in =
+                     new ObjectInputStream(
+                             new FileInputStream(path))) {
+            DtoWorldState worldState =
+                    (DtoWorldState) in.readObject();
+            if (worldState != null){
+                this.worldDefinitionForSimulation = worldState.getWorldDefinitionForSimulation();
+                this.oldSimulation = worldState.getOldSimulation();
+                this.simulationId2CurrentTimeAndDate = worldState.getSimulationId2CurrentTimeAndDate();
+            }
+        }
+
+        catch(IOException | ClassNotFoundException ex)
+        {
+            return new DtoResponse("Failed to load the simulation from current path.", false);
+        }
+        return new DtoResponse("The Simulation was loaded succesfully", true);
     }
 
 

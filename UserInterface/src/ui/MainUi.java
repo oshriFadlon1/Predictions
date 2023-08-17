@@ -7,6 +7,7 @@ import interfaces.InterfaceMenu;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 
+import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -20,9 +21,8 @@ public class MainUi {
         String xmlPath;
 
         System.out.println("Hello and welcome to the simulation runner app.");
-        System.out.println("-----------------------------------------------");
         printMenu();
-        int userChoice = getUserChoice(1,5);
+        int userChoice = getUserChoice(1,7);
         while (userChoice != 5) {
             if ( 1 < userChoice && userChoice < 5)
             {
@@ -36,16 +36,30 @@ public class MainUi {
 
             if (userChoice == 1) {
                 xmlPath = getFileXmlPath();
-                System.out.println(interfaceMenu.createWorldDefinition(xmlPath));
-                userLoadFile = true;
+                DtoResponse dtoResponse =interfaceMenu.createWorldDefinition(xmlPath);
+                System.out.println(dtoResponse.getResponse());
+                userLoadFile = dtoResponse.isSucceeded();
+            }
+
+            if (userChoice == 6){
+                System.out.println("Enter full path (up to the file name without the suffix) to file you liked to save the current state of the system");
+                DtoResponse dtoResponseForSave = interfaceMenu.saveWorldState((new Scanner(System.in)).nextLine());
+                System.out.println(dtoResponseForSave.getResponse());
+            }
+
+            if (userChoice == 7){
+                System.out.println("Enter full path (up to the file name without the suffix) to file you liked to load the current state from");
+                DtoResponse dtoResponseForLoad = interfaceMenu.loadWorldState((new Scanner(System.in)).nextLine());
+                System.out.println(dtoResponseForLoad.getResponse());
+                userLoadFile = dtoResponseForLoad.isSucceeded();
             }
             printMenu();
-            userChoice = getUserChoice(1,5);
+            userChoice = getUserChoice(1,7);
         }
 
     }
 
-    private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu) {
+    private static void switchUserChoice(int userChoice, InterfaceMenu interfaceMenu){
         switch (userChoice){
             case 2:DtoResponsePreview previewOfSimulation = interfaceMenu.showCurrentSimulation();
                 printCurrentSimulationPreview(previewOfSimulation);
@@ -84,7 +98,6 @@ public class MainUi {
 
                 }
                 break;
-
         }
     }
 
@@ -443,9 +456,12 @@ public class MainUi {
     }
 
     private static void presentPropertyDetails(PropertyDefinition propDef){
-        System.out.println("   " + propDef.getPropertyName());
-        System.out.println("   " + propDef.getPropertyType());
-            System.out.println("   " + propDef.getPropertyRange());
+        System.out.println("Name: " + propDef.getPropertyName());
+        System.out.println("Property: " + propDef.getPropertyType());
+        if (propDef.getPropertyRange() != null){
+            System.out.println("Range: " + propDef.getPropertyRange());
+        }
+
     }
 
     private static boolean isEnvInputValid(String userInput, PropertyDefinition propDef, InterfaceMenu interfaceMenu) {

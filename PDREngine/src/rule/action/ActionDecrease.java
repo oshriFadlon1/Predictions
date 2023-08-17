@@ -6,7 +6,9 @@ import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 
-public class ActionDecrease extends AbstractAction {
+import java.io.Serializable;
+
+public class ActionDecrease extends AbstractAction implements Serializable {
 
     private String decreaseBy;
     private String propertyName;
@@ -49,17 +51,14 @@ public class ActionDecrease extends AbstractAction {
         } catch (GeneralException e) {
             throw e;
         }
-        // something that evaluates expression to a number, say the result is 5...
-        // now you can also access the environment variables through the active environment...
-        // PropertyInstance blaPropertyInstance = activeEnvironment.getProperty("bla");
 
         // actual calculation
         Object result;// need to take the value from
 
         if (propertyInstance.getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = (Integer)x - (Integer)y;
+            result = ((Number)x).intValue() - ((Number)y).intValue();
         }else {
-            result = (float)x - (float)y;
+            result = ((Number)x).floatValue() - ((Number)y).floatValue();
         }
 
 

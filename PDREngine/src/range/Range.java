@@ -1,6 +1,8 @@
 package range;
 
-public class Range {
+import java.io.Serializable;
+
+public class Range implements Serializable {
     private float from;
     private float to;
 

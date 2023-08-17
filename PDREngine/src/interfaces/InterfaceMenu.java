@@ -6,13 +6,14 @@ import environment.EnvironmentInstance;
 import property.PropertyDefinition;
 import world.WorldInstance;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public interface InterfaceMenu {
 
     // func 1
-    String createWorldDefinition(String xmlPath);
+    DtoResponse createWorldDefinition(String xmlPath);
     //func 2
     DtoResponsePreview showCurrentSimulation();
     //func 3
@@ -29,7 +30,8 @@ public interface InterfaceMenu {
 
     Object initializeValueFromUserInput(String userInput, PropertyDefinition propDef);
 
+    DtoResponse saveWorldState(String stringPath);
 
-
+    DtoResponse loadWorldState(String stringPath);
 
 }

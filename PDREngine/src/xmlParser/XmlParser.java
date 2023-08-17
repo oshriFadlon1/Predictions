@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class XmlParser {
 
-    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\master-ex1.xml   ex1-cigarets.xml  error3.xml";
+    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\ex1-cigarets.xml  master-ex1.xml    error3.xml";
 
     // C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\example.xml
     private static final String xmlFiles = "shema.genereated";
