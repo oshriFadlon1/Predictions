@@ -1,6 +1,8 @@
 package termination;
 
-public class Termination {
+import java.io.Serializable;
+
+public class Termination implements Serializable {
     private int ticks;
     private int seconds;
 
@@ -8,6 +10,7 @@ public class Termination {
         this.ticks = ticks;
         this.seconds = seconds;
     }
+
 
     public int getTicks() {
         return ticks;
@@ -23,6 +26,34 @@ public class Termination {
 
     public void setSeconds(int seconds) {
         this.seconds = seconds;
+    }
+
+    public boolean isSecondsActive(long currentSeconds){
+        boolean result = false;
+        if (this.seconds != -1){
+            if (currentSeconds/1000 <= this.seconds)
+            {
+                result = true;
+            }
+        } else {
+            result = true;
+        }
+
+        return result;
+    }
+
+    public boolean isTicksActive(int countTicks){
+        boolean result = false;
+        if (this.ticks != -1){
+            if (countTicks <= this.ticks)
+            {
+                result = true;
+            }
+        } else {
+            result = true;
+        }
+
+        return result;
     }
 
     @Override

@@ -7,7 +7,9 @@ import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 import utility.Utilities;
 
-public class ActionCalculationMultiply extends ActionCalculation{
+import java.io.Serializable;
+
+public class ActionCalculationMultiply extends ActionCalculation implements Serializable {
 
     private String arg1;
     private String arg2;
@@ -47,14 +49,14 @@ public class ActionCalculationMultiply extends ActionCalculation{
             x = context.getValueFromString(this.arg1);
             y = context.getValueFromString(this.arg2);
         } catch (GeneralException e) {
-            throw new IllegalArgumentException(e);
+            throw e;
         }
 
         if (context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement()).getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = (Integer)x * (Integer)y;
+            result = ((Number)x).intValue() * ((Number)y).intValue();
         }
         else{
-            result = (float)x * (float)y;
+            result = ((Number)x).floatValue() * ((Number)y).floatValue();
         }
 
 

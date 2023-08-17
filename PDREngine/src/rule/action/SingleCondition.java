@@ -5,7 +5,9 @@ import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 
-public class SingleCondition implements IConditionComponent {
+import java.io.Serializable;
+
+public class SingleCondition implements IConditionComponent, Serializable {
 
     private String propertyName;
     private String operator;
@@ -63,7 +65,7 @@ public class SingleCondition implements IConditionComponent {
                 case "decimal":
                     if(valueCompareTo instanceof Integer)
                     {
-                        result = ((Integer)valueCompareTo).equals((Integer)propertyInstance.getPropValue());
+                        result = ((Number)valueCompareTo).intValue() == ((Number)propertyInstance.getPropValue()).intValue();
                     }else {
                         throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent");
                     }
@@ -71,7 +73,7 @@ public class SingleCondition implements IConditionComponent {
                 case "float":
                     if(valueCompareTo instanceof Float)
                     {
-                        result = ((Float)valueCompareTo).equals((Float)propertyInstance.getPropValue());
+                        result = ((Number)valueCompareTo).floatValue() == ((Number)propertyInstance.getPropValue()).floatValue();
                     }else {
                         throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }
@@ -98,7 +100,7 @@ public class SingleCondition implements IConditionComponent {
                 case "decimal":
                     if(valueCompareTo instanceof Integer)
                     {
-                        result = !(((Integer)valueCompareTo).equals((Integer)propertyInstance.getPropValue()));
+                        result = ((Number)valueCompareTo).intValue() != ((Number)propertyInstance.getPropValue()).intValue();
                     }else {
                         throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent");
                     }
@@ -106,7 +108,7 @@ public class SingleCondition implements IConditionComponent {
                 case "float":
                     if(valueCompareTo instanceof Float)
                     {
-                        result = !(((Float)valueCompareTo).equals((Float)propertyInstance.getPropValue()));
+                        result = ((Number)valueCompareTo).floatValue() != ((Number)propertyInstance.getPropValue()).floatValue();
                     }else {
                         throw new GeneralException("operator "+ this.operator + " can't compare between to diffrent types");
                     }

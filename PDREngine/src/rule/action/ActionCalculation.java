@@ -5,7 +5,9 @@ import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
-public abstract class ActionCalculation extends AbstractAction {
+import java.io.Serializable;
+
+public abstract class ActionCalculation extends AbstractAction implements Serializable {
 
     private String propertyPlacement; // property name to set the value in
 

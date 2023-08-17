@@ -17,9 +17,10 @@ import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class WorldInstance {
+public class WorldInstance implements Serializable {
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
     private List<Rule> allRules;
@@ -97,8 +98,8 @@ public class WorldInstance {
         long timeStarted = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
 
-        while (worldDefinitionForSimulation.getTermination().getTicks() >= currentTickCount &&
-                (currentTime - timeStarted) / 1000 < worldDefinitionForSimulation.getTermination().getSeconds()){
+        while (worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
+                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)){
 
             for(Rule currentRuleToInvokeOnEntities: allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();

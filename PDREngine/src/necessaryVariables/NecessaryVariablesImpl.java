@@ -5,11 +5,12 @@ import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import utility.Utilities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class NecessaryVariablesImpl implements NecessaryVariables {
+public class NecessaryVariablesImpl implements NecessaryVariables, Serializable {
     private EntityInstance primaryEntityInstance;
     private List<EntityInstance> entityInstanceManager;
     private Map<String, EnvironmentInstance> activeEnvironment;

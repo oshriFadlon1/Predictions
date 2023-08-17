@@ -5,7 +5,9 @@ import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
-public class ActionKill extends AbstractAction {
+import java.io.Serializable;
+
+public class ActionKill extends AbstractAction implements Serializable {
 
     private String entityName;
 

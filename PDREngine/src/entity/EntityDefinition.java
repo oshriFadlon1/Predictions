@@ -3,9 +3,10 @@ package entity;
 
 import property.PropertyDefinitionEntity;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class EntityDefinition {
+public class EntityDefinition implements Serializable {
     private String entityName;
     private int startPopulation;
     private int endPopulation;

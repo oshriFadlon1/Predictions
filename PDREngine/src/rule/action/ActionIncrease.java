@@ -7,7 +7,9 @@ import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
 import utility.Utilities;
 
-public class ActionIncrease extends AbstractAction {
+import java.io.Serializable;
+
+public class ActionIncrease extends AbstractAction implements Serializable {
 
     private String increaseBy;
     private String propertyName;
@@ -53,10 +55,10 @@ public class ActionIncrease extends AbstractAction {
         Object result;// need to take the value from
 
         if (propertyInstance.getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = (Integer)x + (Integer)y;
+            result = ((Number)x).intValue() + ((Number)y).intValue();
         }
         else {
-            result = ((Number)x).floatValue() + (float)y;
+            result = ((Number)x).floatValue() + ((Number)y).floatValue();
         }
 
         // updating result on the property

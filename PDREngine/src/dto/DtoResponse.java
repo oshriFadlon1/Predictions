@@ -1,34 +1,19 @@
 package dto;
 
-import world.WorldInstance;
-
 public class DtoResponse {
-    private WorldInstance currentWorldSimulation;
     private String response;
+    private boolean isSucceeded;
 
-    public DtoResponse(WorldInstance currentWorldSimulation, String response) {
-        this.currentWorldSimulation = currentWorldSimulation;
+    public DtoResponse(String response, boolean isSucceeded) {
         this.response = response;
-    }
-
-    public DtoResponse(String response) {
-        this.currentWorldSimulation = null;
-        this.response = response;
-    }
-
-    public WorldInstance getCurrentWorldSimulation() {
-        return currentWorldSimulation;
-    }
-
-    public void setCurrentWorldSimulation(WorldInstance currentWorldSimulation) {
-        this.currentWorldSimulation = currentWorldSimulation;
+        this.isSucceeded = isSucceeded;
     }
 
     public String getResponse() {
         return response;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public boolean isSucceeded() {
+        return isSucceeded;
     }
 }

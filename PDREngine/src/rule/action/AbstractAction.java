@@ -5,7 +5,9 @@ import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 
-public abstract  class AbstractAction implements IAction {
+import java.io.Serializable;
+
+public abstract  class AbstractAction implements IAction, Serializable {
     private final Operation operationType;
     private final EntityDefinition entityDefinition;
 

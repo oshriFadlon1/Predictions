@@ -3,7 +3,9 @@ package property;
 import enums.Type;
 import range.Range;
 
-public class PropertyDefinition {
+import java.io.Serializable;
+
+public class PropertyDefinition implements Serializable {
     private String propertyName;
 
     private String propertyType;
