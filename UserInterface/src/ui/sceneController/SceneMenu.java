@@ -1,4 +1,4 @@
 package ui.sceneController;
 
-public class SceneMenu1 {
+public class SceneMenu {
 }
