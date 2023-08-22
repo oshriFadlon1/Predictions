@@ -1,0 +1,8 @@
+.buttonExecution{
+    -fx-background-color: #4472C4;
+    -fx-text-fill: white;
+}
+.buttonExecution:hover{
+    -fx-background-color: #bbbbfc;
+    -fx-text-fill: black;
+}
