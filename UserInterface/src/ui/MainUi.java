@@ -24,10 +24,16 @@ public class MainUi {
         printMenu();
         int userChoice = getUserChoice(1,7);
         while (userChoice != 5) {
-            if ( 1 < userChoice && userChoice < 5)
+            if ( 1 < userChoice && userChoice < 7)
             {
                 if (userLoadFile) {
-                    switchUserChoice(userChoice, interfaceMenu);
+                    if (userChoice == 6){
+                        System.out.println("Enter full path (up to the file name without the suffix) to file you liked to save the current state of the system");
+                        DtoResponse dtoResponseForSave = interfaceMenu.saveWorldState((new Scanner(System.in)).nextLine());
+                        System.out.println(dtoResponseForSave.getResponse());
+                    } else {
+                        switchUserChoice(userChoice, interfaceMenu);
+                    }
                 }
                 else {
                     System.out.println("Cannot do current action before loading XML file. Need to load XML file first.");
@@ -39,12 +45,6 @@ public class MainUi {
                 DtoResponse dtoResponse =interfaceMenu.createWorldDefinition(xmlPath);
                 System.out.println(dtoResponse.getResponse());
                 userLoadFile = dtoResponse.isSucceeded();
-            }
-
-            if (userChoice == 6){
-                System.out.println("Enter full path (up to the file name without the suffix) to file you liked to save the current state of the system");
-                DtoResponse dtoResponseForSave = interfaceMenu.saveWorldState((new Scanner(System.in)).nextLine());
-                System.out.println(dtoResponseForSave.getResponse());
             }
 
             if (userChoice == 7){

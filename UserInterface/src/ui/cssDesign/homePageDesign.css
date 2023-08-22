@@ -1,0 +1,16 @@
+#root {
+
+}
+
+#LoadXmlFileButton{
+    -fx-background-color: #4472C4;
+    -fx-text-fill: white;
+}
+#LoadXmlFileButton:hover{
+    -fx-background-color: #bbbbfc;
+    -fx-text-fill: black;
+}
+#title{
+    -fx-text-fill: #4472C4;
+    -fx-font-weight: bold;
+}
