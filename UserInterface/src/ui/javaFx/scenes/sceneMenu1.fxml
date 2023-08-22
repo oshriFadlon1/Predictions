@@ -32,9 +32,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button id="LoadXmlFileButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="161.0" text="Load xml file" textAlignment="CENTER" GridPane.rowIndex="1" />
+                  <Button id="LoadXmlFileButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="161.0" stylesheets="@../../cssDesign/homePageDesign.css" text="Load xml file" textAlignment="CENTER" GridPane.rowIndex="1" />
                   <TextField prefHeight="25.0" prefWidth="566.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                  <Label id="#title" stylesheets="@../../cssDesign/homePageDesign.css" text="Predictions" textAlignment="CENTER" GridPane.columnIndex="2" />
+                  <Label id="title" stylesheets="@../../cssDesign/homePageDesign.css" text="Predictions" textAlignment="CENTER" GridPane.columnIndex="2" />
                   <Button alignment="CENTER_RIGHT" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Queue managment" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                </children>
             </GridPane>
@@ -46,7 +46,7 @@
                   <content>
                     <AnchorPane id="Details" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" stylesheets="@../../cssDesign/scene1.css">
                            <children>
-                              <GridPane layoutX="14.0" layoutY="14.0" prefHeight="682.0" prefWidth="1049.0">
+                              <GridPane id="Details" layoutX="14.0" layoutY="14.0" prefHeight="682.0" prefWidth="1049.0" stylesheets="@../../cssDesign/scene1.css">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
