@@ -1,0 +1,18 @@
+#backGroudStyle{
+    -fx-background-color: #d0e7d0;
+    -fx-border-color: #f1bdbd;
+}
+
+#titleTermination{
+    -fx-font-size: 25px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #007bff;
+    -fx-border-color: #007bff; /* Border color */
+    -fx-border-width: 0 0 2 0; /* Border width (top right bottom left) */
+    -fx-padding: 0 0 3 0;
+}
+#terminationInfo{
+    -fx-font-size: 16px;
+    -fx-font-family: "Helvetica Neue", Arial, sans-serif;
+    -fx-text-fill: #333;
+}
