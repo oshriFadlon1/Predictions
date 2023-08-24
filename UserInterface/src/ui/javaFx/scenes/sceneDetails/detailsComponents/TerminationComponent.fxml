@@ -3,11 +3,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="194.0" prefWidth="282.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.terminationComponentController.TreminationComponentController">
+<AnchorPane id="backGroudStyle" prefHeight="194.0" prefWidth="282.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.terminationComponentController.TreminationComponentController">
    <children>
       <Label id="titleTermination" layoutX="32.0" layoutY="29.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" text="Termination" />
       <Label id="terminationInfo" layoutX="32.0" layoutY="74.0" text="Label" />
-      <Label id="terminationInfo" layoutX="32.0" layoutY="97.0" text="Label" />
-      <Label id="terminationInfo" layoutX="32.0" layoutY="123.0" text="Label" />
+      <Label id="terminationInfo" layoutX="32.0" layoutY="104.0" text="Label" />
+      <Label id="terminationInfo" layoutX="32.0" layoutY="138.0" text="Label" />
    </children>
 </AnchorPane>

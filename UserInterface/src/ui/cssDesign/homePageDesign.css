@@ -21,3 +21,12 @@
 .backGroundColor{
     -fx-background-color: #facfc1;
 }
+
+.title{
+    -fx-font-size: 25px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #007bff;
+    -fx-border-color: #007bff;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 3 0;
+}
