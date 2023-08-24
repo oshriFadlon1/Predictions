@@ -13,7 +13,7 @@ public class MainUiGui extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/ui/javaFx/scenes/sceneNewExecution/newExecution.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/ui/javaFx/scenes/sceneMenu.fxml"));
         primaryStage.setTitle("Oshri ya maniac");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

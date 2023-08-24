@@ -6,9 +6,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -22,89 +19,54 @@
    <content>
       <BorderPane prefHeight="832.0" prefWidth="1070.0" stylesheets="@../../../cssDesign/homePageDesign.css">
          <center>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="762.0" prefWidth="1070.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-               <tabs>
-                  <Tab text="Details">
-                     <content>
-                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" />
-                     </content>
-                  </Tab>
-                  <Tab text="New Execution">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
-                           <children>
-                              <Button layoutX="64.0" layoutY="593.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Clear" />
-                              <Button layoutX="895.0" layoutY="593.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Start!" />
-                              <Accordion layoutX="55.0" layoutY="70.0" prefHeight="399.0" prefWidth="202.0">
-                                <panes>
-                                  <TitledPane animated="false" text="Entity 1">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                             <children>
-                                                <Spinner layoutX="26.0" layoutY="21.0" />
-                                             </children>
-                                          </AnchorPane>
-                                    </content>
-                                  </TitledPane>
-                                </panes>
-                              </Accordion>
-                              <Label id="title" layoutX="726.0" layoutY="82.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <GridPane layoutX="497.0" layoutY="101.0" prefHeight="355.0" prefWidth="342.0">
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-                                       <children>
-                                          <VBox fx:id="vboxTextFields" prefHeight="355.0" prefWidth="179.0" />
-                                       </children>
-                                    </VBox>
-                                    <ListView fx:id="listViewEnvironments" prefHeight="356.0" prefWidth="129.0" />
-                                 </children>
-                              </GridPane>
-                              <Label id="title" layoutX="500.0" layoutY="81.0" prefHeight="19.0" prefWidth="141.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment variables">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <Label id="labelError" fx:id="labelError" layoutX="840.0" layoutY="59.0" prefHeight="109.0" prefWidth="225.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" />
-                           </children></AnchorPane>
-                     </content>
-                  </Tab>
-                  <Tab text="Results">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/scene1.css" />
-                     </content>
-                  </Tab>
-               </tabs>
-            </TabPane>
-         </center>
-         <top>
-            <AnchorPane prefHeight="86.0" prefWidth="1070.0" BorderPane.alignment="CENTER">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" BorderPane.alignment="CENTER">
                <children>
-                  <Label id="title" layoutX="475.0" layoutY="-1.0" stylesheets="@../../../cssDesign/homePageDesign.css" text="Predictions" textAlignment="CENTER">
-                     <font>
-                        <Font size="20.0" />
-                     </font></Label>
-                  <TextField layoutX="213.0" layoutY="40.0" prefHeight="25.0" prefWidth="566.0" />
-                  <Button id="LoadXmlFileButton" layoutX="37.0" layoutY="40.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="161.0" text="Load xml file" textAlignment="CENTER" />
-                  <Label id="title" layoutX="904.0" layoutY="8.0" prefHeight="26.0" prefWidth="152.0" text="Queue Managment">
+                  <Button layoutX="78.0" layoutY="591.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Clear" />
+                  <Button layoutX="895.0" layoutY="591.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Start!" />
+                  <Accordion layoutX="55.0" layoutY="70.0" prefHeight="399.0" prefWidth="202.0">
+                    <panes>
+                      <TitledPane animated="false" text="Entity 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Spinner layoutX="26.0" layoutY="21.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                    </panes>
+                  </Accordion>
+                  <Label id="title" layoutX="726.0" layoutY="82.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value">
                      <font>
                         <Font size="13.0" />
-                     </font></Label>
-                  <Label layoutX="904.0" layoutY="35.0" prefHeight="17.0" prefWidth="65.0" text="Label" />
-                  <Label layoutX="902.0" layoutY="64.0" prefHeight="17.0" prefWidth="69.0" text="Label" />
+                     </font>
+                  </Label>
+                  <GridPane layoutX="497.0" layoutY="101.0" prefHeight="355.0" prefWidth="342.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                           <children>
+                              <VBox fx:id="vboxTextFields" prefHeight="355.0" prefWidth="179.0" />
+                           </children>
+                        </VBox>
+                        <ListView fx:id="listViewEnvironments" prefHeight="356.0" prefWidth="129.0" />
+                     </children>
+                  </GridPane>
+                  <Label id="title" layoutX="500.0" layoutY="81.0" prefHeight="19.0" prefWidth="141.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment variables">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label id="labelError" fx:id="labelError" layoutX="840.0" layoutY="59.0" prefHeight="109.0" prefWidth="225.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" />
                </children>
             </AnchorPane>
-         </top>
+         </center>
       </BorderPane>
    </content>
 </ScrollPane>
