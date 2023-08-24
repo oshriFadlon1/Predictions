@@ -30,7 +30,7 @@ public class NewExecutionController implements Initializable{
 
 
 
-    @Override
+    @FXML
     public void initialize(URL location, ResourceBundle resources) {
         textFields = new ArrayList<>();
         listViewEnvironments.getItems().add("one");
@@ -44,6 +44,23 @@ public class NewExecutionController implements Initializable{
         }
     }
 
+    public void loadFromWorldDef(WorldDefinition worldDefinition){
+        if(listViewEnvironments.getItems() != null){
+            listViewEnvironments.getItems().clear();
+        }
+        int ind = 0;
+        Map<String, EnvironmentDefinition> allEnvDefs = worldDefinition.getAllEnvironments();
+        for(String envName: allEnvDefs.keySet()){
+            listViewEnvironments.getItems().add(String.format("{0}({1}): ", envName, allEnvDefs.get(envName).getEnvPropertyDefinition().getPropertyType()));
+            TextField txtField = new TextField();
+            textFields.add(txtField);
+            vboxTextFields.getChildren().addAll(txtField);
 
-
+        }
+        List<EntityDefinition> entityDefinitions = worldDefinition.getEntityDefinitions();
+        if(entityDefinitions.size() == 2){
+            TitledPane titledPane = new TitledPane("Entity 2", new Label("Entity 2"));
+            accordionOfEntities.getPanes().add(titledPane);
+        }
+    }
 }
