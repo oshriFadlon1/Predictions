@@ -6,3 +6,7 @@
     -fx-background-color: #bbbbfc;
     -fx-text-fill: black;
 }
+#labelError{
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}

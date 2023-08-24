@@ -2,25 +2,46 @@ package ui.sceneController.newExecutionController;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.VBox;
 
+import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class NewExecutionController implements Initializable {
+public class NewExecutionController implements Initializable{
     @FXML
-    private TreeView treeView;
+    private ListView<String> listViewEnvironments;
+
+
+    @FXML
+    private VBox vboxTextFields;
+
+    @FXML
+    private Label labelError;
+
+    @FXML
+    private List<TextField> textFields;
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TreeItem<String> rootItem = new TreeItem<>("Environments");
-
-        TreeItem<String> branchItem1 = new TreeItem<>("Environment 1");
-        TreeItem<String> branchItem2 = new TreeItem<>("Environment 2");
-        TreeItem<String> branchItem3 = new TreeItem<>("Environment 3");
-
-        rootItem.getChildren().addAll(branchItem1, branchItem2, branchItem3);
-        treeView.setRoot(rootItem);
+        textFields = new ArrayList<>();
+        listViewEnvironments.getItems().add("one");
+        listViewEnvironments.getItems().add("two");
+        listViewEnvironments.getItems().add("three");
+        for(int i = 0; i < listViewEnvironments.getItems().stream().count(); i++){
+            TextField txtField = new TextField();
+            textFields.add(txtField);
+            vboxTextFields.getChildren().addAll(txtField);
+            labelError.setText("Label error");
+        }
     }
 
 
