@@ -1,5 +1,8 @@
 package ui.sceneController.newExecutionController;
 
+import entity.EntityDefinition;
+import environment.EnvironmentDefinition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -7,11 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
+import world.WorldDefinition;
 
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class NewExecutionController implements Initializable{
@@ -28,11 +33,15 @@ public class NewExecutionController implements Initializable{
     @FXML
     private List<TextField> textFields;
 
+    @FXML
+    private Accordion accordionOfEntities;
+
 
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         textFields = new ArrayList<>();
+        labelError.setText("Label error");
         listViewEnvironments.getItems().add("one");
         listViewEnvironments.getItems().add("two");
         listViewEnvironments.getItems().add("three");
@@ -40,7 +49,7 @@ public class NewExecutionController implements Initializable{
             TextField txtField = new TextField();
             textFields.add(txtField);
             vboxTextFields.getChildren().addAll(txtField);
-            labelError.setText("Label error");
+
         }
     }
 
