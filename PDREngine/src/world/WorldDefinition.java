@@ -3,9 +3,11 @@ package world;
 import entity.EntityDefinition;
 import entity.EntityInstance;
 import environment.EnvironmentDefinition;
+import pointCoord.PointCoord;
 import rule.Rule;
 import termination.Termination;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,7 @@
 package entity;
 
 import exceptions.GeneralException;
+import pointCoord.PointCoord;
 import property.PropertyInstance;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ public class EntityInstance implements Serializable {
 
     private int Id;
     private Map<String, PropertyInstance> allProperties;
+    private PointCoord positionInWorld;
 
     private EntityDefinition definitionOfEntity;
 

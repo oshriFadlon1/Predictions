@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -36,6 +37,11 @@ public class SceneMenu implements Initializable {
     private NewExecutionController newExecutionController;
     private ResultsController resultsController;
     private Stage primaryStage;
+
+
+    @FXML private Tab tabOfDetails;
+    @FXML private Tab tabOfNewExecution;
+    @FXML private Tab tabOfResults;
 
     @FXML private Button ButtonLoadFile;
     @FXML private TextField textFilePath;
@@ -84,6 +90,7 @@ public class SceneMenu implements Initializable {
         loaderDetail.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderDetail.load();
+            tabOfDetails.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,6 +101,7 @@ public class SceneMenu implements Initializable {
         loaderNewExecution.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderNewExecution.load();
+            tabOfNewExecution.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
