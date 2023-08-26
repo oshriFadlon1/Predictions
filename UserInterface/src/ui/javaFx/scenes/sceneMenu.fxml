@@ -9,23 +9,22 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane prefHeight="832.0" prefWidth="1070.0" stylesheets="@../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.SceneMenu">
+<BorderPane prefHeight="780.0" prefWidth="1100.0" stylesheets="@../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.SceneMenu">
    <center>
       <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="762.0" prefWidth="1070.0" styleClass="backGroundColor" stylesheets="@../../cssDesign/homePageDesign.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Details">
+          <Tab fx:id="tabOfDetails" text="Details">
             <content>
-                <fx:include maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" source="sceneDetails/Details.fxml" />
+                <fx:include source="sceneDetails/Details.fxml" />
             </content>
           </Tab>
-          <Tab text="New Execution">
+          <Tab fx:id="tabOfNewExecution" text="New Execution">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../cssDesign/homePageDesign.css" />
                 <fx:include source="sceneNewExecution/newExecution.fxml" />
             </content>
           </Tab>
-            <Tab text="Results">
+            <Tab fx:id="tabOfResults" text="Results">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="backGroundColor" stylesheets="@../../cssDesign/scene1.css" />
                   <fx:include source="sceneResults/Results.fxml" />

@@ -20,11 +20,13 @@ public class EntityInstance implements Serializable {
         this.definitionOfEntity = definitionOfEntity;
     }
 
-    public EntityInstance(int id, Map<String, PropertyInstance> allProperties) {
+    public EntityInstance(int id, PointCoord positionInWorld, EntityDefinition definitionOfEntity) {
         Id = id;
-        this.allProperties = allProperties;
-        this.definitionOfEntity = null;
+        this.positionInWorld = positionInWorld;
+        this.definitionOfEntity = definitionOfEntity;
+        this.allProperties = new HashMap<>();
     }
+
 
     public Map<String, PropertyInstance> getAllProperties() {
         return allProperties;
@@ -58,10 +60,6 @@ public class EntityInstance implements Serializable {
     public void addProperty(PropertyInstance propertyToAdd){ //throws GeneralException {
 
         String propertyName = propertyToAdd.getPropertyDefinition().getPropertyName();
-
-//        if(allProperties.containsKey(propertyName)){
-//            throw new GeneralException(String.format("Property name %s already exists in entity %s.", propertyName, this.definitionOfEntity.getEntityName()));
-//        }
 
         this.allProperties.put(propertyName, propertyToAdd);
     }

@@ -81,20 +81,24 @@ public class MainEngine implements InterfaceMenu {
 
     public DtoResponsePreview previewWorldInfo(){
 
-        return new DtoResponsePreview(getEntitiesInfoSimulation(),getRulesInfoSimulation() ,
+        return new DtoResponsePreview(getEnvironmentsInfo(), getEntitiesInfoSimulation(),getRulesInfoSimulation() ,
                 new DtoResponsePreviewTermination(worldDefinitionForSimulation.getTermination().getTicks(),
                         worldDefinitionForSimulation.getTermination().getSeconds()));
     }
 
-    private DtoResponseEntities getEntitiesInfoSimulation() {
+    private DtoEnvironments getEnvironmentsInfo() {
+        return new DtoEnvironments(this.worldDefinitionForSimulation.getAllEnvironments());
+    }
+
+    private List<DtoResponseEntities> getEntitiesInfoSimulation() {
         List<PropertyDefinitionEntity> propertyDefinitionEntityList = new ArrayList<>();
+        List<DtoResponseEntities> entities = new ArrayList<>();
         String nameEntity = "";
         int population = 0;
         boolean isTheFirst = true;
         for (EntityDefinition entityDefinition: worldDefinitionForSimulation.getEntityDefinitions()) {
             if (isTheFirst) {
                 nameEntity = entityDefinition.getEntityName();
-                population = entityDefinition.getStartPopulation();
                 isTheFirst = false;
             }
             for (String key:entityDefinition.getPropertyDefinition().keySet()) {
@@ -117,8 +121,9 @@ public class MainEngine implements InterfaceMenu {
                 }
             }
             isTheFirst = true;
+            entities.add( new DtoResponseEntities(nameEntity, propertyDefinitionEntityList));
         }
-        return new DtoResponseEntities(nameEntity, population, propertyDefinitionEntityList);
+        return entities;
     }
     private List<DtoResponseRules> getRulesInfoSimulation() {
         List<DtoResponseRules> dtoResponseRules = new ArrayList<>();

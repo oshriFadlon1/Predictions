@@ -29,7 +29,7 @@ public class MainUiGui extends Application {
         sceneMenu.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Oshri ya maniac");
-        Scene scene = new Scene(root, 1050, 750);
+        Scene scene = new Scene(root, 1100, 780);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

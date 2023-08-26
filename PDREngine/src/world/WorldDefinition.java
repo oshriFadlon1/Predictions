@@ -21,6 +21,10 @@ public class WorldDefinition implements Serializable {
 
     private Termination termination;
 
+
+    private int numberOfThreads;
+
+
     public WorldDefinition(Map<String, EnvironmentDefinition> allEnvironments, List<EntityDefinition> entityDefinitions, List<Rule> rules, Termination termination) {
         this.allEnvironments = allEnvironments;
         this.entityDefinitions = entityDefinitions;

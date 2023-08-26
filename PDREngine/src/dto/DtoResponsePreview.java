@@ -3,22 +3,24 @@ package dto;
 import java.util.List;
 
 public class DtoResponsePreview {
-    private DtoResponseEntities dtoResponseEntities;
+    private DtoEnvironments dtoEnvironments;
+    private List<DtoResponseEntities> dtoResponseEntities; //to change to list (for list to get the 2 entities)
 
     private List<DtoResponseRules> dtoResponseRules;
     private DtoResponsePreviewTermination dtoResponseTermination;
 
-    public DtoResponsePreview(DtoResponseEntities dtoResponseEntities, List<DtoResponseRules> dtoResponseRules, DtoResponsePreviewTermination dtoResponseTermination) {
+    public DtoResponsePreview(DtoEnvironments dtoEnvironments, List<DtoResponseEntities> dtoResponseEntities, List<DtoResponseRules> dtoResponseRules, DtoResponsePreviewTermination dtoResponseTermination) {
+        this.dtoEnvironments = dtoEnvironments;
         this.dtoResponseEntities = dtoResponseEntities;
         this.dtoResponseRules = dtoResponseRules;
         this.dtoResponseTermination = dtoResponseTermination;
     }
 
-    public DtoResponseEntities getDtoResponseEntities() {
+    public List<DtoResponseEntities> getDtoResponseEntities() {
         return dtoResponseEntities;
     }
 
-    public void setDtoResponseEntities(DtoResponseEntities dtoResponseEntities) {
+    public void setDtoResponseEntities(List<DtoResponseEntities> dtoResponseEntities) {
         this.dtoResponseEntities = dtoResponseEntities;
     }
 
@@ -36,6 +38,14 @@ public class DtoResponsePreview {
 
     public void setDtoResponseTermination(DtoResponsePreviewTermination dtoResponseTermination) {
         this.dtoResponseTermination = dtoResponseTermination;
+    }
+
+    public DtoEnvironments getDtoEnvironments() {
+        return dtoEnvironments;
+    }
+
+    public void setDtoEnvironments(DtoEnvironments dtoEnvironments) {
+        this.dtoEnvironments = dtoEnvironments;
     }
 
     @Override

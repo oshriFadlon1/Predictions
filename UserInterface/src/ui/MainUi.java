@@ -265,40 +265,40 @@ public class MainUi {
     }
 
     private static void printCurrentSimulationPreview(DtoResponsePreview simulationPreview){
-        DtoResponseEntities allEntitiesDto = simulationPreview.getDtoResponseEntities();
-        System.out.println("Entity: ");
-        System.out.println("--------");
-        System.out.println("   Entity name: " + allEntitiesDto.getEntityName());
-        System.out.println("   Entity population: " + allEntitiesDto.getPopulation());
-        System.out.println("Properties for entity: ");
-        System.out.println("-----------------------");
-        for (PropertyDefinitionEntity propertyDef: allEntitiesDto.getPropertyDefinitionEntityList()) {
-            System.out.println("        Property name: " + propertyDef.getPropertyDefinition().getPropertyName());
-            System.out.println("        Property type:" + propertyDef.getPropertyDefinition().getPropertyType());
-            if(propertyDef.getPropertyDefinition().getPropertyRange() != null) {
-                System.out.println("        Property range:" + propertyDef.getPropertyDefinition().getPropertyRange().getFrom() + " to " + propertyDef.getPropertyDefinition().getPropertyRange().getTo());
-            }
-            System.out.println("        Property randomly initialized:" + propertyDef.getPropValue().getRandomInit());
-            System.out.println();
-        }
-
-        System.out.println("Rules:");
-        System.out.println("-------");
-        for(DtoResponseRules currRule: simulationPreview.getDtoResponseRules()){
-            System.out.println("   Rule name: " + currRule.getRuleName());
-            System.out.println("   Rule activition: " + currRule.getTicks() + " ticks, " + currRule.getProbability() + " probability");
-            System.out.println("   Action count: " + currRule.getCountOfAction());
-            System.out.println("   Actions:");
-            for(String actionName: currRule.getActionNames()){
-                System.out.println("        Action name: " + actionName);
-            }
-            System.out.println();
-        }
-
-        System.out.println("Simulation termination:");
-        System.out.println("------------------------");
-        System.out.println("   Seconds: " + simulationPreview.getDtoResponseTermination().getSeconds());
-        System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
+//        DtoResponseEntities allEntitiesDto = simulationPreview.getDtoResponseEntities();
+//        System.out.println("Entity: ");
+//        System.out.println("--------");
+//        System.out.println("   Entity name: " + allEntitiesDto.getEntityName());
+//        System.out.println("   Entity population: " + allEntitiesDto.getPopulation());
+//        System.out.println("Properties for entity: ");
+//        System.out.println("-----------------------");
+//        for (PropertyDefinitionEntity propertyDef: allEntitiesDto.getPropertyDefinitionEntityList()) {
+//            System.out.println("        Property name: " + propertyDef.getPropertyDefinition().getPropertyName());
+//            System.out.println("        Property type:" + propertyDef.getPropertyDefinition().getPropertyType());
+//            if(propertyDef.getPropertyDefinition().getPropertyRange() != null) {
+//                System.out.println("        Property range:" + propertyDef.getPropertyDefinition().getPropertyRange().getFrom() + " to " + propertyDef.getPropertyDefinition().getPropertyRange().getTo());
+//            }
+//            System.out.println("        Property randomly initialized:" + propertyDef.getPropValue().getRandomInit());
+//            System.out.println();
+//        }
+//
+//        System.out.println("Rules:");
+//        System.out.println("-------");
+//        for(DtoResponseRules currRule: simulationPreview.getDtoResponseRules()){
+//            System.out.println("   Rule name: " + currRule.getRuleName());
+//            System.out.println("   Rule activition: " + currRule.getTicks() + " ticks, " + currRule.getProbability() + " probability");
+//            System.out.println("   Action count: " + currRule.getCountOfAction());
+//            System.out.println("   Actions:");
+//            for(String actionName: currRule.getActionNames()){
+//                System.out.println("        Action name: " + actionName);
+//            }
+//            System.out.println();
+//        }
+//
+//        System.out.println("Simulation termination:");
+//        System.out.println("------------------------");
+//        System.out.println("   Seconds: " + simulationPreview.getDtoResponseTermination().getSeconds());
+//        System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
     }
 
     private static DtoEnvUiToEngine printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
