@@ -32,9 +32,7 @@ import java.util.Map;
 
 public class XmlParser {
 
-    private String xmlPath;//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\ex1-cigarets.xml  master-ex1.xml    error3.xml";
-
-    // C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\example.xml
+    private String xmlPath;
     private static final String xmlFiles = "shema.genereated";
 
 
@@ -613,6 +611,8 @@ public class XmlParser {
 //
 //    public void isPrefixHelpFunction(String ){
 //
-//    }
+//    }//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\ex1-cigarets.xml  master-ex1.xml    error3.xml";
+//
+//    // C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\example.xml
 
 }

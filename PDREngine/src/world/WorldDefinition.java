@@ -3,9 +3,11 @@ package world;
 import entity.EntityDefinition;
 import entity.EntityInstance;
 import environment.EnvironmentDefinition;
+import pointCoord.PointCoord;
 import rule.Rule;
 import termination.Termination;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,10 @@ public class WorldDefinition implements Serializable {
     private List<Rule> Rules;
 
     private Termination termination;
+
+
+    private int numberOfThreads;
+
 
     public WorldDefinition(Map<String, EnvironmentDefinition> allEnvironments, List<EntityDefinition> entityDefinitions, List<Rule> rules, Termination termination) {
         this.allEnvironments = allEnvironments;

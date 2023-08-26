@@ -6,13 +6,11 @@ import java.util.List;
 public class DtoResponseEntities {
 
     private String entityName;
-    private int Population;
 
     private List<PropertyDefinitionEntity> propertyDefinitionEntityList;
 
-    public DtoResponseEntities(String entityName, int population, List<PropertyDefinitionEntity> propertyDefinitionEntityList) {
+    public DtoResponseEntities(String entityName, List<PropertyDefinitionEntity> propertyDefinitionEntityList) {
         this.entityName = entityName;
-        Population = population;
         this.propertyDefinitionEntityList = propertyDefinitionEntityList;
     }
 
@@ -22,14 +20,6 @@ public class DtoResponseEntities {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
-    }
-
-    public int getPopulation() {
-        return Population;
-    }
-
-    public void setPopulation(int population) {
-        Population = population;
     }
 
     public List<PropertyDefinitionEntity> getPropertyDefinitionEntityList() {
@@ -48,7 +38,6 @@ public class DtoResponseEntities {
             str.append("\r\n").append(propertyDefinitionEntity.toString());
         }
         return "\r\nName:'" + entityName +
-                "\r\nPopulation: " + Population +
                 "\r\nproperties: " + str.toString();
     }
 }

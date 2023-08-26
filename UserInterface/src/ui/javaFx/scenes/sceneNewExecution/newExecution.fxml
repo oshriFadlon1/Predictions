@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -23,25 +22,7 @@
                     <children>
                         <Button layoutX="78.0" layoutY="591.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Clear" />
                         <Button layoutX="895.0" layoutY="591.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Start!" />
-                        <Accordion fx:id="accordionOfEntities" layoutX="55.0" layoutY="70.0" prefHeight="399.0" prefWidth="202.0">
-                            <panes>
-                                <TitledPane animated="false" text="Entity 1">
-                                    <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                            <children>
-                                                <Spinner layoutX="26.0" layoutY="21.0" />
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                </TitledPane>
-                            </panes>
-                        </Accordion>
-                        <Label id="title" layoutX="726.0" layoutY="82.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value">
-                            <font>
-                                <Font size="13.0" />
-                            </font>
-                        </Label>
-                        <GridPane layoutX="497.0" layoutY="101.0" prefHeight="355.0" prefWidth="342.0">
+                        <GridPane layoutX="497.0" layoutY="193.0" prefHeight="355.0" prefWidth="342.0">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -50,23 +31,64 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
+                                <TreeView fx:id="treeView" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="200.0" prefWidth="200.0" />
                                 <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                     <children>
-                                        <VBox fx:id="vboxTextFields" prefHeight="355.0" prefWidth="179.0" />
+                                        <Label id="title" fx:id="labelValue" prefHeight="35.0" prefWidth="171.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value" />
+                                        <TextField fx:id="textFieldValue" />
                                     </children>
                                 </VBox>
-                                <ListView fx:id="listViewEnvironments" prefHeight="356.0" prefWidth="129.0" />
                             </children>
                         </GridPane>
-                        <Label id="title" layoutX="500.0" layoutY="81.0" prefHeight="19.0" prefWidth="141.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment variables">
+                        <Label id="title" layoutX="560.0" layoutY="162.0" prefHeight="30.0" prefWidth="217.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment variables">
                             <font>
-                                <Font size="13.0" />
+                                <Font size="20.0" />
                             </font>
                         </Label>
-                        <Label id="labelError" fx:id="labelError" layoutX="840.0" layoutY="59.0" prefHeight="109.0" prefWidth="225.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" />
-                        <Label id="title" layoutX="55.0" layoutY="51.0" stylesheets="@../../../cssDesign/newExecution.css" text="Entities population">
+                        <Label id="labelError" fx:id="labelError" layoutX="496.0" layoutY="548.0" prefHeight="43.0" prefWidth="573.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" />
+                        <Label id="title" layoutX="60.0" layoutY="67.0" stylesheets="@../../../cssDesign/newExecution.css" text="Entities population">
                             <font>
-                                <Font size="13.0" />
+                                <Font size="20.0" />
+                            </font>
+                        </Label>
+                        <VBox layoutX="60.0" layoutY="100.0" prefHeight="124.0" prefWidth="313.0">
+                            <children>
+                                <Label fx:id="entity1Label" prefHeight="45.0" prefWidth="323.0" text="Entity 1:">
+                                    <font>
+                                        <Font size="20.0" />
+                                    </font>
+                                </Label>
+                                <Label text="Please enter population for following entity">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <Spinner fx:id="spinnerOfEntity1" editable="true" prefHeight="25.0" prefWidth="169.0" />
+                            </children>
+                        </VBox>
+                        <VBox layoutX="60.0" layoutY="246.0" prefHeight="124.0" prefWidth="313.0">
+                            <children>
+                                <Label fx:id="entity2Label" disable="true" prefHeight="45.0" prefWidth="323.0" text="Entity 2:">
+                                    <font>
+                                        <Font size="20.0" />
+                                    </font>
+                                </Label>
+                                <Label disable="true" text="Please enter population for following entity">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <Spinner fx:id="spinnerOfEntity2" prefHeight="25.0" prefWidth="169.0" />
+                            </children>
+                        </VBox>
+                        <Label id="title" layoutX="497.0" layoutY="70.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment properties">
+                            <font>
+                                <Font size="20.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="497.0" layoutY="122.0" stylesheets="@../../../cssDesign/newExecution.css" text="Please insert values to the following environment properties as you wish">
+                            <font>
+                                <Font size="15.0" />
                             </font>
                         </Label>
                     </children>

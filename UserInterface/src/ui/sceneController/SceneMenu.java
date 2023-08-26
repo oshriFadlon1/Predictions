@@ -1,6 +1,10 @@
 package ui.sceneController;
 
+import dto.DtoResponse;
+import dto.DtoResponsePreview;
+import engine.MainEngine;
 import exceptions.GeneralException;
+import interfaces.InterfaceMenu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -27,11 +32,16 @@ import java.util.ResourceBundle;
 
 public class SceneMenu implements Initializable {
 
-
+    private InterfaceMenu interfaceMenu = null;
     private DetailsController detailsController;
     private NewExecutionController newExecutionController;
     private ResultsController resultsController;
     private Stage primaryStage;
+
+
+    @FXML private Tab tabOfDetails;
+    @FXML private Tab tabOfNewExecution;
+    @FXML private Tab tabOfResults;
 
     @FXML private Button ButtonLoadFile;
     @FXML private TextField textFilePath;
@@ -41,6 +51,9 @@ public class SceneMenu implements Initializable {
     }
 
     public void onClickButtonLoadFile(ActionEvent e){
+        if (this.interfaceMenu == null){
+            this.interfaceMenu = new MainEngine();
+        }
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter xmlFilter = new FileChooser.ExtensionFilter("XML Files", "*.xml");
         fileChooser.getExtensionFilters().add(xmlFilter);
@@ -50,18 +63,20 @@ public class SceneMenu implements Initializable {
         }while (selectedFile == null);
 
         String absolutePath = selectedFile.getAbsolutePath();
-        textFilePath.setText(absolutePath);
-        XmlParser xmlParser = new XmlParser(absolutePath);
-        try {
-            WorldDefinition wrldDef = xmlParser.tryToReadXml();
-            loadEverythingFromWorldDefinition(wrldDef);
-        }
-        catch(GeneralException | JAXBException | IOException ex){
 
+        DtoResponse dtoResponse = interfaceMenu.createWorldDefinition(absolutePath);
+        if (dtoResponse.isSucceeded())
+        {
+            DtoResponsePreview wrldDef = interfaceMenu.showCurrentSimulation();
+            loadEverythingFromWorldDefinition(wrldDef);
+            textFilePath.setText(absolutePath);
+        }else {
+            // need to add a label about error in loading the file
+            // with the
         }
     }
 
-    private void loadEverythingFromWorldDefinition(WorldDefinition wrldDef) {
+    private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
         this.detailsController.loadFromWorldDef(wrldDef);
         this.newExecutionController.loadFromWorldDef(wrldDef);
     }
@@ -75,6 +90,7 @@ public class SceneMenu implements Initializable {
         loaderDetail.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderDetail.load();
+            tabOfDetails.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -85,6 +101,7 @@ public class SceneMenu implements Initializable {
         loaderNewExecution.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderNewExecution.load();
+            tabOfNewExecution.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

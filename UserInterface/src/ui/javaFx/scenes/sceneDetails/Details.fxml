@@ -10,61 +10,58 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1070.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.DetailsController">
-   <content>
-      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1068.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="50.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowSpan="8" />
-            <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
-            <AnchorPane id="Env" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowSpan="2">
-               <children>
-                  <Label fx:id="nameEnv" layoutX="23.0" layoutY="61.0" text="Label" />
-                  <Label fx:id="typeEnv" layoutX="23.0" layoutY="78.0" text="Label" />
-                  <Label fx:id="rangeEnv" layoutX="23.0" layoutY="95.0" text="Label" />
-                  <Label fx:id="titleEnv" layoutX="23.0" layoutY="23.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
-               </children>
-            </AnchorPane>
-            <AnchorPane id="Entity" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="2">
-               <children>
-                  <Label fx:id="titleEnt" layoutX="17.0" layoutY="14.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
-                  <Label fx:id="propName" layoutX="18.0" layoutY="53.0" text="Label" />
-                  <Label fx:id="propType" layoutX="18.0" layoutY="70.0" text="Label" />
-                  <Label fx:id="propRange" layoutX="18.0" layoutY="87.0" text="Label" />
-                  <Label fx:id="propInit" layoutX="18.0" layoutY="106.0" text="Label" />
-               </children>
-            </AnchorPane>
-            <AnchorPane id="Rules" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="2">
-               <children>
-                  <Label fx:id="ruleAcvition" layoutX="23.0" layoutY="55.0" text="Label" />
-                  <Label layoutX="23.0" layoutY="72.0" text="Label" />
-                  <Label layoutX="23.0" layoutY="89.0" text="Label" />
-                  <Label fx:id="titleRule" layoutX="23.0" layoutY="16.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
-               </children>
-            </AnchorPane>
-            <AnchorPane id="backGroudStyle" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" GridPane.rowSpan="2">
-               <children>
-                  <Label fx:id="termTicks" layoutX="23.0" layoutY="56.0" text="Label" />
-                  <Label fx:id="termSec" layoutX="23.0" layoutY="73.0" text="Label" />
-                  <Label fx:id="termUser" layoutX="23.0" layoutY="90.0" text="Label" />
-                  <Label fx:id="titleTerm" layoutX="23.0" layoutY="10.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
-               </children>
-            </AnchorPane>
-         </children>
-      </GridPane>
-   </content>
+    <content>
+        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1068.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints minWidth="10.0" prefWidth="50.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowSpan="8" />
+                <TreeView fx:id="treeView" onContextMenuRequested="#SelectedItem" onMouseClicked="#SelectedItem" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
+                <AnchorPane id="Env" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowSpan="2">
+                    <children>
+                        <Label fx:id="typeEnv" layoutX="17.0" layoutY="59.0" text="Label" />
+                        <Label fx:id="rangeEnv" layoutX="17.0" layoutY="88.0" text="Label" />
+                        <Label fx:id="titleEnv" layoutX="17.0" layoutY="12.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane id="Entity" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="2">
+                    <children>
+                        <Label fx:id="titleEnt" layoutX="17.0" layoutY="12.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
+                        <Label fx:id="propType" layoutX="17.0" layoutY="59.0" text="Label" />
+                        <Label fx:id="propRange" layoutX="17.0" layoutY="88.0" text="Label" />
+                        <Label fx:id="propInit" layoutX="17.0" layoutY="117.0" text="Label" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane id="Rules" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                    <children>
+                        <Label fx:id="ruleAcvition" layoutX="17.0" layoutY="59.0" text="Label" />
+                        <Label layoutX="17.0" layoutY="88.0" text="Label" />
+                        <Label layoutX="17.0" layoutY="117.0" text="Label" />
+                        <Label fx:id="titleRule" layoutX="17.0" layoutY="12.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane id="backGroudStyle" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" GridPane.rowSpan="2">
+                    <children>
+                        <Label fx:id="termTicks" layoutX="17.0" layoutY="59.0" text="Label" />
+                        <Label fx:id="termSec" layoutX="17.0" layoutY="88.0" text="Label" />
+                        <Label fx:id="termUser" layoutX="17.0" layoutY="117.0" text="Label" />
+                        <Label fx:id="titleTerm" layoutX="17.0" layoutY="12.0" styleClass="title" stylesheets="@../../../cssDesign/homePageDesign.css" text="Label" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </GridPane>
+    </content>
 </ScrollPane>
