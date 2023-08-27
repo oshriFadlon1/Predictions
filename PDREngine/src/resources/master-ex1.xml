@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PRD-world xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="predictions-v1.xsd">
 	<PRD-evironment>
-		<PRD-env-property type="decimal">
+		<PRD-env-property type="float">
 			<PRD-name>e1</PRD-name>
 			<PRD-range from="10" to="100"/>
 		</PRD-env-property>
@@ -20,7 +20,7 @@
 		<PRD-entity name="ent-1">
 			<PRD-population>100</PRD-population>
 			<PRD-properties>
-				<PRD-property type="decimal">
+				<PRD-property type="float">
 					<PRD-name>p1</PRD-name>
 					<PRD-range from="0" to="100"/>
 					<PRD-value random-initialize="false" init="0"/>

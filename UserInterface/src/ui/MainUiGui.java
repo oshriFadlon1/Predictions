@@ -2,14 +2,12 @@ package ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.scene.control.ScrollPane;
 import ui.sceneController.SceneMenu;
-import ui.sceneController.detailsController.DetailsController;
-import ui.sceneController.newExecutionController.NewExecutionController;
-
 import java.net.URL;
 
 public class MainUiGui extends Application {
@@ -29,7 +27,7 @@ public class MainUiGui extends Application {
         sceneMenu.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Oshri ya maniac");
-        Scene scene = new Scene(root, 1100, 780);
+        Scene scene = new Scene(root, 1115, 790);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

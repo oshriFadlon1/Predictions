@@ -78,7 +78,7 @@ public class SceneMenu implements Initializable {
 
     private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
         this.detailsController.loadFromWorldDef(wrldDef);
-        this.newExecutionController.loadFromWorldDef(wrldDef);
+        this.newExecutionController.loadFromWorldDef(wrldDef,interfaceMenu);
     }
 
     @Override
