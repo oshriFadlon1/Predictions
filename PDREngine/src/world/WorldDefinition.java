@@ -23,6 +23,7 @@ public class WorldDefinition implements Serializable {
 
     private Termination termination;
 
+    private PointCoord worldSize;
 
     private int numberOfThreads;
 
@@ -79,4 +80,11 @@ public class WorldDefinition implements Serializable {
         }
     }
 
+    public void setPointCoord(PointCoord coordsOfWorld) {
+        this.worldSize = coordsOfWorld;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.numberOfThreads = threadCount;
+    }
 }
