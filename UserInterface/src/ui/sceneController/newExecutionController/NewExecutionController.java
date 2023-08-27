@@ -5,13 +5,18 @@ import dto.DtoResponsePreview;
 import dto.DtoUiToEngine;
 import environment.EnvironmentDefinition;
 import interfaces.InterfaceMenu;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import range.Range;
+import ui.javaFx.scenes.sceneNewExecution.tableViewModel;
 import utility.Utilities;
 
 import java.net.URL;
@@ -51,12 +56,32 @@ public class NewExecutionController implements Initializable{
     private TextField textFieldEntity1;
     @FXML
     private TextField textFieldEntity2;
+    @FXML
+    private Label subTitleEntity2;
+
+//    @FXML
+//    private TableView<tableViewModel> tablePreviewValue;
+//    @FXML
+//    private TableColumn<tableViewModel, String> tableColName;
+//
+//    @FXML
+//    private TableColumn<tableViewModel, String> tableColValue;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        this.tablePreviewValue = new TableView<>();
+//        this.tablePreviewValue.getItems().addAll(tableViewModels);
+//        this.tableColName = new TableColumn<>();
+//        this.tableColValue = new TableColumn<>();
+//        tableColName.setCellValueFactory(new PropertyValueFactory<>("Name"));
+//        tableColValue.setCellValueFactory(new PropertyValueFactory<>("Value"));
+//        tablePreviewValue.setItems(tableViewModels);
         labelError.setText("Label error");
     }
-
+//    private ObservableList<tableViewModel> tableViewModels = FXCollections.observableArrayList(
+//            new tableViewModel("population of the first entity", "0"),
+//            new tableViewModel("population of the Second entity", "0")
+//            );
     public void loadFromWorldDef(DtoResponsePreview worldDef,InterfaceMenu i_interfaceMenu){
         this.worldPreview = worldDef;
         this.EnvToValue = new HashMap<>();
@@ -89,7 +114,7 @@ public class NewExecutionController implements Initializable{
             }
 
             mainRootItem.getChildren().addAll(rootItemEnv);
-
+            //tableViewModels.add(new tableViewModel(envName,"no value"));
         }
         List<DtoResponseEntities> entities = worldDef.getDtoResponseEntities();
         entity1Label.setText(entities.get(0).getEntityName());
@@ -101,6 +126,7 @@ public class NewExecutionController implements Initializable{
             textFieldEntity2.setDisable(false);
             textFieldEntity2.setVisible(true);
             entity2Label.setText(entities.get(1).getEntityName());
+            subTitleEntity2.setVisible(true);
         }
     }
 
@@ -197,8 +223,9 @@ public class NewExecutionController implements Initializable{
                 labelErrorEntity1.setVisible(true);
             }
             else{
-                labelErrorEntity1.setVisible(false);
+                labelErrorEntity1.setVisible(true);
                 this.population1 = parsedValue;
+                this.labelErrorEntity1.setText(this.entity1Label.getText() + " population: " + this.population1);
             }
         }
     }
@@ -218,8 +245,9 @@ public class NewExecutionController implements Initializable{
                 labelErrorEntity2.setVisible(true);
             }
             else{
-                labelErrorEntity2.setVisible(false);
+                labelErrorEntity2.setVisible(true);
                 this.population2 = parsedValue;
+                this.labelErrorEntity2.setText(this.entity2Label.getText() + " population: " + this.population2);
             }
         }
     }

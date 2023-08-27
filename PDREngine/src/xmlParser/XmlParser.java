@@ -5,6 +5,7 @@ import enums.Operation;
 import environment.EnvironmentDefinition;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
+import pointCoord.PointCoord;
 import potentialerror.PotentionalError;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
@@ -13,7 +14,7 @@ import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
 import rule.action.*;
-import shema.genereated.*;
+import shema.generated.*;
 import termination.Termination;
 import utility.Utilities;
 import world.WorldDefinition;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class XmlParser {
 
     private String xmlPath;
-    private static final String xmlFiles = "shema.genereated";
+    private static final String xmlFiles = "shema.generated";
 
 
     public XmlParser(String xmlPath) {
@@ -68,12 +69,21 @@ public class XmlParser {
     }
 
     private WorldDefinition translateFromXmlToClassInstances(PRDWorld prdWorld) throws GeneralException{
+        //getting thread count from xml object
+        int threadCount = prdWorld.getPRDThreadCount();
+        //getting grid sizes and generating pointcoord according to rows and cols
+        PRDWorld.PRDGrid gridOfWorld = prdWorld.getPRDGrid();
+        int worldRows = gridOfWorld.getRows();
+        int worldCols = gridOfWorld.getColumns();
+        PointCoord coordsOfWorld = new PointCoord(worldRows, worldCols);
         // create the terminations from xml object
         Termination terminations = createTerminationFromPrdTermination(prdWorld.getPRDTermination());
         // create new world
         WorldDefinition createdWorld = new WorldDefinition(terminations);
+        createdWorld.setPointCoord(coordsOfWorld);
+        createdWorld.setThreadCount(threadCount);
         // create the environments form xml object
-        Map<String, EnvironmentDefinition> environments = createEnvironmentsFromPrdEnvironment(prdWorld.getPRDEvironment());
+        Map<String, EnvironmentDefinition> environments = createEnvironmentsFromPrdEnvironment(prdWorld.getPRDEnvironment());
         createdWorld.setAllEnvironments(environments);
         //  create the entities from xml object
         List<EntityDefinition> entityDefinitions = createEntityDefinitionsFromPrdEntity(prdWorld.getPRDEntities());
@@ -87,7 +97,7 @@ public class XmlParser {
     }
 
 
-    private Map<String , EnvironmentDefinition> createEnvironmentsFromPrdEnvironment(PRDEvironment prdEvironment) throws GeneralException{
+    private Map<String , EnvironmentDefinition> createEnvironmentsFromPrdEnvironment(PRDEnvironment prdEvironment) throws GeneralException{
         List<PRDEnvProperty> propertyList = prdEvironment.getPRDEnvProperty();
         Range range = null;
         Map<String, EnvironmentDefinition> result = new HashMap<>();
@@ -105,32 +115,39 @@ public class XmlParser {
             else{
                 result.put(name, new EnvironmentDefinition(new PropertyDefinition(name, type)));
             }
-
         }
 
         return result;
     }
 
     private Termination createTerminationFromPrdTermination(PRDTermination prdTermination) throws GeneralException{
-        List<Object> listOfTerminations = prdTermination.getPRDByTicksOrPRDBySecond();
-        Termination terminations = null;
+        List<Object> listOfTerminations = prdTermination.getPRDBySecondOrPRDByTicks();
+        Termination terminations = new Termination(-1, -1);
         PRDByTicks elem1 = null;
         PRDBySecond elem2 = null;
+        Object byUser = prdTermination.getPRDByUser();
         if(listOfTerminations.size() == 2 ){
             elem1 = (PRDByTicks)listOfTerminations.get(0);
             elem2 = (PRDBySecond)listOfTerminations.get(1);
-            terminations = new Termination(elem1.getCount(), elem2.getCount());
+            terminations.setTicks(elem1.getCount());
+            terminations.setSeconds(elem2.getCount());
         }
-        else{
+        else if(listOfTerminations.size() == 1){
             if(listOfTerminations.get(0) instanceof PRDByTicks){
                 elem1 = (PRDByTicks)listOfTerminations.get(0);
-                terminations = new Termination(elem1.getCount(), -1);
-
+                terminations.setTicks(elem1.getCount());
             }
             else{
                 elem2 = (PRDBySecond)listOfTerminations.get(0);
-                terminations = new Termination(-1, elem2.getCount());
+                terminations.setSeconds(elem2.getCount());
             }
+        }
+
+        if(byUser != null){
+            terminations.setByUser(true);
+        }
+        else{
+            terminations.setByUser(false);
         }
         return terminations;
     }
@@ -141,17 +158,19 @@ public class XmlParser {
         List<PRDEntity> allPrdEntities = prdEntities.getPRDEntity();
         for (PRDEntity prdEntity : allPrdEntities) {
             String name = prdEntity.getName();
-            int population = prdEntity.getPRDPopulation();
+            //int population = prdEntity.getPRDPopulation();
             if (entityDefinitionName2EntityDefinition.containsKey(name)) {
                 throw new GeneralException("Entity " + name + " already exists");
             }
-            if(population < 0){
-                throw new GeneralException("Population is less than 0");
-            }
-
-            entityDefinitionName2EntityDefinition.put(name,
-                    new EntityDefinition(name, population, createEntityPropertiesDefinitionFromPrd(prdEntity.getPRDProperties(), name)));
-            entityDefinitions.add(new EntityDefinition(name, population, createEntityPropertiesDefinitionFromPrd(prdEntity.getPRDProperties(), name)));
+//            if(population < 0){
+//                throw new GeneralException("Population is less than 0");
+//            }
+            EntityDefinition newEntityDef = new EntityDefinition(name, createEntityPropertiesDefinitionFromPrd(prdEntity.getPRDProperties(), name));
+            entityDefinitionName2EntityDefinition.put(name, newEntityDef);
+            entityDefinitions.add(newEntityDef);
+//            entityDefinitionName2EntityDefinition.put(name,
+//                    new EntityDefinition(name, population, createEntityPropertiesDefinitionFromPrd(prdEntity.getPRDProperties(), name)));
+//            entityDefinitions.add(new EntityDefinition(name, population, createEntityPropertiesDefinitionFromPrd(prdEntity.getPRDProperties(), name)));
         }
         return entityDefinitions;
     }
@@ -250,6 +269,12 @@ public class XmlParser {
                     break;
                 case KILL:
                     actionToAdd = convertPrdActionToKill(prdAction, entityDefinitionList);
+                    break;
+                case PROXIMITY:
+                    actionToAdd = null;
+                    break;
+                case REPLACE:
+                    actionToAdd = null;
                     break;
                 default:
                     throw new GeneralException("Action type does not exist.");

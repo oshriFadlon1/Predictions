@@ -26,6 +26,11 @@ public class EntityDefinition implements Serializable {
         this.propertyDefinition = propertyDefinition;
     }
 
+    public EntityDefinition(String name, Map<String, PropertyDefinitionEntity> propertyDefinition) {
+        this.entityName = name;
+        this.propertyDefinition = propertyDefinition;
+    }
+
     public String getEntityName() {
         return entityName;
     }
