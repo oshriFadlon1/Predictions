@@ -175,7 +175,7 @@ public class MainEngine implements InterfaceMenu {
     }
     //func 3
     @Override
-    public DtoResponseSimulationEnded runSimulations(DtoEnvUiToEngine envInputFromUser){
+    public DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser){
         this.worldDefinitionForSimulation.resetEntityDefinition();
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         DtoResponseSimulationEnded responseForUser = null;
@@ -259,13 +259,13 @@ public class MainEngine implements InterfaceMenu {
         return environmentsForUser;
     }
 
-    public Object initializeRandomEnvironmentValues(EnvironmentDefinition currEnv, PropertyDefinition propertyDef){
+    public Object initializeRandomEnvironmentValues(PropertyDefinition propertyDef){
         Object initVal = null;
         switch(propertyDef.getPropertyType().toLowerCase()){
-            case "decimal":
-                int initEnvValInt = Utilities.initializeRandomInt((int)propertyDef.getPropertyRange().getFrom(), (int)propertyDef.getPropertyRange().getTo());
-                initVal = initEnvValInt;
-                break;
+//            case "decimal":
+//                int initEnvValInt = Utilities.initializeRandomInt((int)propertyDef.getPropertyRange().getFrom(), (int)propertyDef.getPropertyRange().getTo());
+//                initVal = initEnvValInt;
+//                break;
             case "float":
                 float initEnvValFloat = Utilities.initializeRandomFloat(propertyDef.getPropertyRange());
                 initVal = initEnvValFloat;

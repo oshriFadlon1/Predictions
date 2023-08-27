@@ -1,5 +1,7 @@
 package dto;
 
+import pointCoord.PointCoord;
+
 import java.util.List;
 
 public class DtoResponsePreview {
@@ -8,12 +10,14 @@ public class DtoResponsePreview {
 
     private List<DtoResponseRules> dtoResponseRules;
     private DtoResponsePreviewTermination dtoResponseTermination;
+    private PointCoord worldSize;
 
     public DtoResponsePreview(DtoEnvironments dtoEnvironments, List<DtoResponseEntities> dtoResponseEntities, List<DtoResponseRules> dtoResponseRules, DtoResponsePreviewTermination dtoResponseTermination) {
         this.dtoEnvironments = dtoEnvironments;
         this.dtoResponseEntities = dtoResponseEntities;
         this.dtoResponseRules = dtoResponseRules;
         this.dtoResponseTermination = dtoResponseTermination;
+        this.worldSize = new PointCoord(100,100);
     }
 
     public List<DtoResponseEntities> getDtoResponseEntities() {
@@ -46,6 +50,14 @@ public class DtoResponsePreview {
 
     public void setDtoEnvironments(DtoEnvironments dtoEnvironments) {
         this.dtoEnvironments = dtoEnvironments;
+    }
+
+    public PointCoord getWorldSize() {
+        return worldSize;
+    }
+
+    public void setWorldSize(PointCoord worldSize) {
+        this.worldSize = worldSize;
     }
 
     @Override
