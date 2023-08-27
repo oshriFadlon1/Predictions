@@ -91,12 +91,12 @@ public class MainEngine implements InterfaceMenu {
     }
 
     private List<DtoResponseEntities> getEntitiesInfoSimulation() {
-        List<PropertyDefinitionEntity> propertyDefinitionEntityList = new ArrayList<>();
         List<DtoResponseEntities> entities = new ArrayList<>();
         String nameEntity = "";
         int population = 0;
         boolean isTheFirst = true;
         for (EntityDefinition entityDefinition: worldDefinitionForSimulation.getEntityDefinitions()) {
+            List<PropertyDefinitionEntity> propertyDefinitionEntityList = new ArrayList<>();
             if (isTheFirst) {
                 nameEntity = entityDefinition.getEntityName();
                 isTheFirst = false;

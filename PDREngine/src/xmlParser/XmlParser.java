@@ -270,6 +270,12 @@ public class XmlParser {
                 case KILL:
                     actionToAdd = convertPrdActionToKill(prdAction, entityDefinitionList);
                     break;
+                case PROXIMITY:
+                    actionToAdd = null;
+                    break;
+                case REPLACE:
+                    actionToAdd = null;
+                    break;
                 default:
                     throw new GeneralException("Action type does not exist.");
             }
