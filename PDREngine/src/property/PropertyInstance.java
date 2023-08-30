@@ -5,10 +5,16 @@ import java.io.Serializable;
 public class PropertyInstance implements Serializable {
     private PropertyDefinition propertyDefinition;
     private Object propValue;
+    private int currentTicksWithoutChange;
+    private int numberOfReset;
+    private int totalTickWithoutChange;
 
     public PropertyInstance(PropertyDefinition propertyDefinition, Object propValue) {
         this.propertyDefinition = propertyDefinition;
         this.propValue = propValue;
+        this.currentTicksWithoutChange = 0;
+        this.numberOfReset = 0;
+        this.totalTickWithoutChange = 0;
     }
 
     public PropertyInstance(PropertyDefinition propertyDefinition) {
