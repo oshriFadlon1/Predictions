@@ -54,12 +54,8 @@ public class ActionDecrease extends AbstractAction implements Serializable {
 
         // actual calculation
         Object result;// need to take the value from
+        result = ((Number)x).floatValue() - ((Number)y).floatValue();
 
-        if (propertyInstance.getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = ((Number)x).intValue() - ((Number)y).intValue();
-        }else {
-            result = ((Number)x).floatValue() - ((Number)y).floatValue();
-        }
 
 
         // updating result on the property

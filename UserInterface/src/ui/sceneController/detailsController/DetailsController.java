@@ -27,7 +27,8 @@ public class DetailsController implements Initializable {
 
     @FXML private Label rangeEnv;
 
-    @FXML private Label ruleAcvition;
+    @FXML private Label primeEntRule;
+    @FXML private Label ruleActivation;
 
     @FXML private Label termSec;
 

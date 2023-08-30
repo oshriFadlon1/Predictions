@@ -39,11 +39,6 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
         Object y = null,x = null,result = null;
-//        if ((!Utilities.isInteger(this.arg1) && !Utilities.isInteger(this.arg2)) ||
-//                (!Utilities.isFloat(this.arg1) && !Utilities.isFloat(this.arg2)))
-//        {
-//            throw new IllegalArgumentException("multiply action can't operate on a none number property " + super.getPropertyPlacement());
-//        }
 
         try {
             x = context.getValueFromString(this.arg1);
@@ -51,14 +46,7 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
         } catch (GeneralException e) {
             throw e;
         }
-
-        if (context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement()).getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = ((Number)x).intValue() * ((Number)y).intValue();
-        }
-        else{
-            result = ((Number)x).floatValue() * ((Number)y).floatValue();
-        }
-
+        result = ((Number)x).floatValue() * ((Number)y).floatValue();
 
         // updating result on the property
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement());

@@ -80,7 +80,7 @@
 					</PRD-secondary-entity>
 					<PRD-condition singularity="multiple" logical="or">
 						<PRD-condition singularity="single" entity="ent-1" property="ticks(ent-1.p1)" operator="bt" value="4"/>
-						<PRD-condition singularity="single" entity="ent-1" property="p2" operator="lt" value="3"/>
+						<PRD-condition singularity="single" entity="ent-2" property="p2" operator="lt" value="3"/>
 						<PRD-condition singularity="multiple" logical="and">
 							<PRD-condition singularity="single" entity="ent-1" property="p4" operator="!=" value="nothing"/>
 							<PRD-condition singularity="single" entity="ent-1" property="p3" operator="=" value="environment(e2)"/>

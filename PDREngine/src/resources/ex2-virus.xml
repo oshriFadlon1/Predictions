@@ -52,7 +52,7 @@
 		</PRD-rule>
 		<PRD-rule name="heal">
 			<PRD-actions>
-				<PRD-action type="condition">
+				<PRD-action type="condition" entity="Sick">
 					<PRD-condition singularity="multiple" logical="and">
 						<PRD-condition singularity="single" entity="Sick" property="vacinated" operator="=" value="true"/>
 						<PRD-condition singularity="single" entity="Sick" property="ticks(Sick.vacinated)" operator="bt" value="30"/>

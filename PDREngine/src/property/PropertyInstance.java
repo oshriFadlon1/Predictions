@@ -41,6 +41,28 @@ public class PropertyInstance implements Serializable {
         return propValue;
     }
 
+    public void increaseTick(){
+        this.currentTicksWithoutChange++;
+
+    }
+    public void resetTicksToZero(){
+        this.totalTickWithoutChange += this.currentTicksWithoutChange;
+        this.currentTicksWithoutChange = 0;
+        this.numberOfReset++;
+
+    }
+    public int getCurrentTicksWithoutChange() {
+        return currentTicksWithoutChange;
+    }
+
+    public void setCurrentTicksWithoutChange(int currentTicksWithoutChange) {
+        this.currentTicksWithoutChange = currentTicksWithoutChange;
+    }
+
+    public float calculateAvgTicksWithoutChange(){
+        return (float)this.totalTickWithoutChange / numberOfReset;
+    }
+
     @Override
     public String toString() {
         return "\r\npropertyDefinition: " + propertyDefinition +
