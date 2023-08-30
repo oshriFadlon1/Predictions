@@ -1,6 +1,7 @@
 package rule.action;
 
 import entity.EntityDefinition;
+import entity.SecondEntity;
 import enums.Operation;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
@@ -14,8 +15,8 @@ public class ActionCondition extends AbstractAction implements Serializable {
     private List<IAction> trueResult;
     private List<IAction> falseResult;
 
-    public ActionCondition(EntityDefinition entityDefinition, IConditionComponent theCondition, List<IAction> trueResult, List<IAction> falseResult) {
-        super(Operation.CONDITION, entityDefinition);
+    public ActionCondition(EntityDefinition entityDefinition, IConditionComponent theCondition, List<IAction> trueResult, List<IAction> falseResult, SecondEntity secondEntity) {
+        super(Operation.CONDITION, entityDefinition, secondEntity);
         this.theCondition = theCondition;
         this.trueResult = trueResult;
         this.falseResult = falseResult;

@@ -27,7 +27,7 @@ public class MainUiGui extends Application {
         sceneMenu.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Oshri ya maniac");
-        Scene scene = new Scene(root, 1115, 790);
+        Scene scene = new Scene(root, 1115, 870);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
