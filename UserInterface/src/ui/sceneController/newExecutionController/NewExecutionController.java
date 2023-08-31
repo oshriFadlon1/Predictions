@@ -25,11 +25,6 @@ public class NewExecutionController implements Initializable{
 
     @FXML
     private Label labelError;
-
-    @FXML
-    private Spinner<Integer> spinnerOfEntity1;
-    @FXML
-    private Spinner<Integer> spinnerOfEntity2;
     @FXML
     private Label entity1Label;
     @FXML
@@ -40,10 +35,20 @@ public class NewExecutionController implements Initializable{
     private TextField textFieldValue;
     @FXML
     private Label labelValue;
-
-
-
-
+    @FXML
+    private Button buttonValue;
+    @FXML
+    private Label labelErrorEntity1;
+    @FXML
+    private Label labelErrorEntity2;
+    @FXML
+    private Button buttonValueEntity1;
+    @FXML
+    private Button buttonValueEntity2;
+    @FXML
+    private TextField textFieldEntity1;
+    @FXML
+    private TextField textFieldEntity2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -84,24 +89,32 @@ public class NewExecutionController implements Initializable{
         List<DtoResponseEntities> entities = worldDef.getDtoResponseEntities();
         entity1Label.setText(entities.get(0).getEntityName());
         if(entities.size() == 2){
+            entity2Label.setVisible(true);
             entity2Label.setDisable(false);
+            buttonValueEntity2.setDisable(false);
+            buttonValueEntity2.setVisible(true);
+            textFieldEntity2.setDisable(false);
+            textFieldEntity2.setVisible(true);
             entity2Label.setText(entities.get(1).getEntityName());
-            spinnerOfEntity2.setEditable(true);
         }
     }
 
     public void selectItem(){
         TreeItem<String> item = treeView.getSelectionModel().getSelectedItem();
         if(item != null){
-            if(item.getValue().substring(0, 6).equalsIgnoreCase("please")){
+            if(item.getValue().length() > 6 && item.getValue().substring(0, 6).equalsIgnoreCase("please")){
                 textFieldValue.setVisible(true);
                 textFieldValue.setDisable(false);
                 labelValue.setVisible(true);
+                buttonValue.setVisible(true);
+                buttonValue.setDisable(false);
             }
             else{
                 textFieldValue.setVisible(false);
                 textFieldValue.setDisable(true);
                 labelValue.setVisible(false);
+                buttonValue.setVisible(false);
+                buttonValue.setDisable(true);
             }
         }
     }
