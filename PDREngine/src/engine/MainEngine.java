@@ -91,12 +91,12 @@ public class MainEngine implements InterfaceMenu {
     }
 
     private List<DtoResponseEntities> getEntitiesInfoSimulation() {
-        List<PropertyDefinitionEntity> propertyDefinitionEntityList = new ArrayList<>();
         List<DtoResponseEntities> entities = new ArrayList<>();
         String nameEntity = "";
         int population = 0;
         boolean isTheFirst = true;
         for (EntityDefinition entityDefinition: worldDefinitionForSimulation.getEntityDefinitions()) {
+            List<PropertyDefinitionEntity> propertyDefinitionEntityList = new ArrayList<>();
             if (isTheFirst) {
                 nameEntity = entityDefinition.getEntityName();
                 isTheFirst = false;
@@ -175,7 +175,7 @@ public class MainEngine implements InterfaceMenu {
     }
     //func 3
     @Override
-    public DtoResponseSimulationEnded runSimulations(DtoEnvUiToEngine envInputFromUser){
+    public DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser){
         this.worldDefinitionForSimulation.resetEntityDefinition();
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         DtoResponseSimulationEnded responseForUser = null;
@@ -259,13 +259,13 @@ public class MainEngine implements InterfaceMenu {
         return environmentsForUser;
     }
 
-    public Object initializeRandomEnvironmentValues(EnvironmentDefinition currEnv, PropertyDefinition propertyDef){
+    public Object initializeRandomEnvironmentValues(PropertyDefinition propertyDef){
         Object initVal = null;
         switch(propertyDef.getPropertyType().toLowerCase()){
-            case "decimal":
-                int initEnvValInt = Utilities.initializeRandomInt((int)propertyDef.getPropertyRange().getFrom(), (int)propertyDef.getPropertyRange().getTo());
-                initVal = initEnvValInt;
-                break;
+//            case "decimal":
+//                int initEnvValInt = Utilities.initializeRandomInt((int)propertyDef.getPropertyRange().getFrom(), (int)propertyDef.getPropertyRange().getTo());
+//                initVal = initEnvValInt;
+//                break;
             case "float":
                 float initEnvValFloat = Utilities.initializeRandomFloat(propertyDef.getPropertyRange());
                 initVal = initEnvValFloat;

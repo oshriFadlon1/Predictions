@@ -5,9 +5,7 @@ import engine.MainEngine;
 import environment.EnvironmentDefinition;
 import interfaces.InterfaceMenu;
 import property.PropertyDefinition;
-import property.PropertyDefinitionEntity;
 
-import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -67,7 +65,7 @@ public class MainUi {
             case 3:
                 //run simulation
                 DtoEnvironments environmentsAvailable = interfaceMenu.sendEnvironmentsToUser();
-                DtoEnvUiToEngine environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
+                DtoUiToEngine environmentsForEngine = printAndValidateEnvironments(environmentsAvailable.getEnvironmentDefinitions(),interfaceMenu);
                 DtoResponseSimulationEnded dtoResponseSimulationEnded = interfaceMenu.runSimulations(environmentsForEngine);
                 System.out.println("Simulation run ended.");
                 System.out.println("Simulation id: " + dtoResponseSimulationEnded.getSimulationId());
@@ -301,7 +299,7 @@ public class MainUi {
 //        System.out.println("   Ticks: " + simulationPreview.getDtoResponseTermination().getTicks());
     }
 
-    private static DtoEnvUiToEngine printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
+    private static DtoUiToEngine printAndValidateEnvironments(Map<String, EnvironmentDefinition> environmentDefinitions, InterfaceMenu interfaceMenu) {
         Map<String, Object> environmentList = new HashMap<>();
 
         int userChoiceEnv;
@@ -347,18 +345,18 @@ public class MainUi {
             if(idToIsInitializedByUser.get(id) == false) {
                 String envName = numberToEnvironmentMap.get(id);
                 EnvironmentDefinition envDef = environmentDefinitions.get(envName);
-                Object initVal = interfaceMenu.initializeRandomEnvironmentValues(envDef, envDef.getEnvPropertyDefinition());
+                Object initVal = interfaceMenu.initializeRandomEnvironmentValues(envDef.getEnvPropertyDefinition());
                 environmentList.put(envName, initVal);
             }
         }
 
-        DtoEnvUiToEngine allEnvInstances = new DtoEnvUiToEngine(environmentList);
+        DtoUiToEngine allEnvInstances = new DtoUiToEngine(environmentList,100,100);
         printEnvValueToUser(allEnvInstances);
 
         return allEnvInstances;
     }
 
-    private static void printEnvValueToUser(DtoEnvUiToEngine allEnvInstances) {
+    private static void printEnvValueToUser(DtoUiToEngine allEnvInstances) {
         Object value;
         for (String key : allEnvInstances.getEnvironmentToValue().keySet()) {
             value = allEnvInstances.getEnvironmentToValue().get(key);

@@ -54,13 +54,7 @@ public class ActionIncrease extends AbstractAction implements Serializable {
         // actual calculation
         Object result;// need to take the value from
 
-        if (propertyInstance.getPropertyDefinition().getPropertyType().equalsIgnoreCase("DECIMAL")){
-            result = ((Number)x).intValue() + ((Number)y).intValue();
-        }
-        else {
-            result = ((Number)x).floatValue() + ((Number)y).floatValue();
-        }
-
+        result = ((Number)x).floatValue() + ((Number)y).floatValue();
         // updating result on the property
         propertyInstance.setPropValue(result);
     }

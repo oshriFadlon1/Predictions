@@ -27,7 +27,8 @@ public class DetailsController implements Initializable {
 
     @FXML private Label rangeEnv;
 
-    @FXML private Label ruleAcvition;
+    @FXML private Label primeEntRule;
+    @FXML private Label ruleActivation;
 
     @FXML private Label termSec;
 
@@ -62,7 +63,6 @@ public class DetailsController implements Initializable {
         }
 
         TreeItem<String> Ent = rootItem.getChildren().get(1);
-        System.out.println(Ent.getValue());
         for (DtoResponseEntities entityDefinition: this.worldPreview.getDtoResponseEntities()) {
             TreeItem<String> EntName = new TreeItem<>(entityDefinition.getEntityName());
             for (PropertyDefinitionEntity propertyDefinitionEntity:entityDefinition.getPropertyDefinitionEntityList()) {
@@ -72,7 +72,6 @@ public class DetailsController implements Initializable {
             Ent.getChildren().addAll(EntName);
         }
         TreeItem<String> Rule = rootItem.getChildren().get(2);
-        System.out.println(Rule.getValue());
         for (DtoResponseRules rule : this.worldPreview.getDtoResponseRules()) {
             TreeItem<String> RuleName = new TreeItem<>(rule.getRuleName());
             Rule.getChildren().addAll(RuleName);
@@ -95,13 +94,10 @@ public class DetailsController implements Initializable {
 
     public void SelectedItem(){
         TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
-        if (selectedItem == null){
+        if (selectedItem == null || this.worldPreview == null || selectedItem.getValue().equalsIgnoreCase("World")){
             return;
         }
-        if (this.worldPreview == null){
-            return;
-        }
-        System.out.println(selectedItem.getValue());
+
         if (selectedItem.getParent().getValue().equalsIgnoreCase("Environment")){
             updateLabelEnv(selectedItem.getValue());
         }

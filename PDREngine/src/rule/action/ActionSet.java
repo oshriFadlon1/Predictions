@@ -1,6 +1,7 @@
 package rule.action;
 
 import entity.EntityDefinition;
+import entity.SecondEntity;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
@@ -13,8 +14,8 @@ public class ActionSet extends AbstractAction implements Serializable {
     private String propertyName;
     private String value;
 
-    public ActionSet(EntityDefinition entityDefinition, String propertyName, String value) {
-        super(Operation.SET,entityDefinition);
+    public ActionSet(EntityDefinition entityDefinition, String propertyName, String value, SecondEntity secondEntity) {
+        super(Operation.SET,entityDefinition, secondEntity);
         this.propertyName = propertyName;
         this.value = value;
     }

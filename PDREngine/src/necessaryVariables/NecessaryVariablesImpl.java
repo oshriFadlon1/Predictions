@@ -1,10 +1,13 @@
 package necessaryVariables;
 
 import entity.EntityInstance;
+import entity.SecondEntity;
+import enums.CreationType;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import utility.Utilities;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.Map;
 
 public class NecessaryVariablesImpl implements NecessaryVariables, Serializable {
     private EntityInstance primaryEntityInstance;
+    private EntityInstance secondaryEntityInstance;
+    private List<EntityInstance> secondaryInstanceManager;
     private List<EntityInstance> entityInstanceManager;
     private Map<String, EnvironmentInstance> activeEnvironment;
 
@@ -65,6 +70,21 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         entityToRemove.getDefinitionOfEntity().setEndPopulation(entityToRemove.getDefinitionOfEntity().getEndPopulation() - 1);
         entityInstanceManager.remove(entityToRemove);
     }
+
+    @Override
+    public void killAndCreateEntity(EntityInstance entityInstance, String secondaryInstance, CreationType creationType){
+        switch(creationType){
+            case SCRATCH:
+               //EntityInstance newEntityInstance = new EntityInstance();
+                break;
+            case DERIVED:
+                break;
+        }
+
+        removeEntity(entityInstance);
+    }
+
+
 
     @Override
     public EnvironmentInstance getEnvironmentVariable(String name) {

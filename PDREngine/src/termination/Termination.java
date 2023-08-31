@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Termination implements Serializable {
     private int ticks;
     private int seconds;
+    private boolean byUser;
 
     public Termination(int ticks, int seconds) {
         this.ticks = ticks;
@@ -54,6 +55,14 @@ public class Termination implements Serializable {
         }
 
         return result;
+    }
+
+    public void setByUser(boolean b) {
+        this.byUser = b;
+    }
+
+    public boolean getBUser(){
+        return this.byUser;
     }
 
     @Override

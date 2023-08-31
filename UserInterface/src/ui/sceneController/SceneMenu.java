@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -45,6 +42,8 @@ public class SceneMenu implements Initializable {
 
     @FXML private Button ButtonLoadFile;
     @FXML private TextField textFilePath;
+    @FXML
+    private Label fileStatus;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -54,6 +53,7 @@ public class SceneMenu implements Initializable {
         if (this.interfaceMenu == null){
             this.interfaceMenu = new MainEngine();
         }
+        fileStatus.setText("File Status: ");
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter xmlFilter = new FileChooser.ExtensionFilter("XML Files", "*.xml");
         fileChooser.getExtensionFilters().add(xmlFilter);
@@ -70,15 +70,15 @@ public class SceneMenu implements Initializable {
             DtoResponsePreview wrldDef = interfaceMenu.showCurrentSimulation();
             loadEverythingFromWorldDefinition(wrldDef);
             textFilePath.setText(absolutePath);
+            fileStatus.setText(fileStatus.getText() + dtoResponse.getResponse());
         }else {
-            // need to add a label about error in loading the file
-            // with the
+            fileStatus.setText(fileStatus.getText() + dtoResponse.getResponse());
         }
     }
 
     private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
         this.detailsController.loadFromWorldDef(wrldDef);
-        this.newExecutionController.loadFromWorldDef(wrldDef);
+        this.newExecutionController.loadFromWorldDef(wrldDef,interfaceMenu);
     }
 
     @Override

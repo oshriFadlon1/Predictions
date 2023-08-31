@@ -1,6 +1,7 @@
 package rule.action;
 
 import entity.EntityDefinition;
+import entity.SecondEntity;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
@@ -11,8 +12,8 @@ public class ActionKill extends AbstractAction implements Serializable {
 
     private String entityName;
 
-    public ActionKill(EntityDefinition entityDefinition, String entityName) {
-        super(Operation.KILL, entityDefinition);
+    public ActionKill(EntityDefinition entityDefinition, String entityName, SecondEntity secondEntity) {
+        super(Operation.KILL, entityDefinition, secondEntity);
         this.entityName = entityName;
     }
 
