@@ -119,11 +119,21 @@ public class WorldInstance implements Serializable {
                         necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
                         // create a copy of the entity instance list to run on it.
                         List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
+                        // get secondary entities
+
                         // invoke each action on each entity
                         for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
                             for(IAction currentActionToInvoke: allActionsForCurrentRule){
                                 necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
                                 currentActionToInvoke.invoke(necessaryVariables);
+                                if (necessaryVariables.getEntityToKill() != null){
+                                    this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                }
+                                if(necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                        necessaryVariables.getEntityToKillAndCreate().getKill() != null){
+                                    this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                }
+                                necessaryVariables.resetKillAndCreateAndKill();
                             }
                         }
                     }

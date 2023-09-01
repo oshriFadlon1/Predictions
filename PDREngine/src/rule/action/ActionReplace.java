@@ -30,6 +30,6 @@ public class ActionReplace extends AbstractAction implements Serializable{
     }
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        context.killAndCreateEntity(context.getPrimaryEntityInstance(), this.entityToCreate, this.creationType);
+        context.killAndCreateEntity(context.getPrimaryEntityInstance(), context.getSecondaryEntityInstance(), this.creationType);
     }
 }

@@ -66,4 +66,11 @@ public class EntityInstance implements Serializable {
         this.allProperties.put(propertyName, propertyToAdd);
     }
 
+    public PointCoord getPositionInWorld() {
+        return positionInWorld;
+    }
+
+    public void setPositionInWorld(PointCoord positionInWorld) {
+        this.positionInWorld = positionInWorld;
+    }
 }

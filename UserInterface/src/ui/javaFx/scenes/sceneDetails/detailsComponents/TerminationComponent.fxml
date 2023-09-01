@@ -3,11 +3,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="backGroudStyle" prefHeight="194.0" prefWidth="282.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.terminationComponentController.TreminationComponentController">
+<AnchorPane id="backGroudStyle" prefHeight="207.0" prefWidth="282.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.TreminationComponentController">
    <children>
-      <Label id="titleTermination" layoutX="32.0" layoutY="29.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" text="Termination" />
-      <Label id="terminationInfo" layoutX="32.0" layoutY="74.0" text="Label" />
-      <Label id="terminationInfo" layoutX="32.0" layoutY="104.0" text="Label" />
-      <Label id="terminationInfo" layoutX="32.0" layoutY="138.0" text="Label" />
+      <Label id="terminationInfo" layoutX="14.0" layoutY="89.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" text="Termination" />
+      <Label id="terminationInfo" fx:id="Ticks" layoutX="14.0" layoutY="142.0" text="Ticks: " />
+      <Label id="terminationInfo" fx:id="Seconds" layoutX="14.0" layoutY="168.0" text="Seconds: " />
+      <Label id="terminationInfo" fx:id="User" layoutX="14.0" layoutY="114.0" text="User: " />
+      <Label id="terminationInfo" layoutX="14.0" layoutY="14.0" text="Grid " />
+      <Label id="terminationInfo" fx:id="row" layoutX="14.0" layoutY="36.0" text="Rows: " />
+      <Label id="terminationInfo" fx:id="col" layoutX="14.0" layoutY="61.0" text="Column: " />
    </children>
 </AnchorPane>
