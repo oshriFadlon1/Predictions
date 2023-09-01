@@ -3,7 +3,10 @@ package ui.sceneController.newExecutionController;
 import dto.DtoResponseEntities;
 import dto.DtoResponsePreview;
 import dto.DtoUiToEngine;
+import entity.EntityDefinition;
+import enums.Type;
 import environment.EnvironmentDefinition;
+import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,8 +18,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import range.Range;
 import ui.javaFx.scenes.sceneNewExecution.tableViewModel;
+import ui.presenter.EntityPresenter;
+import ui.presenter.EnvironmentPresenter;
 import utility.Utilities;
 
 import java.net.URL;
@@ -29,7 +37,10 @@ public class NewExecutionController implements Initializable{
     private Map<String, Object> EnvToValue;
     private DtoResponsePreview worldPreview;
     private InterfaceMenu interfaceMenu = null;
-    private TreeItem<String> currentSelectedItem;
+    private EnvironmentPresenter currentSelectedItem;
+    private ObservableList<EntityPresenter> obsListEntities;
+    private ObservableList<EnvironmentPresenter> obsListEnvironments;
+    private ObservableList<EnvironmentPresenter> obsListEnvironmentsBefore;
     @FXML
     private Label labelError;
     @FXML
@@ -58,63 +69,68 @@ public class NewExecutionController implements Initializable{
     private TextField textFieldEntity2;
     @FXML
     private Label subTitleEntity2;
-
-//    @FXML
-//    private TableView<tableViewModel> tablePreviewValue;
-//    @FXML
-//    private TableColumn<tableViewModel, String> tableColName;
-//
-//    @FXML
-//    private TableColumn<tableViewModel, String> tableColValue;
+    @FXML
+    private TableView<EntityPresenter> tableEntities;
+    @FXML
+    private TableView<EnvironmentPresenter> tableEnvironmentsPresenter;
+    @FXML
+    private TableView<EnvironmentPresenter> tableEnvironments;
+    @FXML
+    private TableColumn<EnvironmentPresenter, Object> valueColumn;
+    @FXML
+    private TableColumn<EntityPresenter, Integer> populationColumn;
+    @FXML
+    private TableColumn<EntityPresenter, String> entityColumn;
+    @FXML
+    private TableColumn<EnvironmentPresenter, String> environmentColumn;
+    @FXML
+    private TableColumn<EnvironmentPresenter, String> envNameCol;
+    @FXML
+    private TableColumn<EnvironmentPresenter, Range> envRangeCol;
+    @FXML
+    private TableColumn<EnvironmentPresenter, String> envTypeCol;
+    @FXML
+    private Button buttonStart;
+    @FXML
+    private Button buttonClear;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        this.tablePreviewValue = new TableView<>();
-//        this.tablePreviewValue.getItems().addAll(tableViewModels);
-//        this.tableColName = new TableColumn<>();
-//        this.tableColValue = new TableColumn<>();
-//        tableColName.setCellValueFactory(new PropertyValueFactory<>("Name"));
-//        tableColValue.setCellValueFactory(new PropertyValueFactory<>("Value"));
-//        tablePreviewValue.setItems(tableViewModels);
+        TableColumn values = new TableColumn("Values");
+        this.tableEnvironmentsPresenter.getColumns().add(values);
+        this.obsListEnvironmentsBefore = FXCollections.observableArrayList();
+        this.obsListEnvironments = FXCollections.observableArrayList();
+        this.obsListEntities = FXCollections.observableArrayList();
+        this.envNameCol.setCellValueFactory(new PropertyValueFactory<>("environmentName"));
+        this.envRangeCol.setCellValueFactory(new PropertyValueFactory<>("environmentRange"));
+        this.envTypeCol.setCellValueFactory(new PropertyValueFactory<>("environmentType"));
+        //this.envValueCol.setCellValueFactory(new PropertyValueFactory<>("textFieldValue"));
+        this.environmentColumn.setCellValueFactory(new PropertyValueFactory<>("environmentName"));
+        this.valueColumn.setCellValueFactory(new PropertyValueFactory<>("environmentVal"));
+        this.entityColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
+        this.populationColumn.setCellValueFactory(new PropertyValueFactory<>("population"));
+        this.tableEntities.setItems(this.obsListEntities);
+        this.tableEnvironments.setItems(this.obsListEnvironments);
+        this.tableEnvironmentsPresenter.setItems(this.obsListEnvironmentsBefore);
         labelError.setText("Label error");
+
     }
-//    private ObservableList<tableViewModel> tableViewModels = FXCollections.observableArrayList(
-//            new tableViewModel("population of the first entity", "0"),
-//            new tableViewModel("population of the Second entity", "0")
-//            );
     public void loadFromWorldDef(DtoResponsePreview worldDef,InterfaceMenu i_interfaceMenu){
+        this.buttonStart.setDisable(false);
+        this.buttonValue.setDisable(false);
+        this.labelValue.setVisible(true);
+        this.textFieldValue.setVisible(true);
+        this.buttonValueEntity1.setDisable(false);
+        this.buttonClear.setDisable(false);
         this.worldPreview = worldDef;
         this.EnvToValue = new HashMap<>();
         if (this.interfaceMenu == null){this.interfaceMenu = i_interfaceMenu;}
         Map<String, EnvironmentDefinition> allEnv = worldDef.getDtoEnvironments().getEnvironmentDefinitions();
-        TreeItem<String>mainRootItem = new TreeItem<>("Environments");
-        treeView.setRoot(mainRootItem);
         for(String envName: allEnv.keySet()){
-            TreeItem<String> rootItemEnv = new TreeItem<>(envName);
             String propType = allEnv.get(envName).getEnvPropertyDefinition().getPropertyType();
-            TreeItem<String> rootItemType = new TreeItem<>(propType);
             Range rangeOfProp = allEnv.get(envName).getEnvPropertyDefinition().getPropertyRange();
-            rootItemEnv.getChildren().add(rootItemType);
-            if(rangeOfProp != null){
-                TreeItem<String> rootItemRange = new TreeItem<>(allEnv.get(envName).getEnvPropertyDefinition().getPropertyRange().toString());
-                rootItemEnv.getChildren().add(rootItemRange);
-                TreeItem<String> rootForValue = new TreeItem<>("Please state your value in the text field");
-                rootItemEnv.getChildren().add(rootForValue);
-            }
-            else{
-                TreeItem<String> rootItemBoolString;
-                if(propType.equalsIgnoreCase("string")){
-                    rootItemBoolString = new TreeItem<>("Please enter a string as you wish in the text field");
-                }
-                else{
-                    rootItemBoolString = new TreeItem<>("Please enter a value true/false in the text field");
-                }
-
-                rootItemEnv.getChildren().add(rootItemBoolString);
-            }
-
-            mainRootItem.getChildren().addAll(rootItemEnv);
-            //tableViewModels.add(new tableViewModel(envName,"no value"));
+            EnvironmentPresenter newPresenter = new EnvironmentPresenter(envName, rangeOfProp, propType);
+            this.obsListEnvironmentsBefore.add(newPresenter);
         }
         List<DtoResponseEntities> entities = worldDef.getDtoResponseEntities();
         entity1Label.setText(entities.get(0).getEntityName());
@@ -131,30 +147,20 @@ public class NewExecutionController implements Initializable{
     }
 
     public void selectItem(){
-        TreeItem<String> item = treeView.getSelectionModel().getSelectedItem();
+        EnvironmentPresenter item = this.tableEnvironmentsPresenter.getSelectionModel().getSelectedItem();
         if(item != null){
-            if(item.getValue().length() > 6 && item.getValue().substring(0, 6).equalsIgnoreCase("please")){
-                setTextFiledToEnvProp(true, false);
-                this.currentSelectedItem = item;
-            }
-            else{
-                setTextFiledToEnvProp(false, true);
-            }
+            this.currentSelectedItem = item;
         }
     }
 
-    private void setTextFiledToEnvProp(boolean value, boolean value1) {
-        textFieldValue.setVisible(value);
-        textFieldValue.setDisable(value1);
-        labelValue.setVisible(value);
-        buttonValue.setVisible(value);
-        buttonValue.setDisable(value1);
-        labelError.setText("");
-    }
-
     public void checkValidationEnvironment(){
+        if(this.currentSelectedItem == null){
+            this.labelError.setVisible(true);
+            this.labelError.setText("You haven't selected a value yet");
+            return;
+        }
         String valueToCheck = textFieldValue.getText();
-        String envName = this.currentSelectedItem.getParent().getValue();
+        String envName = this.currentSelectedItem.getEnvironmentName();
         Map<String, EnvironmentDefinition> envDefs = this.worldPreview.getDtoEnvironments().getEnvironmentDefinitions();
         EnvironmentDefinition envDef = envDefs.get(envName);
         String envType = envDef.getEnvPropertyDefinition().getPropertyType();
@@ -171,6 +177,7 @@ public class NewExecutionController implements Initializable{
             }
             this.EnvToValue.put(envName,Float.parseFloat(valueToCheck));
 
+
         }
         else if (envType.equalsIgnoreCase("boolean")){
             this.EnvToValue.put(envName,Boolean.parseBoolean(valueToCheck));
@@ -184,7 +191,35 @@ public class NewExecutionController implements Initializable{
     private void SaveEnvPropValueSuccessfully(String valueToCheck, String envName) {
         labelError.setVisible(true);
         labelError.setText("Value " + valueToCheck + " was set to environment " + envName + " succesfully");
+        this.labelValue.setText("");
         textFieldValue.setText("");
+        EnvironmentPresenter envPresenter = new EnvironmentPresenter(envName, valueToCheck);
+        EnvironmentPresenter isEnvExist = isEnvNameExistsInList(envPresenter);
+        if(isEnvNameExistsInList(envPresenter) == null) {
+            this.obsListEnvironments.add(envPresenter);
+        }
+        else{
+            this.obsListEnvironments.set(this.obsListEnvironments.indexOf(isEnvExist), envPresenter);
+        }
+        this.tableEnvironments.setVisible(true);
+    }
+
+    private EnvironmentPresenter isEnvNameExistsInList(EnvironmentPresenter environmentPresenter){
+        for(EnvironmentPresenter currPresenter: this.obsListEnvironments){
+            if(environmentPresenter.getEnvironmentName().equalsIgnoreCase(currPresenter.getEnvironmentName())){
+                return currPresenter;
+            }
+        }
+        return null;
+    }
+
+    private EntityPresenter isEntityNameExistsInList(EntityPresenter entityPresenter){
+        for(EntityPresenter currPresenter: this.obsListEntities){
+            if(entityPresenter.getEntityName().equalsIgnoreCase(currPresenter.getEntityName())){
+                return currPresenter;
+            }
+        }
+        return null;
     }
 
     private boolean isRangeValid(Range propertyRange, String valueToCheck) {
@@ -226,6 +261,10 @@ public class NewExecutionController implements Initializable{
                 labelErrorEntity1.setVisible(true);
                 this.population1 = parsedValue;
                 this.labelErrorEntity1.setText(this.entity1Label.getText() + " population: " + this.population1);
+                EntityPresenter entityPresenter = new EntityPresenter(this.entity1Label.getText(), this.population1);
+                addEntityToObserverList(entityPresenter);
+                this.population1 = entityPresenter.getPopulation();
+                this.tableEntities.setVisible(true);
             }
         }
     }
@@ -248,7 +287,21 @@ public class NewExecutionController implements Initializable{
                 labelErrorEntity2.setVisible(true);
                 this.population2 = parsedValue;
                 this.labelErrorEntity2.setText(this.entity2Label.getText() + " population: " + this.population2);
+                EntityPresenter entityPresenter = new EntityPresenter(this.entity2Label.getText(), this.population2);
+                addEntityToObserverList(entityPresenter);
+                this.population2 = entityPresenter.getPopulation();
+                this.tableEntities.setVisible(true);
             }
+        }
+    }
+
+    private void addEntityToObserverList(EntityPresenter presenterToAdd){
+        EntityPresenter isEntityExists = isEntityNameExistsInList(presenterToAdd);
+        if(isEntityExists == null) {
+            this.obsListEntities.add(presenterToAdd);
+        }
+        else{
+            this.obsListEntities.set(this.obsListEntities.indexOf(isEntityExists), presenterToAdd);
         }
     }
 
@@ -260,9 +313,18 @@ public class NewExecutionController implements Initializable{
     @FXML
     void OnClickedClear(ActionEvent event) {
         this.EnvToValue.clear();
+        this.labelErrorEntity1.setVisible(false);
+        this.labelErrorEntity2.setVisible(false);
+        this.textFieldEntity2.setText("");
+        this.textFieldValue.setText("");
+        this.textFieldEntity1.setText("");
         this.population1 = 0;
         this.population2 = 0;
         labelError.setText("All chosen environment and population values were removed");
+        this.obsListEntities.clear();
+        this.obsListEnvironments.clear();
+        this.tableEntities.setVisible(false);
+        this.tableEnvironments.setVisible(false);
     }
 
 

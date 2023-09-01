@@ -1,11 +1,13 @@
 package world;
 
+import createAndKillEntities.CreateAndKillEntities;
 import dto.DtoResponseTermination;
 import entity.EntityDefinition;
 import entity.EntityInstance;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
+import pointCoord.PointCoord;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
@@ -13,10 +15,13 @@ import property.Value;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
+import rule.action.ActionKill;
 import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
+import worldPhysicalSpace.WorldPhysicalSpace;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
 import java.util.*;
 
@@ -25,11 +30,19 @@ public class WorldInstance implements Serializable {
     private Map<String,List<EntityInstance>> allEntities;
     private List<Rule> allRules;
     private Termination termination;
+    private List<EntityInstance> entitiesToKill;
+    private List<CreateAndKillEntities> entitiesToKillAndReplace;
+    private WorldPhysicalSpace physicalSpace;
+    private PointCoord worldSize;
 
-    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments) {
+    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize) {
         this.allEnvironments = allEnvironments;
         this.allEntities = new HashMap<>();
         this.allRules = new ArrayList<>();
+        this.entitiesToKillAndReplace = new ArrayList<>();
+        this.entitiesToKill = new ArrayList<>();
+        this.worldSize = worldSize;
+        this.physicalSpace = new WorldPhysicalSpace(worldSize);
     }
 
 
@@ -125,6 +138,7 @@ public class WorldInstance implements Serializable {
                         for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
                             for(IAction currentActionToInvoke: allActionsForCurrentRule){
                                 necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
+
                                 currentActionToInvoke.invoke(necessaryVariables);
                                 if (necessaryVariables.getEntityToKill() != null){
                                     this.entitiesToKill.add(necessaryVariables.getEntityToKill());
@@ -138,9 +152,11 @@ public class WorldInstance implements Serializable {
                         }
                     }
                 }
-
-
             }
+            killAllEntities();
+            killAndReplaceAllEntities();
+            this.entitiesToKillAndReplace.clear();;
+            this.entitiesToKill.clear();
             currentTickCount++;
             currentTime = System.currentTimeMillis();
         }
@@ -239,6 +255,75 @@ public class WorldInstance implements Serializable {
         }
 
         return resultEntityInstance;
+    }
+
+    private void killAllEntities(){
+        for(EntityInstance entityInstanceToKill: this.entitiesToKill){
+            removeFromEntityInstancesList(entityInstanceToKill, this.allEntities.get(entityInstanceToKill.getDefinitionOfEntity().getEntityName()));
+        }
+    }
+
+    private void removeFromEntityInstancesList(EntityInstance entityInstanceToKill, List<EntityInstance> listOfEntityInstances) {
+        entityInstanceToKill.getDefinitionOfEntity().setEndPopulation(entityInstanceToKill.getDefinitionOfEntity().getEndPopulation() - 1);
+        this.physicalSpace.removeEntityFromWorld(entityInstanceToKill.getPositionInWorld());
+        listOfEntityInstances.remove(entityInstanceToKill);
+    }
+
+    private void killAndReplaceAllEntities()throws GeneralException{
+        for(CreateAndKillEntities currentKillAndReplace: this.entitiesToKillAndReplace){
+            EntityInstance instanceToCreate = createAndReplace(currentKillAndReplace);
+            this.allEntities.get(instanceToCreate.getDefinitionOfEntity().getEntityName()).add(instanceToCreate);
+            removeFromEntityInstancesList(currentKillAndReplace.getKill(), this.allEntities.get(currentKillAndReplace.getKill().getDefinitionOfEntity().getEntityName()));
+        }
+    }
+
+    private EntityInstance createAndReplace(CreateAndKillEntities currentKillAndReplace)throws GeneralException{
+        EntityInstance createdInstance = null;
+        switch(currentKillAndReplace.getCreationType()){
+            case SCRATCH:
+                createdInstance = initializeEntityInstanceAccordingToEntityDefinition(currentKillAndReplace.getCreate(), this.allEntities.size());
+                break;
+            case DERIVED:
+                createdInstance = createInstanceFromAnother(currentKillAndReplace.getKill(), currentKillAndReplace.getCreate());
+                break;
+        }
+        this.physicalSpace.replaceEntities(createdInstance, currentKillAndReplace.getKill().getPositionInWorld());
+        currentKillAndReplace.getCreate().setEndPopulation(currentKillAndReplace.getCreate().getEndPopulation() + 1);
+        currentKillAndReplace.getKill().getDefinitionOfEntity().setEndPopulation(currentKillAndReplace.getKill().getDefinitionOfEntity().getEndPopulation() - 1);
+        return createdInstance;
+    }
+
+    private EntityInstance createInstanceFromAnother(EntityInstance kill, EntityDefinition create) {
+        EntityInstance createdInstance = new EntityInstance(create, this.allEntities.size());
+        Map<String, PropertyDefinitionEntity> propertyDefinitionMap = create.getPropertyDefinition();
+        for(String currPropDefName: create.getPropertyDefinition().keySet()){
+            if(kill.getAllProperties().containsKey(currPropDefName)){
+                PropertyInstance currentPropInstance = kill.getPropertyByName(currPropDefName);
+                currentPropInstance.resetAllTicks();
+                createdInstance.addProperty(currentPropInstance);
+            }
+            else{
+                PropertyInstance newPropInstance = new PropertyInstance(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition());
+                switch(newPropInstance.getPropertyDefinition().getPropertyType().toLowerCase()){
+                    case "float":
+                        float floatVal = Utilities.initializeRandomFloat(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition().getPropertyRange());
+                        newPropInstance.setPropValue(floatVal);
+                        break;
+                    case "boolean":
+                        boolean booleanVal = Utilities.initializeRandomBoolean();
+                        newPropInstance.setPropValue(booleanVal);
+                        break;
+                    case "string":
+                        String stringVal = Utilities.initializeRandomString();
+                        newPropInstance.setPropValue(stringVal);
+                        break;
+                }
+                newPropInstance.resetAllTicks();
+                createdInstance.addProperty(newPropInstance);
+            }
+        }
+
+        return createdInstance;
     }
 
 }

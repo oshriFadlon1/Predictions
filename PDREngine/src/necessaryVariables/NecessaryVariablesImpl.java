@@ -20,6 +20,7 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
     private EntityInstance secondaryEntityInstance;
     private List<EntityInstance> secondaryInstanceManager;
     private List<EntityInstance> entityInstanceManager;
+
     private Map<String, EnvironmentInstance> activeEnvironment;
 
     private EntityInstance entityToKill;

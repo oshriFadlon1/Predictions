@@ -57,6 +57,10 @@ public class PropertyInstance implements Serializable {
         this.numberOfReset++;
 
     }
+
+    public void resetAllTicks(){
+        this.totalTickWithoutChange = this.currentTicksWithoutChange = this.numberOfReset = 0;
+    }
     public int getCurrentTicksWithoutChange() {
         return currentTicksWithoutChange;
     }
