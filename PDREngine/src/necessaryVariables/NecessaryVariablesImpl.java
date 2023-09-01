@@ -112,16 +112,6 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         this.entityToKillAndCreate.setKill(entityInstance);
         this.entityToKillAndCreate.setCreate(secondaryInstance);
         this.entityToKillAndCreate.setCreationType(creationType);
-//        switch(creationType){
-//            case SCRATCH:
-//                this.entityToKillAndCreate.setCreationType(creationType);
-//                break;
-//            case DERIVED:
-//                this.entityToKillAndCreate.setCreationType(creationType);
-//                break;
-//        }
-
-        //removeEntity(entityInstance);
     }
 
 
