@@ -84,6 +84,14 @@ public class WorldDefinition implements Serializable {
         this.worldSize = coordsOfWorld;
     }
 
+    public PointCoord getWorldSize() {
+        return worldSize;
+    }
+
+    public int getNumberOfThreads() {
+        return numberOfThreads;
+    }
+
     public void setThreadCount(int threadCount) {
         this.numberOfThreads = threadCount;
     }

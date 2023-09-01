@@ -180,7 +180,7 @@ public class MainEngine implements InterfaceMenu {
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         DtoResponseSimulationEnded responseForUser = null;
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
-        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap);
+        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, worldDefinitionForSimulation.getWorldSize());
         this.allSimulations.add(worldInstance);
        try {
            //for (WorldInstance currentSimulation : this.allSimulations)

@@ -285,11 +285,11 @@ public class XmlParser {
                     actionToAdd = convertPrdActionToKill(prdAction, entitiesInContext, secondEntity);
                     break;
                 case PROXIMITY:
-                    actionToAdd = convertPrdActionToProximity(prdAction, entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToProximity(prdAction, entityDefinitionList, environments, secondEntity);
                     // TODO set second Entity as ALL and condition null
                     break;
                 case REPLACE:
-                    actionToAdd = convertPrdActionToReplace(prdAction, entitiesInContext);
+                    actionToAdd = convertPrdActionToReplace(prdAction, entityDefinitionList);
                     break;
                 default:
                     throw new GeneralException("Action type does not exist.");
