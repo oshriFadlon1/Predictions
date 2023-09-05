@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import entity.SecondEntity;
 import enums.Operation;
@@ -44,5 +45,17 @@ public abstract class AbstractAction implements IAction, Serializable {
     @Override
     public void SetSecondEntity(SecondEntity secondEntity) {
         this.secondaryEntity = secondEntity;
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        String secEntityName;
+        if ( this.secondaryEntity == null){
+            secEntityName = null;
+        } else {
+            secEntityName = this.secondaryEntity.getEntity().getEntityName();
+        }
+        return new DtoActionResponse(null, this.entityDefinition.getEntityName(),
+                secEntityName, null, null, null, null);
     }
 }

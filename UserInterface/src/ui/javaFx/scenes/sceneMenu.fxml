@@ -11,7 +11,7 @@
 
 <BorderPane prefHeight="780.0" prefWidth="1100.0" stylesheets="@../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.SceneMenu">
    <center>
-      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="675.0" prefWidth="1100.0" styleClass="backGroundColor" stylesheets="@../../cssDesign/homePageDesign.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane styleClass="backGroundColor" stylesheets="@../../cssDesign/homePageDesign.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab fx:id="tabOfDetails" text="Details">
             <content>
@@ -34,7 +34,7 @@
       </TabPane>
    </center>
    <top>
-      <AnchorPane prefHeight="86.0" prefWidth="1070.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
          <children>
             <Label id="title" layoutX="475.0" layoutY="12.0" stylesheets="@../../cssDesign/homePageDesign.css" text="Predictions" textAlignment="CENTER">
                <font>

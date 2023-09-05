@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import enums.CreationType;
 import enums.Operation;
@@ -54,5 +55,19 @@ public class ActionReplace extends AbstractAction implements Serializable{
             return;
         }
         context.killAndCreateEntity(context.getPrimaryEntityInstance(), context.getSecondaryEntityDefinition(), this.creationType);
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionName("Replace");
+        actionResponse.setPrimEntityName(this.entityToKill);
+        actionResponse.setSecEntityName(this.entityToCreate);
+        if (this.creationType.toString().equalsIgnoreCase("scratch")){
+            actionResponse.setActionProperty("scratch");
+        } else {
+            actionResponse.setActionProperty("derived");
+        }
+        return actionResponse;
     }
 }

@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import enums.Operation;
 import exceptions.GeneralException;
@@ -38,6 +39,9 @@ public class ActionIncrease extends AbstractAction implements Serializable {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
+        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+            return;
+        }
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         if (!Utilities.verifyNumericPropertyTYpe(propertyInstance)) {
             throw new GeneralException("increase action can't operate on a none number property [" + propertyName);
@@ -69,5 +73,13 @@ public class ActionIncrease extends AbstractAction implements Serializable {
         return super.getEntityDefinition();
     }
 
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionName("Increase");
+        actionResponse.setActionProperty(this.propertyName);
+        actionResponse.setActionValue(this.increaseBy);
+        return actionResponse;
+    }
 
 }

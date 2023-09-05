@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1070.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.DetailsController">
+<ScrollPane styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.DetailsController">
     <content>
         <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="1068.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css">
             <columnConstraints>
@@ -24,11 +24,13 @@
                 <RowConstraints minHeight="10.0" percentHeight="16.0" prefHeight="10.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" percentHeight="16.0" prefHeight="10.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" percentHeight="17.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints />
+            <RowConstraints />
             </rowConstraints>
             <children>
                 <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowSpan="8" />
-                <TreeView fx:id="treeView" onContextMenuRequested="#SelectedItem" onMouseClicked="#SelectedItem" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
-            <AnchorPane fx:id="mainAnchorPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="3" />
+                <TreeView fx:id="treeView" onContextMenuRequested="#SelectedItem" onMouseClicked="#SelectedItem" GridPane.rowSpan="8" />
+            <AnchorPane fx:id="mainAnchorPane" GridPane.columnIndex="2" GridPane.rowSpan="3" />
             </children>
         </GridPane>
     </content>

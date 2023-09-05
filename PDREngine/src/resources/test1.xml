@@ -17,7 +17,7 @@
 			<PRD-name>e4</PRD-name>
 		</PRD-env-property>
 	</PRD-environment>
-	<PRD-grid rows="100" columns="100"/>
+	<PRD-grid rows="10" columns="10"/>
 	<PRD-entities>
 		<PRD-entity name="ent-1">
 			<PRD-properties>
@@ -57,34 +57,14 @@
 		</PRD-entity>		
 	</PRD-entities>
 	<PRD-rules>
-		<PRD-rule name="r2">
+		<PRD-rule name="r1">
 			<PRD-actions>
-				<PRD-action type="condition" entity="ent-1">
-					<PRD-secondary-entity entity="ent-2">
-						<PRD-selection count="4">
-							<PRD-condition singularity="single" entity="ent-2" property="p1" operator="bt" value="4"/>
-						</PRD-selection>
-					</PRD-secondary-entity>
-					<PRD-condition singularity="multiple" logical="or">
-						<PRD-condition singularity="single" entity="ent-1" property="ticks(ent-1.p1)" operator="bt" value="4"/>
-						<PRD-condition singularity="single" entity="ent-2" property="percent(evaluate(ent-2.p1),environment(e1))" operator="lt" value="3"/>
-						<PRD-condition singularity="multiple" logical="and">
-							<PRD-condition singularity="single" entity="ent-1" property="p4" operator="!=" value="nothing"/>
-							<PRD-condition singularity="single" entity="ent-1" property="p3" operator="=" value="environment(e2)"/>
-						</PRD-condition>
-					</PRD-condition>
-					<PRD-then>
-						<PRD-action type="increase" entity="ent-2" property="p1" by="3"/>
-						<PRD-action type="set" entity="ent-2" property="p1" value="random(3)"/>
-					</PRD-then>
-					<PRD-else>
-						<PRD-action type="kill" entity="ent-1"/>
-					</PRD-else>
-				</PRD-action>
+				<PRD-action type="replace" kill="ent-1" create="ent-2" mode="scratch"/>
 			</PRD-actions>
 		</PRD-rule>
 	</PRD-rules>
 	<PRD-termination>
-		<PRD-by-user />
+		<PRD-by-ticks count="200"/>
+		<PRD-by-second count="6000000"/>
 	</PRD-termination>
 </PRD-world>

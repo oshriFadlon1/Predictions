@@ -3,15 +3,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="backGroudStyle" prefHeight="223.0" prefWidth="393.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.javaFx.scenes.sceneDetails.detailsComponents.RuleComponent">
+<AnchorPane id="backGroudStyle" prefHeight="262.0" prefWidth="320.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.RuleComponentController">
    <children>
-      <Label id="terminationInfo" layoutX="20.0" layoutY="24.0" text="Rule Name" />
-      <Label id="terminationInfo" layoutX="20.0" layoutY="55.0" text="Activition" />
-      <Label id="terminationInfo" layoutX="20.0" layoutY="85.0" text="Primery Entity" />
-      <Label id="terminationInfo" layoutX="183.0" layoutY="28.0" text="Action Name" />
-      <Label id="terminationInfo" layoutX="183.0" layoutY="59.0" text="Action work" />
-      <Label id="terminationInfo" layoutX="183.0" layoutY="89.0" text="Action property" />
-      <Label id="terminationInfo" layoutX="183.0" layoutY="118.0" text="Action value" />
-      <Label id="terminationInfo" layoutX="183.0" layoutY="146.0" text="Action arg2" />
+      <Label id="terminationInfo" fx:id="actionName" layoutX="18.0" layoutY="18.0" text="Action Name" />
+      <Label id="terminationInfo" fx:id="actionEntity" layoutX="18.0" layoutY="48.0" text="Action entity" />
+      <Label id="terminationInfo" fx:id="actionProperty" layoutX="18.0" layoutY="81.0" text="Action property" />
+      <Label id="terminationInfo" fx:id="actionValue" layoutX="18.0" layoutY="150.0" text="Action value" />
+      <Label id="terminationInfo" fx:id="actionArg2" layoutX="18.0" layoutY="181.0" text="Action arg2" />
+      <Label id="terminationInfo" fx:id="ActionElse" layoutX="18.0" layoutY="216.0" text="Action else" />
+      <Label id="terminationInfo" fx:id="EntitySecond" layoutX="18.0" layoutY="115.0" text="Entity Second" />
    </children>
 </AnchorPane>

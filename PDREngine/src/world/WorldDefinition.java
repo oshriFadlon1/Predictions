@@ -95,4 +95,21 @@ public class WorldDefinition implements Serializable {
     public void setThreadCount(int threadCount) {
         this.numberOfThreads = threadCount;
     }
+
+    public void setPopulation(int population1, int population2) {
+        int count = 0;
+        for (EntityDefinition entityDefinition : this.entityDefinitions) {
+            if (count == 0)
+            {
+                entityDefinition.setStartPopulation(population1);
+                entityDefinition.setEndPopulation(population1);
+                count++;
+            }
+            else if (count == 1){
+                entityDefinition.setStartPopulation(population2);
+                entityDefinition.setEndPopulation(population2);
+                count++;
+            }
+        }
+    }
 }

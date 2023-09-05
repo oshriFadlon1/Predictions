@@ -1,5 +1,6 @@
 package ui.sceneController.detailsController;
 
+import dto.DtoActionResponse;
 import dto.DtoResponseEntities;
 import dto.DtoResponsePreview;
 import dto.DtoResponseRules;
@@ -24,6 +25,8 @@ public class DetailsController implements Initializable {
     private TreminationComponentController treminationComponentController;
     private EntityComponentController entityComponentController;
     private EnvironmentComponentController environmentComponentController;
+
+    private RuleComponentController ruleComponentController;
 
     private final String world = "World";
     private final String environment = "Environment";
@@ -57,8 +60,14 @@ public class DetailsController implements Initializable {
         }
         TreeItem<String> Rule = rootItem.getChildren().get(2);
         for (DtoResponseRules rule : this.worldPreview.getDtoResponseRules()) {
+            int count = 1;
             TreeItem<String> RuleName = new TreeItem<>(rule.getRuleName());
             TreeItem<String> activation = new TreeItem<>("Ticks: " + rule.getTicks() + ", probability: " + rule.getProbability());
+            for (DtoActionResponse actionResponse: rule.getActionNames()) {
+                TreeItem<String> actionName = new TreeItem<>(count + ") " + actionResponse.getActionName());
+                RuleName.getChildren().addAll(actionName);
+                count++;
+            }
             RuleName.getChildren().addAll(activation);
             Rule.getChildren().addAll(RuleName);
         }
@@ -104,18 +113,18 @@ public class DetailsController implements Initializable {
         // case choose entity property.
         if (selectedItem.getParent().getParent().getValue().equalsIgnoreCase(entities)){
             loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/EntityComponent.fxml", "Entity");
-            entityComponentController.updateLabelEnt(getSelectedProperty(selectedItem));
+            entityComponentController.updateLabelEnt(getSelectedPropertyEntity(selectedItem));
             return;
         }
-
-        // case choose rule action.
-        //updateLabelRule(selectedItem);
+        // case choose rule action
+        if (selectedItem.getParent().getParent().getValue().equalsIgnoreCase(rules)){
+            loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/RuleComponent.fxml", "Rule");
+            this.ruleComponentController.updateLabelRule(getSelectedAction(selectedItem));
+        }
 
     }
 
-//General Information
-
-    private PropertyDefinitionEntity getSelectedProperty(TreeItem<String> selectedItem) {
+    private PropertyDefinitionEntity getSelectedPropertyEntity(TreeItem<String> selectedItem) {
         String parentName = selectedItem.getParent().getValue();
         PropertyDefinitionEntity propertyDefinitionChoose = null;
         DtoResponseEntities entityChoose = null;
@@ -136,8 +145,26 @@ public class DetailsController implements Initializable {
         return propertyDefinitionChoose;
     }
 
-    private void updateLabelRule(TreeItem<String> selectedItem){
-
+    private DtoActionResponse getSelectedAction(TreeItem<String> selectedItem) {
+        String parentName = selectedItem.getParent().getValue();
+        String selectedActionName = selectedItem.getValue().toLowerCase();
+        DtoActionResponse actionResponse = null;
+        DtoResponseRules responseRule = null;
+        for (DtoResponseRules dtoResponseRule : this.worldPreview.getDtoResponseRules()) {
+            if (dtoResponseRule.getRuleName().equalsIgnoreCase(parentName)){
+                responseRule = dtoResponseRule;
+                break;
+            }
+        }
+        int count = 1;
+        for (DtoActionResponse dtoActionResponse : responseRule.getActionNames()) {
+            if (selectedActionName.equalsIgnoreCase(count + ") " +dtoActionResponse.getActionName())){
+                actionResponse = dtoActionResponse;
+                break;
+            }
+            count ++;
+        }
+        return actionResponse;
     }
 
     private void loadAndAddFXML(String fxmlFileName, String whichController) {
@@ -154,6 +181,7 @@ public class DetailsController implements Initializable {
                     this.entityComponentController = loader.getController();
                     break;
                 case"rule":
+                    this.ruleComponentController = loader.getController();
                     break;
                 case "general":
                     this.treminationComponentController = loader.getController();

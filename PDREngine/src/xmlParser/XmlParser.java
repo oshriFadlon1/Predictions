@@ -18,10 +18,11 @@ import rule.ActivationForRule;
 import rule.Rule;
 import rule.action.*;
 import shema.generated.*;
-import sun.java2d.loops.FillRect;
 import termination.Termination;
 import utility.Utilities;
 import world.WorldDefinition;
+
+import javax.swing.text.html.parser.Entity;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -311,6 +312,12 @@ public class XmlParser {
             secondEntityName = prdAction.getPRDBetween().getTargetEntity();
             return checkIfEntitiesInContextExist(entityDefinitionList, firstEntityName, secondEntityName);
         }
+        if(prdAction.getType().equalsIgnoreCase("replace"))
+        {
+            firstEntityName = prdAction.getKill();
+            secondEntityName = prdAction.getCreate();
+            return checkIfEntitiesInContextExist(entityDefinitionList, firstEntityName, secondEntityName);
+        }
 
         firstEntityName = prdAction.getEntity();
         EntityDefinition contextEntity1 = getEntityContextFromList(entityDefinitionList, firstEntityName);
@@ -584,7 +591,7 @@ public class XmlParser {
     }
 
     private IConditionComponent parseConditionFromPRDCondition(PRDCondition prdCondition, List<EntityDefinition> entityDefinitions,  Map<String, EnvironmentDefinition> environments) throws GeneralException {
-        multipleCondition conditionComponent = new multipleCondition("and",null);
+        MultipleCondition conditionComponent = new MultipleCondition("and",null);
         List<IConditionComponent> listOfCondition = new ArrayList<>();
         if (prdCondition.getPRDCondition().size() == 0)
         {
@@ -624,7 +631,7 @@ public class XmlParser {
         if (!Utilities.isOperatorFromMultipleCondition(prdCondition.getLogical())){
             throw new GeneralException("In Multiple condition, operator " + prdCondition.getOperator() + " doesnt exist");
         }
-        return new multipleCondition(prdCondition.getLogical(), listOfCondition);
+        return new MultipleCondition(prdCondition.getLogical(), listOfCondition);
     }
 
     private IConditionComponent createSingleCondition(PRDCondition prdCondition,  Map<String, EnvironmentDefinition> environments, List<EntityDefinition> entityDefinitions) throws GeneralException {
@@ -752,7 +759,8 @@ public class XmlParser {
         if(!mode.equalsIgnoreCase("derived") && !mode.equalsIgnoreCase("scratch")){
             throw new GeneralException("In action " + prdAction.getType() + " mode " + mode + " is invalid");
         }
-        switch(CreationType.valueOf(mode)){
+        CreationType typeOfAction = CreationType.valueOf(mode.toUpperCase());
+        switch(typeOfAction){
             case DERIVED:
                 typeOfCreation = CreationType.DERIVED;
                 break;
@@ -799,7 +807,7 @@ public class XmlParser {
 //
 //    public void isPrefixHelpFunction(String ){
 //
-//    }//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\ex1-cigarets.xml  master-ex1.xml    error3.xml";
+//    }//= "C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\  master-ex1.xml    error3.xml";
 //
 //    // C:\\java_projects\\currentJavaProject\\PDREngine\\src\\resources\\example.xml
 

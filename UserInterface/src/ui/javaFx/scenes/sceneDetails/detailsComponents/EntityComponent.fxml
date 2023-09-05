@@ -5,9 +5,9 @@
 
 <AnchorPane id="backGroudStyle" prefHeight="221.0" prefWidth="409.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EntityComponentController">
    <children>
-      <Label fx:id="entPropName" layoutX="29.0" layoutY="29.0" prefHeight="17.0" prefWidth="102.0" text="ent Prop name" />
-      <Label fx:id="propType" layoutX="29.0" layoutY="66.0" text="Type" />
-      <Label fx:id="propRange" layoutX="25.0" layoutY="146.0" text="Range" />
-      <Label fx:id="randomInit" layoutX="28.0" layoutY="102.0" text="Ramdom init" />
+      <Label id="terminationInfo" fx:id="entPropName" layoutX="29.0" layoutY="29.0" prefHeight="25.0" prefWidth="152.0" text="ent Prop name" />
+      <Label id="terminationInfo" fx:id="propType" layoutX="29.0" layoutY="66.0" text="Type" />
+      <Label id="terminationInfo" fx:id="propRange" layoutX="25.0" layoutY="146.0" text="Range" />
+      <Label id="terminationInfo" fx:id="randomInit" layoutX="28.0" layoutY="102.0" text="Ramdom init" />
    </children>
 </AnchorPane>

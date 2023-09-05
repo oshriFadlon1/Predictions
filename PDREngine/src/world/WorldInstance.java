@@ -30,6 +30,10 @@ import java.io.Serializable;
 import java.util.*;
 
 public class WorldInstance implements Serializable {
+    // map<String, Integer> population;
+    // from name of entity to number of population
+    // save with prefix start to set the start population
+    // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
     private List<Rule> allRules;
@@ -381,7 +385,7 @@ public class WorldInstance implements Serializable {
         }
 
         currentKillAndReplace.getCreate().setEndPopulation(currentKillAndReplace.getCreate().getEndPopulation() + 1);
-        currentKillAndReplace.getKill().getDefinitionOfEntity().setEndPopulation(currentKillAndReplace.getKill().getDefinitionOfEntity().getEndPopulation() - 1);
+        //currentKillAndReplace.getKill().getDefinitionOfEntity().setEndPopulation(currentKillAndReplace.getKill().getDefinitionOfEntity().getEndPopulation() - 1);
         return createdInstance;
     }
 

@@ -30,7 +30,7 @@ public class EntityComponentController {
             propRange.setText("");
         }
         else {
-            propRange.setText("Range: "+propertyDefinitionChoose.getPropertyDefinition().getPropertyRange().getFrom() + " -> " + propertyDefinitionChoose.getPropertyDefinition().getPropertyRange());
+            propRange.setText("Range: "+propertyDefinitionChoose.getPropertyDefinition().getPropertyRange().getFrom() + " -> " + propertyDefinitionChoose.getPropertyDefinition().getPropertyRange().getTo());
         }
         boolean randominitialize = propertyDefinitionChoose.getPropValue().getRandomInit();
         String initTo = propertyDefinitionChoose.getPropValue().getInit();
