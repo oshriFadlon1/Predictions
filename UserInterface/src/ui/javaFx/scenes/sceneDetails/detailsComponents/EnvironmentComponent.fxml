@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="backGroudStyle" prefHeight="181.0" prefWidth="347.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EnvironmentComponentController">
+   <children>
+      <Label id="terminationInfo" fx:id="envType" layoutX="14.0" layoutY="69.0" text="Type" />
+      <Label id="terminationInfo" fx:id="envRange" layoutX="14.0" layoutY="113.0" text="Range" />
+      <Label id="terminationInfo" fx:id="envName" layoutX="14.0" layoutY="31.0" text="env name" />
+   </children>
+</AnchorPane>

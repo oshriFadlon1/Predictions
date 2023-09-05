@@ -11,75 +11,75 @@
 <?import javafx.scene.text.Font?>
 
 <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="835.0" prefWidth="1075.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1">
-  <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="833.0" prefWidth="1072.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
-         <children>
-            <ListView layoutX="31.0" layoutY="108.0" prefHeight="327.0" prefWidth="200.0" />
-            <Label layoutX="37.0" layoutY="79.0" text="All simulations">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <BorderPane layoutX="321.0" layoutY="108.0" prefHeight="255.0" prefWidth="650.0">
-               <top>
-                  <AnchorPane prefHeight="29.0" prefWidth="650.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label layoutX="262.0" layoutY="7.0" text="Simulation id: ">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </AnchorPane>
-               </top>
-               <center>
-                  <AnchorPane prefHeight="250.0" prefWidth="650.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label layoutX="14.0" layoutY="28.0" text="Simulation status: ">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="14.0" layoutY="61.0" text="Current tick count: ">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="14.0" layoutY="96.0" text="Current timer: ">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Button layoutX="26.0" layoutY="241.0" mnemonicParsing="false" text="Stop" />
-                        <Button layoutX="565.0" layoutY="241.0" mnemonicParsing="false" text="Resume" />
-                        <Button layoutX="299.0" layoutY="241.0" mnemonicParsing="false" text="Pause" />
-                        <TableView layoutX="288.0" layoutY="17.0" prefHeight="200.0" prefWidth="266.0">
-                          <columns>
-                            <TableColumn prefWidth="134.0" text="Entity" />
-                            <TableColumn prefWidth="131.0" text="Population" />
-                          </columns>
-                        </TableView>
-                        <Label layoutX="152.0" layoutY="28.0" prefHeight="17.0" prefWidth="66.0" text="Label">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="152.0" layoutY="61.0" prefHeight="17.0" prefWidth="66.0" text="Label">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="152.0" layoutY="96.0" prefHeight="17.0" prefWidth="66.0" text="Label">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Button layoutX="584.0" layoutY="16.0" mnemonicParsing="false" text="Rerun" />
-                     </children>
-                  </AnchorPane>
-               </center>
-            </BorderPane>
-            <AnchorPane layoutX="349.0" layoutY="435.0" prefHeight="396.0" prefWidth="692.0" />
-         </children></AnchorPane>
-  </content>
+    <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="833.0" prefWidth="1072.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
+            <children>
+                <ListView layoutX="31.0" layoutY="108.0" prefHeight="327.0" prefWidth="200.0" />
+                <Label layoutX="37.0" layoutY="79.0" text="All simulations">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <BorderPane layoutX="321.0" layoutY="108.0" prefHeight="255.0" prefWidth="650.0">
+                    <top>
+                        <AnchorPane prefHeight="29.0" prefWidth="650.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label layoutX="262.0" layoutY="7.0" text="Simulation id: ">
+                                    <font>
+                                        <Font size="20.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <center>
+                        <AnchorPane prefHeight="250.0" prefWidth="650.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label layoutX="14.0" layoutY="28.0" text="Simulation status: ">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="61.0" text="Current tick count: ">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="14.0" layoutY="96.0" text="Current timer: ">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Button layoutX="26.0" layoutY="241.0" mnemonicParsing="false" text="Stop" />
+                                <Button layoutX="565.0" layoutY="241.0" mnemonicParsing="false" text="Resume" />
+                                <Button layoutX="299.0" layoutY="241.0" mnemonicParsing="false" text="Pause" />
+                                <TableView layoutX="288.0" layoutY="17.0" prefHeight="200.0" prefWidth="266.0">
+                                    <columns>
+                                        <TableColumn prefWidth="134.0" text="Entity" />
+                                        <TableColumn prefWidth="131.0" text="Population" />
+                                    </columns>
+                                </TableView>
+                                <Label layoutX="152.0" layoutY="28.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="152.0" layoutY="61.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Label layoutX="152.0" layoutY="96.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                                <Button layoutX="584.0" layoutY="16.0" mnemonicParsing="false" text="Rerun" />
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+                <AnchorPane layoutX="349.0" layoutY="435.0" prefHeight="396.0" prefWidth="692.0" />
+            </children></AnchorPane>
+    </content>
 </ScrollPane>

@@ -94,21 +94,9 @@ public class NewExecutionController implements Initializable{
     @FXML
     private Button buttonClear;
 
-
-
-//    @FXML
-//    private TableView<tableViewModel> tablePreviewValue;
-//    @FXML
-//    private TableColumn<tableViewModel, String> tableColName;
-//
-//    @FXML
-//    private TableColumn<tableViewModel, String> tableColValue;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         TableColumn values = new TableColumn("Values");
-        this.labelErrorEntity2.setWrapText(true);
-        this.labelErrorEntity1.setWrapText(true);
         this.tableEnvironmentsPresenter.getColumns().add(values);
         this.obsListEnvironmentsBefore = FXCollections.observableArrayList();
         this.obsListEnvironments = FXCollections.observableArrayList();

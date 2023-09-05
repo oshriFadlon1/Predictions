@@ -1,11 +1,11 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import enums.Operation;
 import exceptions.GeneralException;
 import necessaryVariables.NecessaryVariablesImpl;
 import property.PropertyInstance;
-import utility.Utilities;
 
 import java.io.Serializable;
 
@@ -38,6 +38,9 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
+        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+            return;
+        }
         Object y = null,x = null,result = null;
 
         try {
@@ -61,5 +64,14 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
     @Override
     public EntityDefinition getContextEntity() {
         return super.getEntityDefinition();
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionName("Calculation Multiply");
+        actionResponse.setActionValue(this.arg1);
+        actionResponse.setArg2(this.arg2);
+        return actionResponse;
     }
 }

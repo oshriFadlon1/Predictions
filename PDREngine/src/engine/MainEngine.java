@@ -127,18 +127,18 @@ public class MainEngine implements InterfaceMenu {
     }
     private List<DtoResponseRules> getRulesInfoSimulation() {
         List<DtoResponseRules> dtoResponseRules = new ArrayList<>();
-        List<String> ActionName;
+        List<DtoActionResponse> ActionName;
         String ruleName = "";
         ActivationForRule activation = null;
         for (Rule rule: worldDefinitionForSimulation.getRules()) {
             ActionName = new ArrayList<>();
             for (IAction action:rule.getActions()) {
-                ActionName.add(action.getOperationType().name());
+                ActionName.add(action.getActionResponse());
             }
             dtoResponseRules.add(new DtoResponseRules(rule.getRuleName(),
                     rule.getActivation().getTicks(),
                     rule.getActivation().getProbability(),
-                    rule.getActions().size(), ActionName));
+                    ActionName));
         }
         return dtoResponseRules;
     }
@@ -176,11 +176,13 @@ public class MainEngine implements InterfaceMenu {
     //func 3
     @Override
     public DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser){
+        //TODO PUT POPULATION IN WORLD INSTANSE
         this.worldDefinitionForSimulation.resetEntityDefinition();
+        this.worldDefinitionForSimulation.setPopulation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2());
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         DtoResponseSimulationEnded responseForUser = null;
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
-        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap);
+        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, worldDefinitionForSimulation.getWorldSize());
         this.allSimulations.add(worldInstance);
        try {
            //for (WorldInstance currentSimulation : this.allSimulations)

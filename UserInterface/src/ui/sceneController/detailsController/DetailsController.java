@@ -1,52 +1,39 @@
 package ui.sceneController.detailsController;
 
+import dto.DtoActionResponse;
 import dto.DtoResponseEntities;
 import dto.DtoResponsePreview;
-import dto.DtoResponsePreviewTermination;
 import dto.DtoResponseRules;
-import environment.EnvironmentDefinition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import property.PropertyDefinition;
+import javafx.scene.layout.AnchorPane;
 import property.PropertyDefinitionEntity;
-import range.Range;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class DetailsController implements Initializable {
 
-    private DtoResponsePreview worldPreview;
 
-    @FXML private Label propInit;
-
-    @FXML private Label propRange;
-
-    @FXML private Label propType;
-
-    @FXML private Label rangeEnv;
-
-    @FXML private Label primeEntRule;
-    @FXML private Label ruleActivation;
-
-    @FXML private Label termSec;
-
-    @FXML private Label termTicks;
-
-    @FXML private Label termUser;
-
-    @FXML private Label titleEnt;
-
-    @FXML private Label titleEnv;
-
-    @FXML private Label titleRule;
-
-    @FXML private Label titleTerm;
 
     @FXML private TreeView<String> treeView;
 
-    @FXML private Label typeEnv;
+    @FXML private AnchorPane mainAnchorPane;
+    private DtoResponsePreview worldPreview;
+    private TreminationComponentController treminationComponentController;
+    private EntityComponentController entityComponentController;
+    private EnvironmentComponentController environmentComponentController;
+
+    private RuleComponentController ruleComponentController;
+
+    private final String world = "World";
+    private final String environment = "Environment";
+    private final String entities = "Entities";
+    private final String general = "General";
+    private String rules = "Rules";
+
 
     public void loadFromWorldDef(DtoResponsePreview worldDefinition){
         this.worldPreview = worldDefinition;
@@ -73,20 +60,30 @@ public class DetailsController implements Initializable {
         }
         TreeItem<String> Rule = rootItem.getChildren().get(2);
         for (DtoResponseRules rule : this.worldPreview.getDtoResponseRules()) {
+            int count = 1;
             TreeItem<String> RuleName = new TreeItem<>(rule.getRuleName());
+            TreeItem<String> activation = new TreeItem<>("Ticks: " + rule.getTicks() + ", probability: " + rule.getProbability());
+            for (DtoActionResponse actionResponse: rule.getActionNames()) {
+                TreeItem<String> actionName = new TreeItem<>(count + ") " + actionResponse.getActionName());
+                RuleName.getChildren().addAll(actionName);
+                count++;
+            }
+            RuleName.getChildren().addAll(activation);
             Rule.getChildren().addAll(RuleName);
         }
-        updateLabelTerm(this.worldPreview.getDtoResponseTermination());
+
         treeView.setShowRoot(true);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TreeItem<String> rootItem = new TreeItem<>("World");
-        TreeItem<String> Env = new TreeItem<>("Environment");
-        TreeItem<String> Ent = new TreeItem<>("Entity");
-        TreeItem<String> Rule = new TreeItem<>("Rules");
-        rootItem.getChildren().addAll(Env, Ent,Rule);
+        TreeItem<String> rootItem = new TreeItem<>(world);
+        TreeItem<String> Env = new TreeItem<>(environment);
+        TreeItem<String> Ent = new TreeItem<>(entities);
+        TreeItem<String> Rule = new TreeItem<>(rules);
+        TreeItem<String> Term = new TreeItem<>(general);
+
+        rootItem.getChildren().addAll(Env, Ent,Rule, Term);
         treeView.setRoot(rootItem);
         treeView.setEditable(true);
         treeView.setShowRoot(false);
@@ -94,61 +91,40 @@ public class DetailsController implements Initializable {
 
     public void SelectedItem(){
         TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
-        if (selectedItem == null || this.worldPreview == null || selectedItem.getValue().equalsIgnoreCase("World")){
+        // case choose world or not set the file yet.
+        if (selectedItem == null || this.worldPreview == null || selectedItem.getValue().equalsIgnoreCase(world)){
             return;
         }
 
-        if (selectedItem.getParent().getValue().equalsIgnoreCase("Environment")){
-            updateLabelEnv(selectedItem.getValue());
-        }
-        updateLabelEnt(selectedItem);
-        updateLabelRule(selectedItem);
-    }
-
-    private void updateLabelEnv(String selectedItem){
-        Map<String, EnvironmentDefinition> environment = this.worldPreview.getDtoEnvironments().getEnvironmentDefinitions();
-        EnvironmentDefinition environmentDefinition = environment.get(selectedItem);
-        if (environmentDefinition == null){
-            return;
-        }
-        PropertyDefinition propertyDefinition = environmentDefinition.getEnvPropertyDefinition();
-        titleEnv.setText(propertyDefinition.getPropertyName());
-        typeEnv.setText(propertyDefinition.getPropertyType());
-        if (propertyDefinition.getPropertyRange() == null) {
-            rangeEnv.setText("");
-        }
-        else {
-            Range range = propertyDefinition.getPropertyRange();
-            rangeEnv.setText("Range: "+range.getFrom()+" -> "+range.getTo());
-        }
-
-    }
-
-    private void updateLabelEnt(TreeItem<String> selectedItem){
-        PropertyDefinitionEntity propertyDefinitionChoose = getSelectedProperty(selectedItem);
-        if (propertyDefinitionChoose == null){
+        // case choose general (termination and grid)
+        if (selectedItem.getValue().equalsIgnoreCase(general)){
+            loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/TerminationComponent.fxml", general);
+            treminationComponentController.updateLabelTerm(this.worldPreview.getDtoResponseTermination(), this.worldPreview.getWorldSize());
             return;
         }
 
-        titleEnt.setText(propertyDefinitionChoose.getPropertyDefinition().getPropertyName());
-        propType.setText(propertyDefinitionChoose.getPropertyDefinition().getPropertyType());
-        if (propertyDefinitionChoose.getPropertyDefinition().getPropertyRange() == null) {
-            propRange.setText("");
+        // case choose environment property.
+        if (selectedItem.getParent().getValue().equalsIgnoreCase(environment)){
+            loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/EnvironmentComponent.fxml", environment);
+            environmentComponentController.updateLabelEnv(this.worldPreview.getDtoEnvironments().getEnvironmentDefinitions().get(selectedItem.getValue()));
+            return;
         }
-        else {
-            Range range = propertyDefinitionChoose.getPropertyDefinition().getPropertyRange();
-            propRange.setText("Range: "+range.getFrom()+" -> "+range.getTo());
+
+        // case choose entity property.
+        if (selectedItem.getParent().getParent().getValue().equalsIgnoreCase(entities)){
+            loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/EntityComponent.fxml", "Entity");
+            entityComponentController.updateLabelEnt(getSelectedPropertyEntity(selectedItem));
+            return;
         }
-        boolean randomInit = propertyDefinitionChoose.getPropValue().getRandomInit();
-        String initTo = propertyDefinitionChoose.getPropValue().getInit();
-        if (randomInit){
-            propInit.setText("Random-initialize");
-        }else{
-            propInit.setText("initialize to " + initTo);
+        // case choose rule action
+        if (selectedItem.getParent().getParent().getValue().equalsIgnoreCase(rules)){
+            loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/RuleComponent.fxml", "Rule");
+            this.ruleComponentController.updateLabelRule(getSelectedAction(selectedItem));
         }
+
     }
 
-    private PropertyDefinitionEntity getSelectedProperty(TreeItem<String> selectedItem) {
+    private PropertyDefinitionEntity getSelectedPropertyEntity(TreeItem<String> selectedItem) {
         String parentName = selectedItem.getParent().getValue();
         PropertyDefinitionEntity propertyDefinitionChoose = null;
         DtoResponseEntities entityChoose = null;
@@ -169,25 +145,53 @@ public class DetailsController implements Initializable {
         return propertyDefinitionChoose;
     }
 
-    private void updateLabelRule(TreeItem<String> selectedItem){
-
+    private DtoActionResponse getSelectedAction(TreeItem<String> selectedItem) {
+        String parentName = selectedItem.getParent().getValue();
+        String selectedActionName = selectedItem.getValue().toLowerCase();
+        DtoActionResponse actionResponse = null;
+        DtoResponseRules responseRule = null;
+        for (DtoResponseRules dtoResponseRule : this.worldPreview.getDtoResponseRules()) {
+            if (dtoResponseRule.getRuleName().equalsIgnoreCase(parentName)){
+                responseRule = dtoResponseRule;
+                break;
+            }
+        }
+        int count = 1;
+        for (DtoActionResponse dtoActionResponse : responseRule.getActionNames()) {
+            if (selectedActionName.equalsIgnoreCase(count + ") " +dtoActionResponse.getActionName())){
+                actionResponse = dtoActionResponse;
+                break;
+            }
+            count ++;
+        }
+        return actionResponse;
     }
-    private void updateLabelTerm(DtoResponsePreviewTermination termination){
-        titleTerm.setText("Termination");
-        if (termination.getTicks() == -1) {
-            termTicks.setText("");
-        }
-        else {
-            termTicks.setText("Ticks: " + termination.getTicks());
-        }
-        if (termination.getSeconds() == -1) {
-            termSec.setText("");
-        }
-        else {
-            termSec.setText("Seconds: " + termination.getSeconds());
-        }
 
-        // need to add if user choice
-        termUser.setText("");
+    private void loadAndAddFXML(String fxmlFileName, String whichController) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            URL mainFXML = getClass().getResource(fxmlFileName);
+            loader.setLocation(mainFXML);
+            AnchorPane component = loader.load();
+            switch (whichController.toLowerCase()){
+                case "environment":
+                    this.environmentComponentController = loader.getController();
+                    break;
+                case "entity":
+                    this.entityComponentController = loader.getController();
+                    break;
+                case"rule":
+                    this.ruleComponentController = loader.getController();
+                    break;
+                case "general":
+                    this.treminationComponentController = loader.getController();
+                    break;
+            }
+
+            mainAnchorPane.getChildren().setAll(component);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

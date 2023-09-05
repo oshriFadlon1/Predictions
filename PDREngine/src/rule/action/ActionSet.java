@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import entity.SecondEntity;
 import enums.Operation;
@@ -38,6 +39,10 @@ public class ActionSet extends AbstractAction implements Serializable {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
+        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+            return;
+        }
+
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         String type = propertyInstance.getPropertyDefinition().getPropertyType().toLowerCase();
         Object result = null;
@@ -80,5 +85,14 @@ public class ActionSet extends AbstractAction implements Serializable {
     @Override
     public EntityDefinition getContextEntity() {
         return super.getEntityDefinition();
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionName("Set");
+        actionResponse.setActionProperty(this.propertyName);
+        actionResponse.setActionValue(this.value);
+        return actionResponse;
     }
 }

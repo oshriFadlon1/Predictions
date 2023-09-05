@@ -33,22 +33,22 @@
                             </rowConstraints>
                             <children>
                                 <VBox fx:id="vboxValues" prefHeight="355.0" prefWidth="188.0" GridPane.columnIndex="2">
-                           <children>
-                              <Label id="title" fx:id="labelValue" prefHeight="25.0" prefWidth="155.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value" visible="false">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="textFieldValue" visible="false" />
-                           </children>
+                                    <children>
+                                        <Label id="title" fx:id="labelValue" prefHeight="25.0" prefWidth="155.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value" visible="false">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="textFieldValue" visible="false" />
+                                    </children>
                                 </VBox>
-                        <TableView fx:id="tableEnvironmentsPresenter" onMouseClicked="#selectItem" prefHeight="355.0" prefWidth="286.0" GridPane.columnSpan="2">
-                          <columns>
-                            <TableColumn fx:id="envNameCol" prefWidth="171.0" text="Environment name" />
-                            <TableColumn fx:id="envTypeCol" prefWidth="79.0" text="Type" />
-                              <TableColumn fx:id="envRangeCol" prefWidth="135.0" text="Range" />
-                          </columns>
-                        </TableView>
+                                <TableView fx:id="tableEnvironmentsPresenter" onMouseClicked="#selectItem" prefHeight="355.0" prefWidth="286.0" GridPane.columnSpan="2">
+                                    <columns>
+                                        <TableColumn fx:id="envNameCol" prefWidth="171.0" text="Environment name" />
+                                        <TableColumn fx:id="envTypeCol" prefWidth="79.0" text="Type" />
+                                        <TableColumn fx:id="envRangeCol" prefWidth="135.0" text="Range" />
+                                    </columns>
+                                </TableView>
                             </children>
                         </GridPane>
                         <Label id="labelErrorEnvironments" fx:id="labelError" layoutX="496.0" layoutY="548.0" prefHeight="43.0" prefWidth="573.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" visible="false" />
@@ -97,23 +97,23 @@
                             </font>
                         </Label>
                         <Label layoutX="500.0" layoutY="107.0" prefHeight="27.0" prefWidth="566.0" stylesheets="@../../../cssDesign/newExecution.css" text="Please select the row of the environment you wish to initialize, and insert init value to the textfeld">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
+                            <font>
+                                <Font size="13.0" />
+                            </font>
                         </Label>
-                  <TableView fx:id="tableEntities" layoutX="18.0" layoutY="451.0" prefHeight="200.0" prefWidth="169.0" visible="false">
-                    <columns>
-                      <TableColumn fx:id="entityColumn" prefWidth="83.0" text="Entity" />
-                      <TableColumn fx:id="populationColumn" prefWidth="85.0" text="Population" />
-                    </columns>
-                  </TableView>
-                  <TableView fx:id="tableEnvironments" layoutX="191.0" layoutY="451.0" prefHeight="200.0" prefWidth="299.0" visible="false">
-                     <columns>
-                        <TableColumn fx:id="environmentColumn" prefWidth="144.0" text="Environment" />
-                        <TableColumn fx:id="valueColumn" prefWidth="154.0" text="Value" />
-                     </columns>
-                  </TableView>
-                  <Button fx:id="buttonValue" disable="true" layoutX="860.0" layoutY="497.0" mnemonicParsing="false" onAction="#OnClickedSetValueOfEnvProp" prefHeight="25.0" prefWidth="133.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Set value" />
+                        <TableView fx:id="tableEntities" layoutX="18.0" layoutY="451.0" prefHeight="200.0" prefWidth="169.0" visible="false">
+                            <columns>
+                                <TableColumn fx:id="entityColumn" prefWidth="83.0" text="Entity" />
+                                <TableColumn fx:id="populationColumn" prefWidth="85.0" text="Population" />
+                            </columns>
+                        </TableView>
+                        <TableView fx:id="tableEnvironments" layoutX="191.0" layoutY="451.0" prefHeight="200.0" prefWidth="299.0" visible="false">
+                            <columns>
+                                <TableColumn fx:id="environmentColumn" prefWidth="144.0" text="Environment" />
+                                <TableColumn fx:id="valueColumn" prefWidth="154.0" text="Value" />
+                            </columns>
+                        </TableView>
+                        <Button fx:id="buttonValue" disable="true" layoutX="860.0" layoutY="497.0" mnemonicParsing="false" onAction="#OnClickedSetValueOfEnvProp" prefHeight="25.0" prefWidth="133.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Set value" />
                     </children>
                 </AnchorPane>
             </center>

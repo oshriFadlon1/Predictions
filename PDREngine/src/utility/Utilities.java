@@ -135,31 +135,39 @@ public class Utilities {
                     throw new GeneralException("Environment " + valueString + " doesnt exist");
                 }
             case "ticks":
-                int indexOfPoint = valueString.indexOf(".");
-                String EntityName = valueString.substring(0, indexOfPoint);
-                String entityPropertyName = valueString.substring(indexOfPoint + 1, valueString.length());
+                int indexOfPointTick = valueString.indexOf(".");
+                String EntityNameTick = valueString.substring(0, indexOfPointTick);
+                String entityPropertyNameTick = valueString.substring(indexOfPointTick + 1, valueString.length());
                 for (EntityDefinition entityDefinition: currEntity ) {
-                    if (EntityName.equalsIgnoreCase(entityDefinition.getEntityName())) {
-                        if (!checkIfValueIsProperty(entityPropertyName, entityDefinition)){
-                            throw new GeneralException("Property name " + entityPropertyName + " doesn't exist/is not of a numeric type");
+                    if (EntityNameTick.equalsIgnoreCase(entityDefinition.getEntityName())) {
+                        if ((entityDefinition.getPropertyDefinition().get(entityPropertyNameTick)) == null){
+                            throw new GeneralException("Property name " + entityPropertyNameTick + " doesn't exist/is not of a numeric type");
                         }
                     }
                 }
                 return true;
             case "evaluate":
-                // TODO EVALUATE
-                break;
+                int indexOfPointEvaluate = valueString.indexOf(".");
+                String EntityNameEvaluate= valueString.substring(0, indexOfPointEvaluate);
+                String entityPropertyNameEvaluate = valueString.substring(indexOfPointEvaluate + 1, valueString.length());
+                for (EntityDefinition entityDefinition: currEntity ) {
+                    if (EntityNameEvaluate.equalsIgnoreCase(entityDefinition.getEntityName())) {
+                        if (!checkIfValueIsProperty(entityPropertyNameEvaluate, entityDefinition)){
+                            throw new GeneralException("Property name " + entityPropertyNameEvaluate + " doesn't exist/is not of a numeric type");
+                        }
+                    }
+                }
+                return true;
             case "percent":
                 int indexOfComma = copyOfValueBy.indexOf(",");
-                expression1 = valueString.substring(0, indexOfComma);
-                expression2 = valueString.substring(indexOfComma + 1, valueString.length());
+                expression1 = copyOfValueBy.substring(8, indexOfComma);
+                expression2 = copyOfValueBy.substring(indexOfComma + 1, copyOfValueBy.length() - 1);
                 isValueCalculationNumeric(expression1, environmentDefinitionMap, currEntity);
                 isValueCalculationNumeric(expression2, environmentDefinitionMap, currEntity);
                 return true;
                 default:
                 return false;
         }
-        return false;
     }
 
     public static boolean isOperatorFromSingleCondition(String operator){
