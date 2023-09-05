@@ -1,5 +1,6 @@
 package xmlParser;
 
+import dto.DtoActionArgsContainer;
 import entity.EntityDefinition;
 import entity.SecondEntity;
 import enums.CreationType;
@@ -262,34 +263,34 @@ public class XmlParser {
             if (prdAction.getPRDSecondaryEntity() != null){
                 secondEntity = checkAndGetSecondEntity(environments, entitiesInContext, prdAction.getPRDSecondaryEntity());
             }
-
+            DtoActionArgsContainer dtoActionArgsContainer = new DtoActionArgsContainer(entityDefinitionList, environments, secondEntity, entitiesInContext);
             Operation typeOfAction = Operation.valueOf(prdAction.getType().toUpperCase());
             switch(typeOfAction){
                 case INCREASE:
-                    actionToAdd = convertPrdActionToIncreaseAction(prdAction, entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToIncreaseAction(prdAction, dtoActionArgsContainer);
                     break;
                 case DECREASE:
-                    actionToAdd = convertPrdActionToDecreaseAction(prdAction, entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToDecreaseAction(prdAction, dtoActionArgsContainer);
                     break;
                 case CALCULATION:
-                    actionToAdd = convertPrdActionToCalculation(prdAction, entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToCalculation(prdAction, dtoActionArgsContainer);
                     break;
                 case CONDITION:
-                    actionToAdd = convertPrdActionToCondition(prdAction,entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToCondition(prdAction, dtoActionArgsContainer);
                     // TODO set second entity as in PRD-second-entity
                     break;
                 case SET:
-                    actionToAdd = convertPrdActionToSet(prdAction, entitiesInContext, environments, secondEntity);
+                    actionToAdd = convertPrdActionToSet(prdAction, dtoActionArgsContainer);
                     break;
                 case KILL:
-                    actionToAdd = convertPrdActionToKill(prdAction, entitiesInContext, secondEntity);
+                    actionToAdd = convertPrdActionToKill(prdAction, dtoActionArgsContainer);
                     break;
                 case PROXIMITY:
-                    actionToAdd = convertPrdActionToProximity(prdAction, entityDefinitionList, environments, secondEntity);
+                    actionToAdd = convertPrdActionToProximity(prdAction, dtoActionArgsContainer);
                     // TODO set second Entity as ALL and condition null
                     break;
                 case REPLACE:
-                    actionToAdd = convertPrdActionToReplace(prdAction, entityDefinitionList);
+                    actionToAdd = convertPrdActionToReplace(prdAction, dtoActionArgsContainer);
                     break;
                 default:
                     throw new GeneralException("Action type does not exist.");
@@ -374,6 +375,9 @@ public class XmlParser {
     private SecondEntity checkAndGetSecondEntity(Map<String, EnvironmentDefinition> environments, List<EntityDefinition> entitiesInContext, PRDAction.PRDSecondaryEntity prdSecondaryEntity) throws GeneralException{
         EntityDefinition entityDefinition = getEntityContextFromList(entitiesInContext, prdSecondaryEntity.getEntity());
         String count = prdSecondaryEntity.getPRDSelection().getCount();
+        if(!Utilities.isInteger(count)){
+            throw new GeneralException("Invalid value for attribute 'count' in secondary entity definition");
+        }
         IConditionComponent conditionComponent = null;
         if (prdSecondaryEntity.getPRDSelection().getPRDCondition() != null){
             conditionComponent = parseConditionFromPRDCondition(prdSecondaryEntity.getPRDSelection().getPRDCondition(), entitiesInContext, environments);
@@ -381,7 +385,7 @@ public class XmlParser {
         return new SecondEntity(entityDefinition, count, conditionComponent);
     }
 
-    private IAction convertPrdActionToIncreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntityIfExist) throws GeneralException{
+    private IAction convertPrdActionToIncreaseAction(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
 //        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
 //        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
 //            throw new GeneralException(potentionalError.getErrorMsg());
@@ -390,8 +394,12 @@ public class XmlParser {
 //        PropertyDefinitionEntity propDef = potentionalError.getPropertyDef();
 //        String entityProperty = propDef.getPropertyDefinition().getPropertyName();
         ActionIncrease increaseAction;
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntitiesInContext();
+        Map<String, EnvironmentDefinition> environments = dtoActionArgsContainer.getEnvironments();
+        SecondEntity secondEntityIfExist = dtoActionArgsContainer.getSecondEntity();
         String entityName = prdAction.getEntity(); // primery entity
         EntityDefinition entityDef = checkIfEntityNameExist(entityName, entityDefinitions);
+
         if(entityDef == null){
             throw  new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
         }
@@ -419,7 +427,7 @@ public class XmlParser {
         return increaseAction;
     }
 
-    private IAction convertPrdActionToDecreaseAction(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntity) throws GeneralException{
+    private IAction convertPrdActionToDecreaseAction(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
 //        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
 //        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
 //            throw new GeneralException(potentionalError.getErrorMsg());
@@ -429,8 +437,11 @@ public class XmlParser {
 //        PropertyDefinitionEntity propDef = potentionalError.getPropertyDef();
 //        String entityPropName = propDef.getPropertyDefinition().getPropertyName();
         ActionDecrease decreaseAction;
-        SecondEntity secondaryEntity = null;
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntitiesInContext();
+        Map<String, EnvironmentDefinition> environments = dtoActionArgsContainer.getEnvironments();
+        SecondEntity secondEntityIfExist = dtoActionArgsContainer.getSecondEntity();
         String entityName = prdAction.getEntity(); // primery entity
+
         EntityDefinition entityDef = checkIfEntityNameExist(entityName, entityDefinitions);
         if(entityDef == null){
             throw  new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
@@ -454,25 +465,25 @@ public class XmlParser {
         //we call the following options to check by. if not number then throws exception. otherwise no need to do anything
         Utilities.isValueCalculationNumeric(prdAction.getBy(), environments, entityDefinitions);
         decreaseAction = new ActionDecrease(entityDef, prdAction.getBy(), entityPropName);
-        if(secondEntity != null){
-            decreaseAction.SetSecondEntity(secondEntity);
+        if(secondEntityIfExist != null){
+            decreaseAction.SetSecondEntity(secondEntityIfExist);
         }
 
         return decreaseAction;
     }
-    private IAction convertPrdActionToCalculation(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntity) throws GeneralException {
+    private IAction convertPrdActionToCalculation(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException {
 //        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
 //        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
 //            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntitiesInContext();
+        Map<String, EnvironmentDefinition> environments = dtoActionArgsContainer.getEnvironments();
         ActionCalculation actionToDo = null;
-        SecondEntity secondaryEntity = null;
-//       String entityPropName = prdAction.getProperty();
+        SecondEntity secondaryEntity = dtoActionArgsContainer.getSecondEntity();
         String entityName = prdAction.getEntity();
         String resultProp = prdAction.getResultProp();
-        boolean isEntityNameExist = false;
-
         EntityDefinition entityDefinitionTocheck = checkIfEntityNameExist(entityName, entityDefinitions);
+
         if(entityDefinitionTocheck == null){
             throw  new GeneralException("In " + prdAction.getType() + ", The required entity name" + entityName + "does not exist");
         }
@@ -492,8 +503,8 @@ public class XmlParser {
             String arg2 = prdMultiply.getArg2();
             Utilities.isValueCalculationNumeric(arg2, environments, entityDefinitions);
             actionToDo = new ActionCalculationMultiply(entityDefinitionTocheck, resultProp, arg1, arg2);
-            if(secondEntity != null){
-               actionToDo.SetSecondEntity(secondEntity);
+            if(secondaryEntity != null){
+               actionToDo.SetSecondEntity(secondaryEntity);
            }
        }
        else{//action is divide
@@ -503,21 +514,22 @@ public class XmlParser {
            String arg2 = prdDivide.getArg2();
            Utilities.isValueCalculationNumeric(arg2, environments, entityDefinitions);
            actionToDo = new ActionCalculationDivide(entityDefinitionTocheck, resultProp, arg1, arg2);
-           if(secondEntity != null){
-               actionToDo.SetSecondEntity(secondEntity);
+           if(secondaryEntity != null){
+               actionToDo.SetSecondEntity(secondaryEntity);
            }
        }
 
        return actionToDo;
     }
 
-    private IAction convertPrdActionToCondition(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntity) throws GeneralException{
+    private IAction convertPrdActionToCondition(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
         String entityName = prdAction.getEntity();
-        String entityPropName = prdAction.getProperty();
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntityDefinitionList();
+        Map<String, EnvironmentDefinition> environments = dtoActionArgsContainer.getEnvironments();
+        SecondEntity secondEntity = dtoActionArgsContainer.getSecondEntity();
 
         EntityDefinition entityDefinitionTocheck = null;
         boolean isEntityNameExist = false;
-        boolean isPropNameExist = false;
 
         for(EntityDefinition entityDef: entityDefinitions){
             if(entityDef.getEntityName().equals(entityName)){
@@ -646,15 +658,15 @@ public class XmlParser {
         return listOfAction;
     }
 
-    private IAction convertPrdActionToSet(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntity) throws GeneralException{
+    private IAction convertPrdActionToSet(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
 //        PotentionalError potentionalError = checkErrors(prdAction, entityDefinitions);
 //        if(!potentionalError.getErrorMsg().equalsIgnoreCase("")){
 //            throw new GeneralException(potentionalError.getErrorMsg());
 //        }
         String entityName = prdAction.getEntity();
         String entityPropName = prdAction.getProperty();
-        boolean isEntityNameExist = false;
-        boolean isPropNameExist = false;
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntitiesInContext();
+        SecondEntity secondEntity = dtoActionArgsContainer.getSecondEntity();
 
         EntityDefinition entityDefinitionTocheck = checkIfEntityNameExist(entityName, entityDefinitions);
         if(entityDefinitions == null){
@@ -676,9 +688,12 @@ public class XmlParser {
         return new ActionSet(entityDefinitionTocheck, entityPropName, prdAction.getValue(), secondEntity);
     }
 
-    private IAction convertPrdActionToKill(PRDAction prdAction, List<EntityDefinition> entityDefinitions, SecondEntity secondEntity) throws GeneralException{
+    private IAction convertPrdActionToKill(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
         String entityName = prdAction.getEntity();
         EntityDefinition entityDefinition = null;
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntityDefinitionList();
+        SecondEntity secondEntity = dtoActionArgsContainer.getSecondEntity();
+
         for(EntityDefinition entityDef: entityDefinitions){
             if(entityDef.getEntityName().equals(entityName)){
                 entityDefinition = entityDef;
@@ -691,22 +706,45 @@ public class XmlParser {
         return new ActionKill(entityDefinition, entityName, secondEntity);
     }
 
-    private IAction convertPrdActionToProximity(PRDAction prdAction, List<EntityDefinition> entityDefinitions, Map<String, EnvironmentDefinition> environments, SecondEntity secondEntityIfExist) {
-        return null;
+    private IAction convertPrdActionToProximity(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException{
+        ActionProximity actionProximity = null;
+        String firstEntityName = prdAction.getPRDBetween().getSourceEntity();
+        String secondEntityName = prdAction.getPRDBetween().getTargetEntity();
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntityDefinitionList();
+        Map<String, EnvironmentDefinition> environments = dtoActionArgsContainer.getEnvironments();
+        EntityDefinition firstEntityDef = checkIfEntityNameExist(firstEntityName, entityDefinitions);
+
+        if(firstEntityDef == null){
+            throw new GeneralException("In action " + prdAction.getType() + " entity " + firstEntityName + " doesn't exist");
+        }
+
+        EntityDefinition secondaryEntityDef = checkIfEntityNameExist(secondEntityName, entityDefinitions);
+        if(secondaryEntityDef == null){
+            throw new GeneralException("In action " + prdAction.getType() + " entity " + secondEntityName + " doesn't exist");
+        }
+
+        String depth = prdAction.getPRDEnvDepth().getOf();
+        Utilities.isValueCalculationNumeric(depth, environments, entityDefinitions);
+
+
+        List<IAction> listOfAction = createActionListFromPrdActions(prdAction.getPRDActions().getPRDAction(), entityDefinitions, environments);
+        actionProximity = new ActionProximity(firstEntityDef, new SecondEntity(secondaryEntityDef,"All",null), depth, listOfAction);
+        return actionProximity;
     }
 
-    private IAction convertPrdActionToReplace(PRDAction prdAction, List<EntityDefinition> entitiesInContext) throws GeneralException {
+    private IAction convertPrdActionToReplace(PRDAction prdAction, DtoActionArgsContainer dtoActionArgsContainer) throws GeneralException {
         ActionReplace actionReplace = null;
         String firstEntityName = prdAction.getKill();
         String secondEntityName = prdAction.getCreate();
         String mode = prdAction.getMode();
         CreationType typeOfCreation = null;
-        EntityDefinition firstEntityDef = checkIfEntityNameExist(firstEntityName, entitiesInContext);
+        List<EntityDefinition> entityDefinitions = dtoActionArgsContainer.getEntityDefinitionList();
+        EntityDefinition firstEntityDef = checkIfEntityNameExist(firstEntityName, entityDefinitions);
         if(firstEntityDef == null){
             throw new GeneralException("In action " + prdAction.getType() + " entity " + firstEntityName + " doesn't exist");
         }
 
-        EntityDefinition secondaryEntityDef = checkIfEntityNameExist(secondEntityName, entitiesInContext);
+        EntityDefinition secondaryEntityDef = checkIfEntityNameExist(secondEntityName, entityDefinitions);
         if(secondaryEntityDef == null){
             throw new GeneralException("In action " + prdAction.getType() + " entity " + secondEntityName + " doesn't exist");
         }

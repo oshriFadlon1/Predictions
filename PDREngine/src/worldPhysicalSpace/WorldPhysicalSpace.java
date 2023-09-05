@@ -50,6 +50,69 @@ public class WorldPhysicalSpace {
         this.worldSize = worldSize;
     }
 
+    public void moveCurrentEntity(EntityInstance currentInstance){
+        List<PointCoord> freeSpaces = getFreeSpacesFromCurrentPosition(currentInstance);
+        if(freeSpaces.size() != 0){
+            int randomMoveIndx = Utilities.initializeRandomInt(0, freeSpaces.size() - 1);
+            PointCoord move = freeSpaces.get(randomMoveIndx);
+            removeEntityFromWorld(currentInstance.getPositionInWorld());
+            currentInstance.setPositionInWorld(move);
+            worldSpace[move.getRow()][move.getCol()] = currentInstance;
+        }
+
+    }
+
+    private List<PointCoord> getFreeSpacesFromCurrentPosition(EntityInstance currentInstance) {
+        List<PointCoord> freeSpaces = new ArrayList<>();
+        if(canMoveUp(currentInstance.getPositionInWorld())){
+            if(currentInstance.getPositionInWorld().getRow() != 0) {
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow() - 1, currentInstance.getPositionInWorld().getCol()));
+            }
+            else{
+                freeSpaces.add(new PointCoord(this.worldSize.getRow() - 1, currentInstance.getPositionInWorld().getCol()));
+            }
+        }
+        if(canMoveDown(currentInstance.getPositionInWorld())){
+            if(currentInstance.getPositionInWorld().getRow() != this.worldSize.getRow() - 1) {
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow() + 1, currentInstance.getPositionInWorld().getCol()));
+            }
+            else{
+                freeSpaces.add(new PointCoord(0, currentInstance.getPositionInWorld().getCol()));
+            }
+        }
+        if(canMoveLeft(currentInstance.getPositionInWorld())){
+            if(currentInstance.getPositionInWorld().getCol() != 0) {
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow(), currentInstance.getPositionInWorld().getCol() - 1));
+            }
+            else{
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow(), this.worldSize.getCol() - 1));
+            }
+        }
+        if(canMoveRight(currentInstance.getPositionInWorld())){
+            if(currentInstance.getPositionInWorld().getCol() != this.worldSize.getCol() - 1){
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow(), currentInstance.getPositionInWorld().getCol() + 1));
+            }
+            else{
+                freeSpaces.add(new PointCoord(currentInstance.getPositionInWorld().getRow(), 0));
+            }
+        }
+
+        return freeSpaces;
+    }
+
+    private boolean canMove(int currentX, int currentY, int deltaX, int deltaY) {
+        int newX = (currentX + deltaX + worldSize.getRow()) % worldSize.getRow(); // Modulo ensures circular boundary on X-axis
+        int newY = (currentY + deltaY + worldSize.getCol()) % worldSize.getCol();   // Modulo ensures circular boundary on Y-axis
+
+        // Check if the new position is blocked by an entity or obstacle
+        if (worldSpace[newX][newY] == null) {
+            return true; // Move is valid
+        } else {
+            return false; // Move is blocked
+        }
+    }
+
+
     private boolean canMoveUp(PointCoord currentPlace){
 
         return this.worldSpace[(currentPlace.getRow() + moveInRow[0]) % worldSize.getRow()][(currentPlace.getCol() + moveInCol[0]) % worldSize.getCol()] == null ;

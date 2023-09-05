@@ -18,6 +18,7 @@ import java.util.Map;
 public class NecessaryVariablesImpl implements NecessaryVariables, Serializable {
     private EntityInstance primaryEntityInstance;
     private EntityInstance secondaryEntityInstance;
+    private EntityDefinition secondaryEntityDefinition;
     private List<EntityInstance> secondaryInstanceManager;
     private List<EntityInstance> entityInstanceManager;
 
@@ -44,6 +45,14 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
 
     public void setPrimaryEntityInstance(EntityInstance primaryEntityInstance) {
         this.primaryEntityInstance = primaryEntityInstance;
+    }
+
+    public EntityDefinition getSecondaryEntityDefinition(){
+        return this.secondaryEntityDefinition;
+    }
+
+    public void setSecondaryEntityDefinition(EntityDefinition secondaryEntityDefinition){
+        this.secondaryEntityDefinition = secondaryEntityDefinition;
     }
 
     public List<EntityInstance> getEntityInstanceManager() {
@@ -108,9 +117,9 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
     }
 
     @Override
-    public void killAndCreateEntity(EntityInstance entityInstance, EntityDefinition secondaryInstance, CreationType creationType){
+    public void killAndCreateEntity(EntityInstance entityInstance, EntityDefinition secondaryDefinition, CreationType creationType){
         this.entityToKillAndCreate.setKill(entityInstance);
-        this.entityToKillAndCreate.setCreate(secondaryInstance);
+        this.entityToKillAndCreate.setCreate(secondaryDefinition);
         this.entityToKillAndCreate.setCreationType(creationType);
     }
 

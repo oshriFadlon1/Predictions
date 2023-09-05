@@ -9,7 +9,7 @@ import necessaryVariables.NecessaryVariablesImpl;
 import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
 
-public abstract  class AbstractAction implements IAction, Serializable {
+public abstract class AbstractAction implements IAction, Serializable {
     private final Operation operationType;
     private final EntityDefinition entityDefinition;
     private SecondEntity secondaryEntity;
