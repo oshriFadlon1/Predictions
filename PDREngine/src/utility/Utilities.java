@@ -135,14 +135,25 @@ public class Utilities {
                     throw new GeneralException("Environment " + valueString + " doesnt exist");
                 }
             case "ticks":
-            case "evaluate":
                 int indexOfPointTick = valueString.indexOf(".");
                 String EntityNameTick = valueString.substring(0, indexOfPointTick);
                 String entityPropertyNameTick = valueString.substring(indexOfPointTick + 1, valueString.length());
                 for (EntityDefinition entityDefinition: currEntity ) {
                     if (EntityNameTick.equalsIgnoreCase(entityDefinition.getEntityName())) {
-                        if (!checkIfValueIsProperty(entityPropertyNameTick, entityDefinition)){
+                        if ((entityDefinition.getPropertyDefinition().get(entityPropertyNameTick)) == null){
                             throw new GeneralException("Property name " + entityPropertyNameTick + " doesn't exist/is not of a numeric type");
+                        }
+                    }
+                }
+                return true;
+            case "evaluate":
+                int indexOfPointEvaluate = valueString.indexOf(".");
+                String EntityNameEvaluate= valueString.substring(0, indexOfPointEvaluate);
+                String entityPropertyNameEvaluate = valueString.substring(indexOfPointEvaluate + 1, valueString.length());
+                for (EntityDefinition entityDefinition: currEntity ) {
+                    if (EntityNameEvaluate.equalsIgnoreCase(entityDefinition.getEntityName())) {
+                        if (!checkIfValueIsProperty(entityPropertyNameEvaluate, entityDefinition)){
+                            throw new GeneralException("Property name " + entityPropertyNameEvaluate + " doesn't exist/is not of a numeric type");
                         }
                     }
                 }

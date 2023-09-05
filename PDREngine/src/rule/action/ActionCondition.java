@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import entity.SecondEntity;
 import enums.Operation;
@@ -48,6 +49,10 @@ public class ActionCondition extends AbstractAction implements Serializable {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
+        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+            return;
+        }
+
         try {
            boolean result = this.theCondition.getResultFromCondition(context);
             if (result) {
@@ -74,5 +79,32 @@ public class ActionCondition extends AbstractAction implements Serializable {
     @Override
     public EntityDefinition getContextEntity() {
         return super.getEntityDefinition();
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        MultipleCondition multipleCondition = (MultipleCondition)this.theCondition;
+        SingleCondition singleCondition;
+        if(multipleCondition.getSubConditions().size() == 1){
+            singleCondition = (SingleCondition) (multipleCondition.getSubConditions().get(0));
+            actionResponse.setActionName("Single condition");
+            actionResponse.setActionProperty(singleCondition.getExpressionValue());
+            actionResponse.setActionValue(singleCondition.getOperator());
+            actionResponse.setArg2(singleCondition.getValueToCompare());
+        } else {
+            actionResponse.setActionName("Multiple condition");
+            actionResponse.setActionProperty(multipleCondition.getLogical());
+            actionResponse.setActionValue(String.valueOf(multipleCondition.getNumberOfCondition()));
+            actionResponse.setArg2(String.valueOf(this.trueResult.size()));
+            if (this.falseResult == null){
+                actionResponse.setActionElse(String.valueOf("0"));
+            }else{
+                actionResponse.setActionElse(String.valueOf(this.falseResult.size()));
+            }
+
+        }
+
+        return actionResponse;
     }
 }

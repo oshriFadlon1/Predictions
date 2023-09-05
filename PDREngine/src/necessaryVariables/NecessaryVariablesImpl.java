@@ -8,6 +8,7 @@ import enums.CreationType;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import utility.Utilities;
+import worldPhysicalSpace.WorldPhysicalSpace;
 
 import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
@@ -18,12 +19,16 @@ import java.util.Map;
 public class NecessaryVariablesImpl implements NecessaryVariables, Serializable {
     private EntityInstance primaryEntityInstance;
     private EntityInstance secondaryEntityInstance;
+    private EntityDefinition secondaryEntityDefinition;
     private List<EntityInstance> secondaryInstanceManager;
     private List<EntityInstance> entityInstanceManager;
+
     private Map<String, EnvironmentInstance> activeEnvironment;
 
     private EntityInstance entityToKill;
     private CreateAndKillEntities entityToKillAndCreate;
+
+    private WorldPhysicalSpace worldPhysicalSpace;
 
     public NecessaryVariablesImpl(EntityInstance primaryEntityInstance, List<EntityInstance> entityInstanceManager, Map<String, EnvironmentInstance> activeEnvironment) {
         this.primaryEntityInstance = primaryEntityInstance;
@@ -31,6 +36,7 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         this.activeEnvironment = activeEnvironment;
         this.entityToKillAndCreate = new CreateAndKillEntities();
         this.entityToKill = null;
+        this.worldPhysicalSpace = null;
     }
 
     public NecessaryVariablesImpl(Map<String, EnvironmentInstance> activeEnvironment) {
@@ -39,10 +45,19 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         this.primaryEntityInstance = null;//not sure yet
         this.entityToKillAndCreate= new CreateAndKillEntities();
         this.entityToKill = null;
+        this.worldPhysicalSpace = null;
     }
 
     public void setPrimaryEntityInstance(EntityInstance primaryEntityInstance) {
         this.primaryEntityInstance = primaryEntityInstance;
+    }
+
+    public EntityDefinition getSecondaryEntityDefinition(){
+        return this.secondaryEntityDefinition;
+    }
+
+    public void setSecondaryEntityDefinition(EntityDefinition secondaryEntityDefinition){
+        this.secondaryEntityDefinition = secondaryEntityDefinition;
     }
 
     public List<EntityInstance> getEntityInstanceManager() {
@@ -80,7 +95,7 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
     }
 
     public CreateAndKillEntities getEntityToKillAndCreate() {
-        return entityToKillAndCreate;
+        return new CreateAndKillEntities(this.entityToKillAndCreate.getKill(), this.entityToKillAndCreate.getCreate(), this.entityToKillAndCreate.getCreationType());
     }
 
     public void setEntityToKillAndCreate(CreateAndKillEntities entityToKillAndCreate) {
@@ -89,6 +104,22 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
 
     public void setEntityToKill(EntityInstance entityToKill) {
         this.entityToKill = entityToKill;
+    }
+
+    public List<EntityInstance> getSecondaryInstanceManager() {
+        return secondaryInstanceManager;
+    }
+
+    public void setSecondaryInstanceManager(List<EntityInstance> secondaryInstanceManager) {
+        this.secondaryInstanceManager = secondaryInstanceManager;
+    }
+
+    public WorldPhysicalSpace getWorldPhysicalSpace() {
+        return worldPhysicalSpace;
+    }
+
+    public void setWorldPhysicalSpace(WorldPhysicalSpace worldPhysicalSpace) {
+        this.worldPhysicalSpace = worldPhysicalSpace;
     }
 
     @Override
@@ -107,20 +138,10 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
     }
 
     @Override
-    public void killAndCreateEntity(EntityInstance entityInstance, EntityDefinition secondaryInstance, CreationType creationType){
+    public void killAndCreateEntity(EntityInstance entityInstance, EntityDefinition secondaryDefinition, CreationType creationType){
         this.entityToKillAndCreate.setKill(entityInstance);
-        this.entityToKillAndCreate.setCreate(secondaryInstance);
+        this.entityToKillAndCreate.setCreate(secondaryDefinition);
         this.entityToKillAndCreate.setCreationType(creationType);
-//        switch(creationType){
-//            case SCRATCH:
-//                this.entityToKillAndCreate.setCreationType(creationType);
-//                break;
-//            case DERIVED:
-//                this.entityToKillAndCreate.setCreationType(creationType);
-//                break;
-//        }
-
-        //removeEntity(entityInstance);
     }
 
 
@@ -132,16 +153,27 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
 
     public Object getValueFromString(String valueBy) throws GeneralException{
         Object o = null;
+        boolean found = false;
 
         if (valueBy.contains("("))
         {
             o = valueFromFunctionHelper(valueBy);
+            found = true;
         }
-        else if (this.primaryEntityInstance.getAllProperties().get(valueBy) != null)
+        if (!found && this.primaryEntityInstance.getAllProperties().get(valueBy) != null)
         {
             o = getvalueFromProperty(valueBy);
+            found = true;
         }
-        else {
+        if (this.secondaryEntityInstance != null && !found){
+            if (this.secondaryEntityInstance.getAllProperties().get(valueBy) != null)
+            {
+                o = getvalueFromProperty(valueBy);
+                found = true;
+            }
+        }
+
+        if (!found) {
             o = valueAsIs(valueBy);
         }
         return o;

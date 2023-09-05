@@ -7,12 +7,12 @@ import necessaryVariables.NecessaryVariablesImpl;
 import java.io.Serializable;
 import java.util.List;
 
-public class multipleCondition implements IConditionComponent, Serializable {
+public class MultipleCondition implements IConditionComponent, Serializable {
 
     private String logical;
     private List<IConditionComponent> subConditions;
 
-    public multipleCondition(String logical, List<IConditionComponent> subConditions) {
+    public MultipleCondition(String logical, List<IConditionComponent> subConditions) {
         this.logical = logical;
         this.subConditions = subConditions;
     }
@@ -31,6 +31,15 @@ public class multipleCondition implements IConditionComponent, Serializable {
 
     public void setSubConditions(List<IConditionComponent> subConditions) {
         this.subConditions = subConditions;
+    }
+
+    @Override
+    public int getNumberOfCondition() {
+        int numberOfSubCondition = 1;
+        for (IConditionComponent conditionComponent : subConditions) {
+            numberOfSubCondition += conditionComponent.getNumberOfCondition();
+        }
+        return numberOfSubCondition;
     }
 
     @Override

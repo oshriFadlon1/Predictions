@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import enums.CreationType;
 import enums.Operation;
@@ -20,9 +21,29 @@ public class ActionReplace extends AbstractAction implements Serializable{
         this.creationType = creationType;
     }
 
+    public String getEntityToKill(){
+        return this.entityToKill;
+    }
 
+    public void setEntityToKill(String entityToKill) {
+        this.entityToKill = entityToKill;
+    }
 
+    public String getEntityToCreate() {
+        return entityToCreate;
+    }
 
+    public void setEntityToCreate(String entityToCreate) {
+        this.entityToCreate = entityToCreate;
+    }
+
+    public CreationType getCreationType() {
+        return creationType;
+    }
+
+    public void setCreationType(CreationType creationType) {
+        this.creationType = creationType;
+    }
 
     @Override
     public EntityDefinition getContextEntity() {
@@ -30,6 +51,23 @@ public class ActionReplace extends AbstractAction implements Serializable{
     }
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        context.killAndCreateEntity(context.getPrimaryEntityInstance(), context.getSecondaryEntityInstance(), this.creationType);
+        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+            return;
+        }
+        context.killAndCreateEntity(context.getPrimaryEntityInstance(), context.getSecondaryEntityDefinition(), this.creationType);
+    }
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionName("Replace");
+        actionResponse.setPrimEntityName(this.entityToKill);
+        actionResponse.setSecEntityName(this.entityToCreate);
+        if (this.creationType.toString().equalsIgnoreCase("scratch")){
+            actionResponse.setActionProperty("scratch");
+        } else {
+            actionResponse.setActionProperty("derived");
+        }
+        return actionResponse;
     }
 }

@@ -1,11 +1,16 @@
 package world;
 
+import createAndKillEntities.CreateAndKillEntities;
 import dto.DtoResponseTermination;
 import entity.EntityDefinition;
 import entity.EntityInstance;
+import entity.SecondEntity;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
+import interfaces.IConditionComponent;
+import necessaryVariables.NecessaryVariables;
 import necessaryVariables.NecessaryVariablesImpl;
+import pointCoord.PointCoord;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
@@ -13,23 +18,39 @@ import property.Value;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
+import rule.action.ActionKill;
+import rule.action.ActionReplace;
 import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
+import worldPhysicalSpace.WorldPhysicalSpace;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
 import java.util.*;
 
 public class WorldInstance implements Serializable {
+    // map<String, Integer> population;
+    // from name of entity to number of population
+    // save with prefix start to set the start population
+    // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
     private List<Rule> allRules;
     private Termination termination;
+    private List<EntityInstance> entitiesToKill;
+    private List<CreateAndKillEntities> entitiesToKillAndReplace;
+    private WorldPhysicalSpace physicalSpace;
+    private PointCoord worldSize;
 
-    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments) {
+    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize) {
         this.allEnvironments = allEnvironments;
         this.allEntities = new HashMap<>();
         this.allRules = new ArrayList<>();
+        this.entitiesToKillAndReplace = new ArrayList<>();
+        this.entitiesToKill = new ArrayList<>();
+        this.worldSize = worldSize;
+        this.physicalSpace = new WorldPhysicalSpace(worldSize);
     }
 
 
@@ -91,6 +112,7 @@ public class WorldInstance implements Serializable {
                 allEntities.get(entityDefinitionName).add(newEntityInstance);
             }
         }
+        necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
         this.allRules = worldDefinitionForSimulation.getRules();
         this.termination = worldDefinitionForSimulation.getTermination();
@@ -102,6 +124,10 @@ public class WorldInstance implements Serializable {
 
         while (worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
                 worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)){
+            for(String currentEntityName: allEntities.keySet()){
+                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+                moveAllInstances(currentEntityInstanceList);
+            }
 
             for(Rule currentRuleToInvokeOnEntities: allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
@@ -123,24 +149,68 @@ public class WorldInstance implements Serializable {
 
                         // invoke each action on each entity
                         for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
-                            for(IAction currentActionToInvoke: allActionsForCurrentRule){
+                            for(IAction currentActionToInvoke: allActionsForCurrentRule) {
                                 necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
-                                currentActionToInvoke.invoke(necessaryVariables);
-                                if (necessaryVariables.getEntityToKill() != null){
-                                    this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                if (currentActionToInvoke.getSecondaryEntity() == null) {
+                                    if (currentActionToInvoke instanceof ActionReplace) {
+                                        ActionReplace parsedAction = (ActionReplace)currentActionToInvoke;
+                                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
+                                        necessaryVariables.setSecondaryEntityDefinition(definitionOfSecondEntity);
+                                    }
+
+                                    currentActionToInvoke.invoke(necessaryVariables);
+                                    if (necessaryVariables.getEntityToKill() != null) {
+                                        this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                    }
+                                    if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                            necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                        this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                    }
+                                    necessaryVariables.resetKillAndCreateAndKill();
+                                } else {
+                                    SecondEntity secondEntity = currentActionToInvoke.getSecondaryEntity();
+                                    List<EntityInstance> secondaryEntityInstances;
+                                    {
+                                        if (secondEntity.getCondition() == null) {
+                                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
+                                                secondaryEntityInstances = this.allEntities.get(secondEntity.getEntity().getEntityName());
+                                            } else {
+                                                secondaryEntityInstances = getSecondaryInstancesByNumber(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCount());
+                                            }
+
+                                        } else {
+                                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
+                                                secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
+                                            } else {
+                                                List<EntityInstance> conditionList = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
+                                                secondaryEntityInstances = getSecondaryInstancesByNumber(conditionList, secondEntity.getCount());
+                                            }
+                                        }
+
+                                        for (EntityInstance currSecondaryEntityInstance : secondaryEntityInstances) {
+                                            necessaryVariables.setSecondaryEntityInstance(currSecondaryEntityInstance);
+                                            currentActionToInvoke.invoke(necessaryVariables);
+                                            if (necessaryVariables.getEntityToKill() != null) {//i dont know if i really need this. i think so
+                                                this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                            }
+                                            if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                                    necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                                this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                            }
+                                            necessaryVariables.resetKillAndCreateAndKill();
+                                        }
+                                    }
+
                                 }
-                                if(necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
-                                        necessaryVariables.getEntityToKillAndCreate().getKill() != null){
-                                    this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
-                                }
-                                necessaryVariables.resetKillAndCreateAndKill();
                             }
                         }
                     }
                 }
-
-
             }
+            killAllEntities();
+            killAndReplaceAllEntities();
+            this.entitiesToKillAndReplace.clear();;
+            this.entitiesToKill.clear();
             currentTickCount++;
             currentTime = System.currentTimeMillis();
         }
@@ -166,6 +236,46 @@ public class WorldInstance implements Serializable {
         DtoResponseTermination responseOfSimulation = new DtoResponseTermination(endedByTicks, endedBySeconds);
         return responseOfSimulation;
 
+    }
+
+    private EntityDefinition getDefinitionByName(WorldDefinition worldDefinitionForSimulation, String entityName) {
+        for(EntityDefinition currEntityDef: worldDefinitionForSimulation.getEntityDefinitions()){
+            if(currEntityDef.getEntityName().equalsIgnoreCase(entityName)){
+                return currEntityDef;
+            }
+        }
+
+        return null;
+    }
+
+    private List<EntityInstance> generateSecondaryInstancesListFromCondition(List<EntityInstance> entityInstances, IConditionComponent conditionComponent, NecessaryVariablesImpl necessaryVariables) throws GeneralException{
+        List<EntityInstance> conditionListInstances = new ArrayList<>();
+        for(EntityInstance currInstance: entityInstances){
+            necessaryVariables.setPrimaryEntityInstance(currInstance);
+            if(conditionComponent.getResultFromCondition(necessaryVariables)) {
+                conditionListInstances.add(currInstance);
+            }
+        }
+
+        return conditionListInstances;
+    }
+
+    private List<EntityInstance> getSecondaryInstancesByNumber(List<EntityInstance> entityInstances, String count) throws GeneralException{
+        List<EntityInstance> countInstances = new ArrayList<>();
+        int maxIndx = entityInstances.size() - 1;
+        int numberOfInstances = Math.min(Integer.parseInt(count), maxIndx);
+        for(int i = 0; i < numberOfInstances; i++){
+            int randomIndx = Utilities.initializeRandomInt(0, maxIndx);
+            countInstances.add(entityInstances.get(randomIndx));
+        }
+
+        return countInstances;
+    }
+
+    private void moveAllInstances(List<EntityInstance> currentEntityInstanceList) {
+        for(EntityInstance currentEntityInstance: currentEntityInstanceList){
+            this.physicalSpace.moveCurrentEntity(currentEntityInstance);
+        }
     }
 
     private EntityInstance initializeEntityInstanceAccordingToEntityDefinition(EntityDefinition entityDefinitionToInitiateFrom, int id) throws GeneralException {
@@ -237,8 +347,80 @@ public class WorldInstance implements Serializable {
 
             resultEntityInstance.addProperty(newPropertyInstance);
         }
-
+        this.physicalSpace.putEntityInWorld(resultEntityInstance);
         return resultEntityInstance;
+    }
+
+    private void killAllEntities(){
+        for(EntityInstance entityInstanceToKill: this.entitiesToKill){
+            removeFromEntityInstancesList(entityInstanceToKill, this.allEntities.get(entityInstanceToKill.getDefinitionOfEntity().getEntityName()));
+        }
+    }
+
+    private void removeFromEntityInstancesList(EntityInstance entityInstanceToKill, List<EntityInstance> listOfEntityInstances) {
+        entityInstanceToKill.getDefinitionOfEntity().setEndPopulation(entityInstanceToKill.getDefinitionOfEntity().getEndPopulation() - 1);
+        this.physicalSpace.removeEntityFromWorld(entityInstanceToKill.getPositionInWorld());
+        listOfEntityInstances.remove(entityInstanceToKill);
+    }
+
+    private void killAndReplaceAllEntities()throws GeneralException{
+        for(CreateAndKillEntities currentKillAndReplace: this.entitiesToKillAndReplace){
+            EntityInstance instanceToCreate = createAndReplace(currentKillAndReplace);
+            this.allEntities.get(instanceToCreate.getDefinitionOfEntity().getEntityName()).add(instanceToCreate);
+            removeFromEntityInstancesList(currentKillAndReplace.getKill(), this.allEntities.get(currentKillAndReplace.getKill().getDefinitionOfEntity().getEntityName()));
+        }
+    }
+
+    private EntityInstance createAndReplace(CreateAndKillEntities currentKillAndReplace)throws GeneralException{
+        EntityInstance createdInstance = null;
+        switch(currentKillAndReplace.getCreationType()){
+            case SCRATCH:
+                createdInstance = initializeEntityInstanceAccordingToEntityDefinition(currentKillAndReplace.getCreate(),
+                        this.allEntities.get(currentKillAndReplace.getCreate().getEntityName()).size());
+                break;
+            case DERIVED:
+                createdInstance = createInstanceFromAnother(currentKillAndReplace.getKill(), currentKillAndReplace.getCreate());
+                this.physicalSpace.replaceEntities(createdInstance, currentKillAndReplace.getKill().getPositionInWorld());
+                break;
+        }
+
+        currentKillAndReplace.getCreate().setEndPopulation(currentKillAndReplace.getCreate().getEndPopulation() + 1);
+        //currentKillAndReplace.getKill().getDefinitionOfEntity().setEndPopulation(currentKillAndReplace.getKill().getDefinitionOfEntity().getEndPopulation() - 1);
+        return createdInstance;
+    }
+
+    private EntityInstance createInstanceFromAnother(EntityInstance kill, EntityDefinition create) {
+        EntityInstance createdInstance = new EntityInstance(create, this.allEntities.size());
+        createdInstance.setPositionInWorld(kill.getPositionInWorld());
+        Map<String, PropertyDefinitionEntity> propertyDefinitionMap = create.getPropertyDefinition();
+        for(String currPropDefName: propertyDefinitionMap.keySet()){
+            if(kill.getAllProperties().containsKey(currPropDefName)){
+                PropertyInstance currentPropInstance = kill.getPropertyByName(currPropDefName);
+                currentPropInstance.resetAllTicks();
+                createdInstance.addProperty(currentPropInstance);
+            }
+            else{
+                PropertyInstance newPropInstance = new PropertyInstance(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition());
+                switch(newPropInstance.getPropertyDefinition().getPropertyType().toLowerCase()){
+                    case "float":
+                        float floatVal = Utilities.initializeRandomFloat(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition().getPropertyRange());
+                        newPropInstance.setPropValue(floatVal);
+                        break;
+                    case "boolean":
+                        boolean booleanVal = Utilities.initializeRandomBoolean();
+                        newPropInstance.setPropValue(booleanVal);
+                        break;
+                    case "string":
+                        String stringVal = Utilities.initializeRandomString();
+                        newPropInstance.setPropValue(stringVal);
+                        break;
+                }
+                newPropInstance.resetAllTicks();
+                createdInstance.addProperty(newPropInstance);
+            }
+        }
+
+        return createdInstance;
     }
 
 }

@@ -1,5 +1,6 @@
 package rule.action;
 
+import dto.DtoActionResponse;
 import entity.EntityDefinition;
 import enums.Operation;
 import exceptions.GeneralException;
@@ -25,4 +26,11 @@ public abstract class ActionCalculation extends AbstractAction implements Serial
     }
 
     public abstract void invoke(NecessaryVariablesImpl context) throws GeneralException;
+
+    @Override
+    public DtoActionResponse getActionResponse() {
+        DtoActionResponse actionResponse = super.getActionResponse();
+        actionResponse.setActionProperty(this.propertyPlacement);
+        return actionResponse;
+    }
 }
