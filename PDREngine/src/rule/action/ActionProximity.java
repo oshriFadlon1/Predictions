@@ -43,6 +43,7 @@ public class ActionProximity extends AbstractAction {
         for (PointCoord pointCoord : allTheCell) {
             if (pointCoord.equals(entity2point)){
                 findTheSecEntity = true;
+                break;
             }
         }
 

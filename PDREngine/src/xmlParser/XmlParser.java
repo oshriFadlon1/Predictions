@@ -108,32 +108,28 @@ public class XmlParser {
     // Fetch termination from PRD
     private Termination createTerminationFromPrdTermination(PRDTermination prdTermination) {
         List<Object> listOfTerminations = prdTermination.getPRDBySecondOrPRDByTicks();
-        Termination terminations = new Termination(-1, -1);
+        Termination terminations = null;
         PRDByTicks elem1 = null;
         PRDBySecond elem2 = null;
         Object byUser = prdTermination.getPRDByUser();
         if(listOfTerminations.size() == 2 ){
             elem1 = (PRDByTicks)listOfTerminations.get(0);
             elem2 = (PRDBySecond)listOfTerminations.get(1);
-            terminations.setTicks(elem1.getCount());
-            terminations.setSeconds(elem2.getCount());
+            terminations = new Termination(elem1.getCount(), elem2.getCount(), false);
         }
         else if(listOfTerminations.size() == 1){
             if(listOfTerminations.get(0) instanceof PRDByTicks){
                 elem1 = (PRDByTicks)listOfTerminations.get(0);
-                terminations.setTicks(elem1.getCount());
+                terminations = new Termination(elem1.getCount(), -1, false);
             }
             else{
                 elem2 = (PRDBySecond)listOfTerminations.get(0);
-                terminations.setSeconds(elem2.getCount());
+                terminations = new Termination(-1, elem2.getCount(), false);
             }
         }
 
         if(byUser != null){
-            terminations.setByUser(true);
-        }
-        else{
-            terminations.setByUser(false);
+            terminations = new Termination(-1, -1, true);
         }
         return terminations;
     }

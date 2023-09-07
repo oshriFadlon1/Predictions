@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.List;
 
 public class Rule implements Serializable {
-    private String ruleName;
+    private final String ruleName;
 
-    private ActivationForRule activation;
+    private final ActivationForRule activation;
 
-    private List<IAction> actions;
+    private final List<IAction> actions;
 
     public Rule(String ruleName, ActivationForRule activation, List<IAction> actions) {
         this.ruleName = ruleName;
@@ -24,25 +24,25 @@ public class Rule implements Serializable {
         return ruleName;
     }
 
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
-    }
+//    public void setRuleName(String ruleName) {
+//        this.ruleName = ruleName;
+//    }
 
     public ActivationForRule getActivation() {
         return activation;
     }
 
-    public void setActivation(ActivationForRule activation) {
-        this.activation = activation;
-    }
+//    public void setActivation(ActivationForRule activation) {
+//        this.activation = activation;
+//    }
 
     public List<IAction> getActions() {
         return actions;
     }
 
-    public void setActions(List<IAction> actions) {
-        this.actions = actions;
-    }
+//    public void setActions(List<IAction> actions) {
+//        this.actions = actions;
+//    }
 
     @Override
     public String toString(){

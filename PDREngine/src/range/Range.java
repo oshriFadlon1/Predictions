@@ -34,4 +34,8 @@ public class Range implements Serializable {
         return "from: " + from +
                 ", to:" + to;
     }
+
+    public Range getCopyOfRange(){
+        return new Range(this.from,this.to);
+    }
 }

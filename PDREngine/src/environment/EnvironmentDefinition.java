@@ -20,5 +20,8 @@ public class EnvironmentDefinition implements Serializable {
         this.envPropertyDefinition = envPropertyDefinition;
     }
 
+    public EnvironmentDefinition createCloneOfEnvironmentDefinition(){
+        return new EnvironmentDefinition(this.envPropertyDefinition.getCopyOfPropertyDefinition());
+    }
 
 }

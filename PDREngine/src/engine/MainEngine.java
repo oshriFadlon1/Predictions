@@ -1,8 +1,8 @@
 package engine;
+
 import constans.Constans;
 import dto.*;
 import entity.EntityDefinition;
-import entity.EntityInstance;
 import environment.EnvironmentDefinition;
 import environment.EnvironmentInstance;
 import interfaces.InterfaceMenu;
@@ -13,6 +13,7 @@ import rule.Rule;
 import rule.action.IAction;
 import simulationmanager.SimulationExecutionerManager;
 import utility.Utilities;
+import world.GeneralInformation;
 import world.WorldDefinition;
 import world.WorldInstance;
 import exceptions.GeneralException;
@@ -20,6 +21,7 @@ import xmlParser.XmlParser;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainEngine implements InterfaceMenu {
@@ -27,50 +29,21 @@ public class MainEngine implements InterfaceMenu {
     private XmlParser xmlParser;
     private WorldDefinition xmlWorldDefinition;
     private WorldDefinition worldDefinitionForSimulation;
-    private List<WorldInstance> allSimulations; // current running simulation
-
-    private List<WorldInstance> oldSimulation; // old simulation with results
-
-    private Map<Integer, String> simulationId2CurrentTimeAndDate;// get old World simulation info need to take index from map - 1;
+//    private List<WorldInstance> allSimulations; // current running simulation
+//
+//    private List<WorldInstance> oldSimulation; // old simulation with results
+//
+//    private Map<Integer, String> simulationId2CurrentTimeAndDate;// get old World simulation info need to take index from map - 1;
     private SimulationExecutionerManager simulationExecutionerManager;
 
 
     public MainEngine() {
-        this.allSimulations = new ArrayList<>();
-        this.oldSimulation = new ArrayList<>();
-        this.simulationId2CurrentTimeAndDate = new HashMap<>();
-        this.simulationExecutionerManager = new SimulationExecutionerManager();
+        this.simulationExecutionerManager = null;
 
     }
 
-    public List<WorldInstance> getAllSimulations() {
-        //
-        return allSimulations;
-    }
-
-    public void setAllSimulations(List<WorldInstance> allSimulations) {
-        this.allSimulations = allSimulations;
-    }
-
-    public List<WorldInstance> getOldSimulation() {
-        return oldSimulation;
-    }
-
-    public void setOldSimulation(List<WorldInstance> oldSimulation) {
-        this.oldSimulation = oldSimulation;
-    }
-
-    public Map<Integer, String> getSimulationId2CurrentTimeAndDate() {
-        return simulationId2CurrentTimeAndDate;
-    }
-
-    public void setSimulationId2CurrentTimeAndDate(Map<Integer, String> simulationId2CurrentTimeAndDate) {
-        this.simulationId2CurrentTimeAndDate = simulationId2CurrentTimeAndDate;
-    }
-
-    public void addWorld(WorldInstance juiceWrld)
-    {
-        this.allSimulations.add(juiceWrld);
+    public WorldDefinition getWorldDefinitionForSimulation(){
+        return this.worldDefinitionForSimulation;
     }
 
 
@@ -151,13 +124,14 @@ public class MainEngine implements InterfaceMenu {
     @Override
     public DtoResponse createWorldDefinition(String xmlPath){
         String resultErrorMsgToUser;
-        XmlParser xmlParserInCheck= new XmlParser(xmlPath);
+        XmlParser xmlParserInCheck = new XmlParser(xmlPath);
         try {
             this.xmlWorldDefinition = xmlParserInCheck.tryToReadXml();
             this.worldDefinitionForSimulation = this.xmlWorldDefinition;
-            this.oldSimulation.clear();
-            this.simulationId2CurrentTimeAndDate.clear();
-            this.allSimulations.clear();
+            if (this.simulationExecutionerManager != null){
+                this.simulationExecutionerManager.disposeThreadPool();
+            }
+            this.simulationExecutionerManager = new SimulationExecutionerManager(this.worldDefinitionForSimulation.getNumberOfThreads());
         }
         catch(JAXBException | IOException | GeneralException e){
             if(e instanceof  JAXBException || e instanceof IOException){
@@ -179,7 +153,7 @@ public class MainEngine implements InterfaceMenu {
     //func 3
     @Override
     public DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser){
-        //TODO PUT POPULATION IN WORLD INSTANSE
+        //TODO PUT POPULATION IN WORLD INSTANCE
         this.worldDefinitionForSimulation.resetEntityDefinition();
         this.worldDefinitionForSimulation.setPopulation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2());
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
@@ -206,14 +180,23 @@ public class MainEngine implements InterfaceMenu {
        }
     }
 
-    private Integer moveSimulationToOldSimulations(int i) {
-        this.oldSimulation.add(allSimulations.remove(i));
-        int indexOfCurrentMovedWolrd = oldSimulation.size();
-        String dateInfo = getCurrentTimeAndDateInTheFormat();
-
-        this.simulationId2CurrentTimeAndDate.put(indexOfCurrentMovedWolrd, dateInfo);
-        return indexOfCurrentMovedWolrd;
+    public DtoResponseSimulationEnded executeSimulation(DtoUiToEngine envInputFromUser){
+        Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
+        GeneralInformation infoForSimulation = new GeneralInformation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2(), envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2(),
+                this.worldDefinitionForSimulation.getWorldSize(), LocalDateTime.now() , this.worldDefinitionForSimulation.getTermination());
+        Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
+        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, this.worldDefinitionForSimulation.getEntityDefinitions(), this.worldDefinitionForSimulation.getRules(), infoForSimulation);
+        this.simulationExecutionerManager.addCurrentSimulationToManager(worldInstance);
     }
+
+//    private Integer moveSimulationToOldSimulations(int i) {
+//        this.oldSimulation.add(allSimulations.remove(i));
+//        int indexOfCurrentMovedWolrd = oldSimulation.size();
+//        String dateInfo = getCurrentTimeAndDateInTheFormat();
+//
+//        this.simulationId2CurrentTimeAndDate.put(indexOfCurrentMovedWolrd, dateInfo);
+//        return indexOfCurrentMovedWolrd;
+//    }
 
 
     private Map<String, EnvironmentInstance> createAllEnvironmentInstances(Map<String, Object> environmentsForEngine) {
@@ -228,33 +211,35 @@ public class MainEngine implements InterfaceMenu {
     }
 
     //func 4
-    @Override
-    public DtoOldSimulationsMap getMapOfOldSimulation() {
-        return new DtoOldSimulationsMap(this.simulationId2CurrentTimeAndDate);
-    }
+//    @Override
+//    public DtoOldSimulationsMap getMapOfOldSimulation() {
+//        return new DtoOldSimulationsMap(this.simulationId2CurrentTimeAndDate);
+//    }
 
     @Override
-    public List<DtoReviewOldSimulation> fetchChosenWorld(int userSimulationChoice) {
-        Map<String, EntityDefinition> entityDefsAvailable = new HashMap<>();
-        for(EntityDefinition currEntDef: this.worldDefinitionForSimulation.getEntityDefinitions()){
-            entityDefsAvailable.put(currEntDef.getEntityName(), currEntDef);
-        }
-
-        List<DtoReviewOldSimulation> resultOfOldSimulation = new ArrayList<>();
+    public DtoSimulationDetails fetchChosenWorld(int userSimulationChoice) {
+//        Map<String, EntityDefinition> entityDefsAvailable = new HashMap<>();
+//        for(EntityDefinition currEntDef: this.worldDefinitionForSimulation.getEntityDefinitions()){
+//            entityDefsAvailable.put(currEntDef.getEntityName(), currEntDef);
+//        }
+//
+//        List<DtoReviewOldSimulation> resultOfOldSimulation = new ArrayList<>();
         // fetch the required world
-        WorldInstance worldInstance = this.oldSimulation.get(userSimulationChoice - 1);
-
-        for (String nameOfEntity: worldInstance.getAllEntities().keySet()) {
-            List<EntityInstance> entityInstances = worldInstance.getAllEntities().get(nameOfEntity);
-            EntityDefinition currentEntityDefinition = entityDefsAvailable.get(nameOfEntity);
-            if (entityInstances.size() != 0)
-            {
-                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, entityInstances));
-            } else {
-                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, new ArrayList<>()));
-            }
-        }
-        return resultOfOldSimulation;
+        DtoSimulationDetails currentChosenSimulation = this.simulationExecutionerManager.getSimulationById(userSimulationChoice);
+        return currentChosenSimulation;
+//        //WorldInstance worldInstance = this.simulationExecutionerManager.getSimulationById(userSimulationChoice);
+//
+//        for (String nameOfEntity: worldInstance.getAllEntities().keySet()) {
+//            List<EntityInstance> entityInstances = worldInstance.getAllEntities().get(nameOfEntity);
+//            EntityDefinition currentEntityDefinition = entityDefsAvailable.get(nameOfEntity);
+//            if (entityInstances.size() != 0)
+//            {
+//                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, entityInstances));
+//            } else {
+//                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, new ArrayList<>()));
+//            }
+//        }
+//        return resultOfOldSimulation;
     }
 
     public DtoEnvironments sendEnvironmentsToUser(){
@@ -349,45 +334,45 @@ public class MainEngine implements InterfaceMenu {
         return initVal;
     }
 
-    @Override
-    public DtoResponse saveWorldState(String stringPath){
-        String path = stringPath+".dat";
-        try (ObjectOutputStream out =
-                     new ObjectOutputStream(
-                             new FileOutputStream(path))) {
-            out.writeObject(new DtoWorldState(this.worldDefinitionForSimulation,
-                    this.oldSimulation,
-                    this.simulationId2CurrentTimeAndDate));
-            out.flush();
-        }
-        catch (IOException ex){
-            return new DtoResponse("Failed to save the simulation from current path.", false);
-        }
-
-        return new DtoResponse("The Simulation saved succesfully", true);
-    }
-
-    @Override
-    public DtoResponse loadWorldState(String stringPath){
-        String path = stringPath+".dat";
-        try (ObjectInputStream in =
-                     new ObjectInputStream(
-                             new FileInputStream(path))) {
-            DtoWorldState worldState =
-                    (DtoWorldState) in.readObject();
-            if (worldState != null){
-                this.worldDefinitionForSimulation = worldState.getWorldDefinitionForSimulation();
-                this.oldSimulation = worldState.getOldSimulation();
-                this.simulationId2CurrentTimeAndDate = worldState.getSimulationId2CurrentTimeAndDate();
-            }
-        }
-
-        catch(IOException | ClassNotFoundException ex)
-        {
-            return new DtoResponse("Failed to load the simulation from current path.", false);
-        }
-        return new DtoResponse("The Simulation was loaded succesfully", true);
-    }
+//    @Override
+//    public DtoResponse saveWorldState(String stringPath){
+//        String path = stringPath+".dat";
+//        try (ObjectOutputStream out =
+//                     new ObjectOutputStream(
+//                             new FileOutputStream(path))) {
+//            out.writeObject(new DtoWorldState(this.worldDefinitionForSimulation,
+//                    this.oldSimulation,
+//                    this.simulationId2CurrentTimeAndDate));
+//            out.flush();
+//        }
+//        catch (IOException ex){
+//            return new DtoResponse("Failed to save the simulation from current path.", false);
+//        }
+//
+//        return new DtoResponse("The Simulation saved succesfully", true);
+//    }
+//
+//    @Override
+//    public DtoResponse loadWorldState(String stringPath){
+//        String path = stringPath+".dat";
+//        try (ObjectInputStream in =
+//                     new ObjectInputStream(
+//                             new FileInputStream(path))) {
+//            DtoWorldState worldState =
+//                    (DtoWorldState) in.readObject();
+//            if (worldState != null){
+//                this.worldDefinitionForSimulation = worldState.getWorldDefinitionForSimulation();
+//                this.oldSimulation = worldState.getOldSimulation();
+//                this.simulationId2CurrentTimeAndDate = worldState.getSimulationId2CurrentTimeAndDate();
+//            }
+//        }
+//
+//        catch(IOException | ClassNotFoundException ex)
+//        {
+//            return new DtoResponse("Failed to load the simulation from current path.", false);
+//        }
+//        return new DtoResponse("The Simulation was loaded succesfully", true);
+//    }
 
 
 }

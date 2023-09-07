@@ -3,6 +3,7 @@ package interfaces;
 import dto.*;
 import environment.EnvironmentDefinition;
 import property.PropertyDefinition;
+import world.GeneralInformation;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ public interface InterfaceMenu {
     //func 3
     DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser);
     //func 4
-    DtoOldSimulationsMap getMapOfOldSimulation();
+//    DtoOldSimulationsMap getMapOfOldSimulation();
     //send environments
     DtoEnvironments sendEnvironmentsToUser();
-    List<DtoReviewOldSimulation> fetchChosenWorld(int userSimulationChoice);
+    DtoSimulationDetails fetchChosenWorld(int userSimulationChoice);
 
     Object initializeRandomEnvironmentValues(PropertyDefinition propertyDef);
 
@@ -26,8 +27,9 @@ public interface InterfaceMenu {
 
     Object initializeValueFromUserInput(String userInput, PropertyDefinition propDef);
 
-    DtoResponse saveWorldState(String stringPath);
-
-    DtoResponse loadWorldState(String stringPath);
+//    DtoResponse saveWorldState(String stringPath);
+//
+//    DtoResponse loadWorldState(String stringPath);
+    DtoResponseSimulationEnded executeSimulation(DtoUiToEngine envInputFromUser);
 
 }

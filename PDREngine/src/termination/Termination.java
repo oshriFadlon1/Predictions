@@ -3,13 +3,14 @@ package termination;
 import java.io.Serializable;
 
 public class Termination implements Serializable {
-    private int ticks;
-    private int seconds;
-    private boolean byUser;
+    private final int ticks;
+    private final int seconds;
+    private final boolean byUser;
 
-    public Termination(int ticks, int seconds) {
+    public Termination(int ticks, int seconds, boolean byUser) {
         this.ticks = ticks;
         this.seconds = seconds;
+        this.byUser = byUser;
     }
 
 
@@ -17,17 +18,17 @@ public class Termination implements Serializable {
         return ticks;
     }
 
-    public void setTicks(int ticks) {
-        this.ticks = ticks;
-    }
+//    public void setTicks(int ticks) {
+//        this.ticks = ticks;
+//    }
 
     public int getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
+//    public void setSeconds(int seconds) {
+//        this.seconds = seconds;
+//    }
 
     public boolean isSecondsActive(long currentSeconds){
         boolean result = false;
@@ -57,9 +58,9 @@ public class Termination implements Serializable {
         return result;
     }
 
-    public void setByUser(boolean b) {
-        this.byUser = b;
-    }
+//    public void setByUser(boolean b) {
+//        this.byUser = b;
+//    }
 
     public boolean getBUser(){
         return this.byUser;

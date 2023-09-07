@@ -37,40 +37,58 @@ public class WorldInstance implements Serializable, Runnable {
     // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
+    private List<EntityDefinition> EntitiesDefinition;
     private List<Rule> allRules;
-    private Termination termination;
+    private GeneralInformation informationOfWorld;
     private List<EntityInstance> entitiesToKill;
     private List<CreateAndKillEntities> entitiesToKillAndReplace;
     private WorldPhysicalSpace physicalSpace;
-    private PointCoord worldSize;
-    private LocalDateTime startOfSimulationDate;
-    private static int idOfSimulation = 0;
-    private WorldDefinition worldDefinitionForSimulation;
+    private int primaryEntityPopulation;
+    private int secondaryEntityPopulation;
+    private int currentTick;
+    private int currentTimePassed;
+    private long currentTimeStarted;
 
-    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize) {
+
+
+    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, List<EntityDefinition> entitiesDefinition,
+                         List<Rule> allRules, GeneralInformation informationOfWorld) {
         this.allEnvironments = allEnvironments;
         this.allEntities = new HashMap<>();
-        this.allRules = new ArrayList<>();
-        this.entitiesToKillAndReplace = new ArrayList<>();
+        EntitiesDefinition = entitiesDefinition;
+        this.allRules = allRules;
+        this.informationOfWorld = informationOfWorld;
         this.entitiesToKill = new ArrayList<>();
-        this.worldSize = worldSize;
-        this.physicalSpace = new WorldPhysicalSpace(worldSize);
+        this.entitiesToKillAndReplace = new ArrayList<>();
+        this.physicalSpace = new WorldPhysicalSpace(informationOfWorld.getWorldSize());
+        this.primaryEntityPopulation = informationOfWorld.getPrimaryEntityStartPopulation();
+        this.secondaryEntityPopulation = informationOfWorld.getSecondaryEntityStartPopulation();
+        this.currentTick = 0;
+        this.currentTimePassed = 0;
+        this.currentTimeStarted = System.currentTimeMillis();
     }
 
-    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize, WorldDefinition worldDefinitionForSimulation){
-        this.allEnvironments = allEnvironments;
-        this.worldSize = worldSize;
-        this.physicalSpace = new WorldPhysicalSpace(worldSize);
-        this.worldDefinitionForSimulation = worldDefinitionForSimulation;
-        this.allEntities = new HashMap<>();
-        this.allRules = new ArrayList<>();
-        this.entitiesToKillAndReplace = new ArrayList<>();
-        this.entitiesToKill = new ArrayList<>();
-        idOfSimulation++;
-        this.startOfSimulationDate = LocalDateTime.now();
+//    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize, WorldDefinition worldDefinitionForSimulation){
+//        this.allEnvironments = allEnvironments;
+//        this.worldSize = worldSize;
+//        this.physicalSpace = new WorldPhysicalSpace(worldSize);
+//        this.worldDefinitionForSimulation = worldDefinitionForSimulation;
+//        this.allEntities = new HashMap<>();
+//        this.allRules = new ArrayList<>();
+//        this.entitiesToKillAndReplace = new ArrayList<>();
+//        this.entitiesToKill = new ArrayList<>();
+//        idOfSimulation++;
+//        this.startOfSimulationDate = LocalDateTime.now();
+//    }
+
+
+    public GeneralInformation getInformationOfWorld() {
+        return informationOfWorld;
     }
 
-
+    public void setInformationOfWorld(GeneralInformation informationOfWorld) {
+        this.informationOfWorld = informationOfWorld;
+    }
 
     public Map<String, EnvironmentInstance> getAllEnvironments() {
         return allEnvironments;
@@ -94,14 +112,6 @@ public class WorldInstance implements Serializable, Runnable {
 
     public void setAllRules(List<Rule> allRules) {
         this.allRules = allRules;
-    }
-
-    public Termination getTermination() {
-        return termination;
-    }
-
-    public void setTermination(Termination termination) {
-        this.termination = termination;
     }
 
     @Override
@@ -148,13 +158,20 @@ public class WorldInstance implements Serializable, Runnable {
         Random random = new Random();
         long timeStarted = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
+        List<String> entityNamesForChecking = new ArrayList<>();
 
         while (worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
                 worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)){
             for(String currentEntityName: allEntities.keySet()){
-                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-                moveAllInstances(currentEntityInstanceList);
+//                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+//                moveAllInstances(currentEntityInstanceList);
+                entityNamesForChecking.add(currentEntityName);
+
             }
+            EntityInstance instance1 = this.allEntities.get(entityNamesForChecking.get(0)).get(0);
+            EntityInstance instance2 = this.allEntities.get(entityNamesForChecking.get(1)).get(0);
+            instance1.setPositionInWorld(new PointCoord(5, 5));
+            instance2.setPositionInWorld(new PointCoord(3, 4));
 
             for(Rule currentRuleToInvokeOnEntities: allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
@@ -217,7 +234,7 @@ public class WorldInstance implements Serializable, Runnable {
                                         for (EntityInstance currSecondaryEntityInstance : secondaryEntityInstances) {
                                             necessaryVariables.setSecondaryEntityInstance(currSecondaryEntityInstance);
                                             currentActionToInvoke.invoke(necessaryVariables);
-                                            if (necessaryVariables.getEntityToKill() != null) {//i dont know if i really need this. i think so
+                                            if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
                                                 this.entitiesToKill.add(necessaryVariables.getEntityToKill());
                                             }
                                             if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
@@ -445,5 +462,20 @@ public class WorldInstance implements Serializable, Runnable {
         }
 
         return createdInstance;
+    }
+
+    public int getPrimaryEntityPopulation() {
+        return this.primaryEntityPopulation;
+    }
+
+    public int getSecondaryEntityPopulation() {
+        return this.secondaryEntityPopulation;
+    }
+
+    public int getCurrentTick() {
+        return this.getCurrentTick();
+    }
+
+    public int getCurrentTimePassed() {
     }
 }
