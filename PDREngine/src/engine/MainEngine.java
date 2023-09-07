@@ -11,6 +11,7 @@ import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
 import rule.action.IAction;
+import simulationmanager.SimulationExecutionerManager;
 import utility.Utilities;
 import world.WorldDefinition;
 import world.WorldInstance;
@@ -31,12 +32,14 @@ public class MainEngine implements InterfaceMenu {
     private List<WorldInstance> oldSimulation; // old simulation with results
 
     private Map<Integer, String> simulationId2CurrentTimeAndDate;// get old World simulation info need to take index from map - 1;
+    private SimulationExecutionerManager simulationExecutionerManager;
 
 
     public MainEngine() {
         this.allSimulations = new ArrayList<>();
         this.oldSimulation = new ArrayList<>();
         this.simulationId2CurrentTimeAndDate = new HashMap<>();
+        this.simulationExecutionerManager = new SimulationExecutionerManager();
 
     }
 

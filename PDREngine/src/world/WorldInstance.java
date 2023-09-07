@@ -27,9 +27,10 @@ import worldPhysicalSpace.WorldPhysicalSpace;
 
 import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class WorldInstance implements Serializable {
+public class WorldInstance implements Serializable, Runnable {
     // map<String, Integer> population;
     // from name of entity to number of population
     // save with prefix start to set the start population
@@ -42,6 +43,9 @@ public class WorldInstance implements Serializable {
     private List<CreateAndKillEntities> entitiesToKillAndReplace;
     private WorldPhysicalSpace physicalSpace;
     private PointCoord worldSize;
+    private LocalDateTime startOfSimulationDate;
+    private static int idOfSimulation = 0;
+    private WorldDefinition worldDefinitionForSimulation;
 
     public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize) {
         this.allEnvironments = allEnvironments;
@@ -51,6 +55,19 @@ public class WorldInstance implements Serializable {
         this.entitiesToKill = new ArrayList<>();
         this.worldSize = worldSize;
         this.physicalSpace = new WorldPhysicalSpace(worldSize);
+    }
+
+    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize, WorldDefinition worldDefinitionForSimulation){
+        this.allEnvironments = allEnvironments;
+        this.worldSize = worldSize;
+        this.physicalSpace = new WorldPhysicalSpace(worldSize);
+        this.worldDefinitionForSimulation = worldDefinitionForSimulation;
+        this.allEntities = new HashMap<>();
+        this.allRules = new ArrayList<>();
+        this.entitiesToKillAndReplace = new ArrayList<>();
+        this.entitiesToKill = new ArrayList<>();
+        idOfSimulation++;
+        this.startOfSimulationDate = LocalDateTime.now();
     }
 
 
@@ -85,6 +102,11 @@ public class WorldInstance implements Serializable {
 
     public void setTermination(Termination termination) {
         this.termination = termination;
+    }
+
+    @Override
+    public void run() {
+
     }
 
 //    public void addEnvironment(EnvironmentInstance environmentDataMember) throws GeneralException {
@@ -424,5 +446,4 @@ public class WorldInstance implements Serializable {
 
         return createdInstance;
     }
-
 }
