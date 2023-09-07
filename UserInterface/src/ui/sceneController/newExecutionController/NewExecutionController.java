@@ -22,12 +22,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import range.Range;
+import termination.Termination;
 import ui.javaFx.scenes.sceneNewExecution.tableViewModel;
 import ui.presenter.EntityPresenter;
 import ui.presenter.EnvironmentPresenter;
 import utility.Utilities;
+import world.GeneralInformation;
+import world.WorldDefinition;
+import world.WorldInstance;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class NewExecutionController implements Initializable{
@@ -340,6 +345,8 @@ public class NewExecutionController implements Initializable{
                 this.EnvToValue.put(envName,valueInitToCurrentEnv);
             }
         }
+        this.interfaceMenu.executeSimulation(new DtoUiToEngine(this.EnvToValue, this.population1, this.population2));
+
         this.interfaceMenu.runSimulations(new DtoUiToEngine(this.EnvToValue,this.population1,this.population2));
     }
 }

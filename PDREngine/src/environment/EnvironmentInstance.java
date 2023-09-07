@@ -1,25 +1,23 @@
 package environment;
 
-import property.PropertyDefinition;
-
 import java.io.Serializable;
 
 public class EnvironmentInstance implements Serializable {
-    private EnvironmentDefinition environmentDefition;
+    private EnvironmentDefinition environmentDefinition;
 
     private Object envValue;
 
     public EnvironmentInstance(EnvironmentDefinition environmentDefition, Object envValue) {
-        this.environmentDefition = environmentDefition;
+        this.environmentDefinition = environmentDefition.createCloneOfEnvironmentDefinition();
         this.envValue = envValue;
     }
 
-    public EnvironmentDefinition getEnvironmentDefition() {
-        return environmentDefition;
+    public EnvironmentDefinition getEnvironmentDefinition() {
+        return environmentDefinition;
     }
 
-    public void setEnvironmentDefition(EnvironmentDefinition environmentDefition) {
-        this.environmentDefition = environmentDefition;
+    public void setEnvironmentDefinition(EnvironmentDefinition environmentDefinition) {
+        this.environmentDefinition = environmentDefinition;
     }
 
     public Object getEnvValue() {

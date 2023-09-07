@@ -7,60 +7,19 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class EntityDefinition implements Serializable {
-    private String entityName;
-    private int startPopulation;
-    private int endPopulation;
-    private Map<String, PropertyDefinitionEntity> propertyDefinition;
+    private final String entityName;
+    private final Map<String, PropertyDefinitionEntity> propertyDefinition;
 
-    public EntityDefinition(String entityName, int startPopulation, Map<String, PropertyDefinitionEntity> propertyDefinition) {
+    public EntityDefinition(String entityName, Map<String, PropertyDefinitionEntity> propertyDefinition) {
         this.entityName = entityName;
-        this.startPopulation = startPopulation;
-        this.endPopulation = startPopulation;
-        this.propertyDefinition = propertyDefinition;
-    }
-
-    public EntityDefinition(String entityName, int startPopulation, int endPopulation, Map<String, PropertyDefinitionEntity> propertyDefinition) {
-        this.entityName = entityName;
-        this.startPopulation = startPopulation;
-        this.endPopulation = endPopulation;
-        this.propertyDefinition = propertyDefinition;
-    }
-
-    public EntityDefinition(String name, Map<String, PropertyDefinitionEntity> propertyDefinition) {
-        this.entityName = name;
         this.propertyDefinition = propertyDefinition;
     }
 
     public String getEntityName() {
         return entityName;
     }
-
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
-
-    public int getStartPopulation() {
-        return startPopulation;
-    }
-
-    public int getEndPopulation() {
-        return endPopulation;
-    }
-
-    public void setEndPopulation(int endPopulation) {
-        this.endPopulation = endPopulation;
-    }
-
-    public void setStartPopulation(int startPopulation) {
-        this.startPopulation = startPopulation;
-    }
-
     public Map<String, PropertyDefinitionEntity> getPropertyDefinition() {
         return propertyDefinition;
-    }
-
-    public void setPropertyDefinition(Map<String, PropertyDefinitionEntity> propertyDefinition) {
-        this.propertyDefinition = propertyDefinition;
     }
 
     public boolean isPropertyNameExist(String propertryName){
@@ -76,7 +35,6 @@ public class EntityDefinition implements Serializable {
 
     @Override
     public String toString() {
-        return "Name: " + entityName +
-                "\npopulation: " + startPopulation;
+        return "Name: " + entityName;
     }
 }

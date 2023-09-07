@@ -158,7 +158,7 @@ public class WorldPhysicalSpace {
         Set<PointCoord> result = new HashSet<>();
         result.add(adjustCoordinate(source));
 
-        for (int currentRank = 1; currentRank < rank; currentRank++) {
+        for (int currentRank = 1; currentRank <= rank; currentRank++) {
             Set<PointCoord> newCoordinates = new HashSet<>();
             for (PointCoord coord : result) {
                 for (int dx = -1; dx <= 1; dx++) {

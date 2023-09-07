@@ -25,13 +25,13 @@ public class MainUi {
             if ( 1 < userChoice && userChoice < 7)
             {
                 if (userLoadFile) {
-                    if (userChoice == 6){
-                        System.out.println("Enter full path (up to the file name without the suffix) to file you liked to save the current state of the system");
-                        DtoResponse dtoResponseForSave = interfaceMenu.saveWorldState((new Scanner(System.in)).nextLine());
-                        System.out.println(dtoResponseForSave.getResponse());
-                    } else {
-                        switchUserChoice(userChoice, interfaceMenu);
-                    }
+//                    if (userChoice == 6){
+//                        System.out.println("Enter full path (up to the file name without the suffix) to file you liked to save the current state of the system");
+//                        DtoResponse dtoResponseForSave = interfaceMenu.saveWorldState((new Scanner(System.in)).nextLine());
+//                        System.out.println(dtoResponseForSave.getResponse());
+//                    } else {
+//                        switchUserChoice(userChoice, interfaceMenu);
+//                    }
                 }
                 else {
                     System.out.println("Cannot do current action before loading XML file. Need to load XML file first.");
@@ -45,12 +45,12 @@ public class MainUi {
                 userLoadFile = dtoResponse.isSucceeded();
             }
 
-            if (userChoice == 7){
-                System.out.println("Enter full path (up to the file name without the suffix) to file you liked to load the current state from");
-                DtoResponse dtoResponseForLoad = interfaceMenu.loadWorldState((new Scanner(System.in)).nextLine());
-                System.out.println(dtoResponseForLoad.getResponse());
-                userLoadFile = dtoResponseForLoad.isSucceeded();
-            }
+//            if (userChoice == 7){
+//                System.out.println("Enter full path (up to the file name without the suffix) to file you liked to load the current state from");
+//                DtoResponse dtoResponseForLoad = interfaceMenu.loadWorldState((new Scanner(System.in)).nextLine());
+//                System.out.println(dtoResponseForLoad.getResponse());
+//                userLoadFile = dtoResponseForLoad.isSucceeded();
+//            }
             printMenu();
             userChoice = getUserChoice(1,7);
         }
@@ -80,21 +80,21 @@ public class MainUi {
 
                 break;
                 case 4:
-                DtoOldSimulationsMap response = interfaceMenu.getMapOfOldSimulation();
-                if(response.getOldSimulationsMap().size() == 0){
-                    System.out.println("No simulations to show.");
-                }
-                else{
-                    System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getOldSimulationsMap().size()));
-                    displayMapToUser(response.getOldSimulationsMap());
-                    int userSimulationChoice = getUserChoice(1,response.getOldSimulationsMap().size());
-
-                    // send back to mainEngien to fetch user choice and get back a copy of the choose world
-                    List<DtoReviewOldSimulation> theChooseWorld = interfaceMenu.fetchChosenWorld(userSimulationChoice);
-
-                    displayChooseWorldSimulation(theChooseWorld);
-
-                }
+                //DtoOldSimulationsMap response = interfaceMenu.getMapOfOldSimulation();
+//                if(response.getOldSimulationsMap().size() == 0){
+//                    System.out.println("No simulations to show.");
+//                }
+//                else{
+//                    System.out.println(String.format("Please choose from the list above a simulation number between 1 to %d." ,response.getOldSimulationsMap().size()));
+//                    displayMapToUser(response.getOldSimulationsMap());
+//                    int userSimulationChoice = getUserChoice(1,response.getOldSimulationsMap().size());
+//
+//                    // send back to mainEngien to fetch user choice and get back a copy of the choose world
+//                    //List<DtoReviewOldSimulation> theChooseWorld = interfaceMenu.fetchChosenWorld(userSimulationChoice);
+//
+//                    //displayChooseWorldSimulation(theChooseWorld);
+//
+//                }
                 break;
         }
     }

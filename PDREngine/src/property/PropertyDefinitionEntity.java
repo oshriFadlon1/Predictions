@@ -8,7 +8,7 @@ public class PropertyDefinitionEntity implements Serializable {
     private Value propValue;
 
     public PropertyDefinitionEntity(PropertyDefinition propertyDefinition, Value propValue) {
-        this.propertyDefinition = propertyDefinition;
+        this.propertyDefinition = propertyDefinition.getCopyOfPropertyDefinition();
         this.propValue = propValue;
     }
 

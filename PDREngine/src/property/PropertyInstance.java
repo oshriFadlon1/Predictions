@@ -10,7 +10,7 @@ public class PropertyInstance implements Serializable {
     private int totalTickWithoutChange;
 
     public PropertyInstance(PropertyDefinition propertyDefinition, Object propValue) {
-        this.propertyDefinition = propertyDefinition;
+        this.propertyDefinition = propertyDefinition.getCopyOfPropertyDefinition();
         this.propValue = propValue;
         this.currentTicksWithoutChange = 0;
         this.numberOfReset = 0;
