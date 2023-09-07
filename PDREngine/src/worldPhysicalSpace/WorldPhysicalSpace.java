@@ -59,6 +59,7 @@ public class WorldPhysicalSpace {
             removeEntityFromWorld(currentInstance.getPositionInWorld());
             currentInstance.setPositionInWorld(move);
             worldSpace[move.getRow()][move.getCol()] = currentInstance;
+            this.freeSpaces.remove(move);
         }
 
     }

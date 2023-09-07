@@ -104,12 +104,17 @@ public class WorldInstance implements Serializable {
         List<EntityDefinition> allEntityDefinitions = worldDefinitionForSimulation.getEntityDefinitions();
         for(EntityDefinition currentEntityDefinition: allEntityDefinitions){
             String entityDefinitionName = currentEntityDefinition.getEntityName();
+            if(currentEntityDefinition.getStartPopulation() == 0){
+                allEntities.put(entityDefinitionName, new ArrayList<>());
+                continue;
+            }
             for (int i = 0; i < currentEntityDefinition.getStartPopulation(); i++) {
                 EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityDefinition, i);
                 if (i == 0){
                     allEntities.put(entityDefinitionName,new ArrayList<>());
                 }
                 allEntities.get(entityDefinitionName).add(newEntityInstance);
+                this.physicalSpace.putEntityInWorld(newEntityInstance);
             }
         }
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
@@ -283,7 +288,7 @@ public class WorldInstance implements Serializable {
         //now setting all property instances
         Map<String, PropertyDefinitionEntity> mapOfPropertyDefinitionsForEntity = entityDefinitionToInitiateFrom.getPropertyDefinition();
 
-        for(String currentPropertyDefinitionName: mapOfPropertyDefinitionsForEntity.keySet()){
+        for(String currentPropertyDefinitionName: mapOfPropertyDefinitionsForEntity.keySet()) {
             PropertyDefinitionEntity currentEntityPropertyDefinition = mapOfPropertyDefinitionsForEntity.get(currentPropertyDefinitionName);
             PropertyDefinition currentPropertyDefinition = currentEntityPropertyDefinition.getPropertyDefinition();
             PropertyInstance newPropertyInstance = new PropertyInstance(currentPropertyDefinition);
@@ -291,11 +296,11 @@ public class WorldInstance implements Serializable {
             boolean isRandomInit = valueForProperty.getRandomInit();
             String initVal = valueForProperty.getInit();
 
-            if(isRandomInit){//meaning init val is null. need to random initialize
-                switch(currentPropertyDefinition.getPropertyType().toLowerCase()){
+            if (isRandomInit) {//meaning init val is null. need to random initialize
+                switch (currentPropertyDefinition.getPropertyType().toLowerCase()) {
                     case "decimal":
                         Range rangeOfProperty1 = currentPropertyDefinition.getPropertyRange();
-                        int randomInitializedInt = Utilities.initializeRandomInt((int)rangeOfProperty1.getFrom(), (int)rangeOfProperty1.getTo());
+                        int randomInitializedInt = Utilities.initializeRandomInt((int) rangeOfProperty1.getFrom(), (int) rangeOfProperty1.getTo());
                         newPropertyInstance.setPropValue(randomInitializedInt);
                         break;
                     case "float":
@@ -311,43 +316,39 @@ public class WorldInstance implements Serializable {
                         boolean randomInitializedBoolean = Utilities.initializeRandomBoolean();
                         newPropertyInstance.setPropValue(randomInitializedBoolean);
                 }
-            }
-            else{
-                    switch (currentPropertyDefinition.getPropertyType().toLowerCase()) {
-                        case "decimal":
-                            if(Utilities.isInteger(initVal)) {
-                                int valueToInsertInt = Integer.parseInt(initVal);
-                                newPropertyInstance.setPropValue(valueToInsertInt);
-                            }
-                            else{
-                                throw new GeneralException("In entity " + entityDefinitionToInitiateFrom.getEntityName() + "" +
-                                        "in property " + currentPropertyDefinitionName + "which is of type" + currentPropertyDefinition.getPropertyType() +
-                                        "tried to insert an invalid init value type");
-                            }
-                            break;
-                        case "float":
-                            if(Utilities.isFloat(initVal)) {
-                                float valueToInsertFloat = Float.parseFloat(initVal);
-                                newPropertyInstance.setPropValue(valueToInsertFloat);
-                            }
-                            else{
-                                throw new GeneralException("In entity " + entityDefinitionToInitiateFrom.getEntityName() + "" +
-                                        "in property " + currentPropertyDefinitionName + "which is of type" + currentPropertyDefinition.getPropertyType() +
-                                        "tried to insert an invalid init value type");
-                            }
-                            break;
-                        case "string":
-                            newPropertyInstance.setPropValue(initVal);
-                            break;
-                        case "boolean":
-                            boolean valueToInsertBoolean = Boolean.parseBoolean(initVal);
-                            newPropertyInstance.setPropValue(valueToInsertBoolean);
-                    }
+            } else {
+                switch (currentPropertyDefinition.getPropertyType().toLowerCase()) {
+                    case "decimal":
+                        if (Utilities.isInteger(initVal)) {
+                            int valueToInsertInt = Integer.parseInt(initVal);
+                            newPropertyInstance.setPropValue(valueToInsertInt);
+                        } else {
+                            throw new GeneralException("In entity " + entityDefinitionToInitiateFrom.getEntityName() + "" +
+                                    "in property " + currentPropertyDefinitionName + "which is of type" + currentPropertyDefinition.getPropertyType() +
+                                    "tried to insert an invalid init value type");
+                        }
+                        break;
+                    case "float":
+                        if (Utilities.isFloat(initVal)) {
+                            float valueToInsertFloat = Float.parseFloat(initVal);
+                            newPropertyInstance.setPropValue(valueToInsertFloat);
+                        } else {
+                            throw new GeneralException("In entity " + entityDefinitionToInitiateFrom.getEntityName() + "" +
+                                    "in property " + currentPropertyDefinitionName + "which is of type" + currentPropertyDefinition.getPropertyType() +
+                                    "tried to insert an invalid init value type");
+                        }
+                        break;
+                    case "string":
+                        newPropertyInstance.setPropValue(initVal);
+                        break;
+                    case "boolean":
+                        boolean valueToInsertBoolean = Boolean.parseBoolean(initVal);
+                        newPropertyInstance.setPropValue(valueToInsertBoolean);
+                }
             }
 
             resultEntityInstance.addProperty(newPropertyInstance);
         }
-        this.physicalSpace.putEntityInWorld(resultEntityInstance);
         return resultEntityInstance;
     }
 
@@ -368,6 +369,7 @@ public class WorldInstance implements Serializable {
             EntityInstance instanceToCreate = createAndReplace(currentKillAndReplace);
             this.allEntities.get(instanceToCreate.getDefinitionOfEntity().getEntityName()).add(instanceToCreate);
             removeFromEntityInstancesList(currentKillAndReplace.getKill(), this.allEntities.get(currentKillAndReplace.getKill().getDefinitionOfEntity().getEntityName()));
+            this.physicalSpace.putEntityInWorld(instanceToCreate);
         }
     }
 
