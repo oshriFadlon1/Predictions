@@ -30,6 +30,6 @@ public interface InterfaceMenu {
 //    DtoResponse saveWorldState(String stringPath);
 //
 //    DtoResponse loadWorldState(String stringPath);
-    DtoResponseSimulationEnded executeSimulation(DtoUiToEngine envInputFromUser);
+    void executeSimulation(DtoUiToEngine envInputFromUser);
 
 }
