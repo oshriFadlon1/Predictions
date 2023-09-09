@@ -350,10 +350,10 @@ public class MainUi {
             }
         }
 
-        DtoUiToEngine allEnvInstances = new DtoUiToEngine(environmentList,100,100);
-        printEnvValueToUser(allEnvInstances);
+        //DtoUiToEngine allEnvInstances = new DtoUiToEngine(environmentList,100,100);
+       // printEnvValueToUser(allEnvInstances);
 
-        return allEnvInstances;
+        //return allEnvInstances;
     }
 
     private static void printEnvValueToUser(DtoUiToEngine allEnvInstances) {

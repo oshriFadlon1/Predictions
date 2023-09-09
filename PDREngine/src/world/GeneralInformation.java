@@ -1,9 +1,11 @@
 package world;
 
+import entity.EntityToPopulation;
 import pointCoord.PointCoord;
 import termination.Termination;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class GeneralInformation {
     private int primaryEntityStartPopulation;
@@ -15,9 +17,10 @@ public class GeneralInformation {
     private static int idOfSimulation = 0;
     private Termination termination;
     private boolean isSimulationDone;
+    private List<EntityToPopulation> entitiesToPopulations;
 
     public GeneralInformation(int primaryEntityStartPopulation, int secondaryEntityStartPopulation, int primaryEntityEndPopulation,
-                              int secondaryEntityEndPopulation, PointCoord worldSize, LocalDateTime startOfSimulationDate, Termination termination) {
+                              int secondaryEntityEndPopulation, PointCoord worldSize, LocalDateTime startOfSimulationDate, Termination termination, List<EntityToPopulation> entitiesToPopulations) {
         this.primaryEntityStartPopulation = primaryEntityStartPopulation;
         this.secondaryEntityStartPopulation = secondaryEntityStartPopulation;
         this.primaryEntityEndPopulation = primaryEntityEndPopulation;
@@ -26,6 +29,15 @@ public class GeneralInformation {
         this.startOfSimulationDate = startOfSimulationDate;
         this.termination = termination;
         this.isSimulationDone = false;
+        this.entitiesToPopulations = entitiesToPopulations;
+    }
+
+    public List<EntityToPopulation> getEntitiesToPopulations() {
+        return entitiesToPopulations;
+    }
+
+    public void setEntitiesToPopulations(List<EntityToPopulation> entitiesToPopulations) {
+        this.entitiesToPopulations = entitiesToPopulations;
     }
 
     public int getPrimaryEntityStartPopulation() {

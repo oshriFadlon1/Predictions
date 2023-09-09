@@ -345,9 +345,9 @@ public class NewExecutionController implements Initializable{
                 this.EnvToValue.put(envName,valueInitToCurrentEnv);
             }
         }
-        this.interfaceMenu.executeSimulation(new DtoUiToEngine(this.EnvToValue, this.population1, this.population2));
+        this.interfaceMenu.executeSimulation(new DtoUiToEngine(this.EnvToValue, this.population1, this.population2,entity1Label.getText(), entity2Label.getText()));
 
-        this.interfaceMenu.runSimulations(new DtoUiToEngine(this.EnvToValue,this.population1,this.population2));
+        //this.interfaceMenu.runSimulations(new DtoUiToEngine(this.EnvToValue,this.population1,this.population2));
     }
 }
 
