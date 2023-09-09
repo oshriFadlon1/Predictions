@@ -3,6 +3,7 @@ package interfaces;
 import dto.*;
 import environment.EnvironmentDefinition;
 import property.PropertyDefinition;
+import simulationmanager.SimulationExecutionerManager;
 import world.GeneralInformation;
 
 import java.util.List;
@@ -26,10 +27,11 @@ public interface InterfaceMenu {
     boolean validateUserEnvInput(String userInput, PropertyDefinition propDef);
 
     Object initializeValueFromUserInput(String userInput, PropertyDefinition propDef);
+    SimulationExecutionerManager getExecutionsManager();
 
 //    DtoResponse saveWorldState(String stringPath);
 //
 //    DtoResponse loadWorldState(String stringPath);
-    DtoResponseSimulationEnded executeSimulation(DtoUiToEngine envInputFromUser);
+    void executeSimulation(DtoUiToEngine envInputFromUser);
 
 }

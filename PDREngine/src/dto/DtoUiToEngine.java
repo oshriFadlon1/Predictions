@@ -6,11 +6,15 @@ public class DtoUiToEngine {
     private  Map<String, Object> environmentToValue;
     private int population1;
     private int population2;
+    private String primaryEntityName;
+    private String secondaryEntityName;
 
-    public DtoUiToEngine(Map<String, Object> environmentToValue, int population1, int population2) {
+    public DtoUiToEngine(Map<String, Object> environmentToValue, int population1, int population2, String primaryEntName, String secondaryEntName) {
         this.environmentToValue = environmentToValue;
         this.population1 = population1;
         this.population2 = population2;
+        this.primaryEntityName = primaryEntName;
+        this.secondaryEntityName = secondaryEntName;
     }
 
     public Map<String, Object> getEnvironmentToValue() {
@@ -35,5 +39,13 @@ public class DtoUiToEngine {
 
     public void setPopulation2(int population2) {
         this.population2 = population2;
+    }
+
+    public String getPrimaryEntityName() {
+        return primaryEntityName;
+    }
+
+    public String getSecondaryEntityName() {
+        return secondaryEntityName;
     }
 }

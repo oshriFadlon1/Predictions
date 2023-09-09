@@ -79,6 +79,7 @@ public class SceneMenu implements Initializable {
     private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
         this.detailsController.loadFromWorldDef(wrldDef);
         this.newExecutionController.loadFromWorldDef(wrldDef,interfaceMenu);
+        this.resultsController.loadFromWorldDef(interfaceMenu);
     }
 
     @Override
@@ -106,5 +107,16 @@ public class SceneMenu implements Initializable {
             throw new RuntimeException(e);
         }
         newExecutionController = loaderNewExecution.getController();
+
+        FXMLLoader loaderResults = new FXMLLoader();
+        mainFXML = getClass().getResource("/ui/javaFx/scenes/sceneResults/Results.fxml");
+        loaderResults.setLocation(mainFXML);
+        try{
+            nestedControllersContainer = loaderResults.load();
+            tabOfResults.setContent(nestedControllersContainer);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

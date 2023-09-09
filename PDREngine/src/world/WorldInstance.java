@@ -4,11 +4,11 @@ import createAndKillEntities.CreateAndKillEntities;
 import dto.DtoResponseTermination;
 import entity.EntityDefinition;
 import entity.EntityInstance;
+import entity.EntityToPopulation;
 import entity.SecondEntity;
 import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
-import necessaryVariables.NecessaryVariables;
 import necessaryVariables.NecessaryVariablesImpl;
 import pointCoord.PointCoord;
 import property.PropertyDefinition;
@@ -18,16 +18,13 @@ import property.Value;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
-import rule.action.ActionKill;
 import rule.action.ActionReplace;
 import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
 import worldPhysicalSpace.WorldPhysicalSpace;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class WorldInstance implements Serializable, Runnable {
@@ -37,7 +34,7 @@ public class WorldInstance implements Serializable, Runnable {
     // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
-    private List<EntityDefinition> EntitiesDefinition;
+    private List<EntityDefinition> entityDefinitions;
     private List<Rule> allRules;
     private GeneralInformation informationOfWorld;
     private List<EntityInstance> entitiesToKill;
@@ -55,7 +52,7 @@ public class WorldInstance implements Serializable, Runnable {
                          List<Rule> allRules, GeneralInformation informationOfWorld) {
         this.allEnvironments = allEnvironments;
         this.allEntities = new HashMap<>();
-        EntitiesDefinition = entitiesDefinition;
+        entityDefinitions = entitiesDefinition;
         this.allRules = allRules;
         this.informationOfWorld = informationOfWorld;
         this.entitiesToKill = new ArrayList<>();
@@ -116,7 +113,12 @@ public class WorldInstance implements Serializable, Runnable {
 
     @Override
     public void run() {
+        try {
+            runSimulation();
+        }
+        catch(GeneralException generalException){
 
+        }
     }
 
 //    public void addEnvironment(EnvironmentInstance environmentDataMember) throws GeneralException {
@@ -128,31 +130,50 @@ public class WorldInstance implements Serializable, Runnable {
 //        this.allEnvironments.put(environmentDataMember.getEnvPropertyDefinition().getPropertyName(), environmentDataMember);
 //    }
           //dto response of ending simulation
-    public DtoResponseTermination runSimulation(WorldDefinition worldDefinitionForSimulation) throws GeneralException{
+    public DtoResponseTermination runSimulation(/*WorldDefinition worldDefinitionForSimulation*/) throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
+        initializeAllEntityInstancesLists();
 
 //        initializing all entity instances
-        List<EntityDefinition> allEntityDefinitions = worldDefinitionForSimulation.getEntityDefinitions();
-        for(EntityDefinition currentEntityDefinition: allEntityDefinitions){
-            String entityDefinitionName = currentEntityDefinition.getEntityName();
-            if(currentEntityDefinition.getStartPopulation() == 0){
-                allEntities.put(entityDefinitionName, new ArrayList<>());
-                continue;
-            }
-            for (int i = 0; i < currentEntityDefinition.getStartPopulation(); i++) {
-                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityDefinition, i);
-                if (i == 0){
-                    allEntities.put(entityDefinitionName,new ArrayList<>());
-                }
-                allEntities.get(entityDefinitionName).add(newEntityInstance);
-                this.physicalSpace.putEntityInWorld(newEntityInstance);
-            }
-        }
+        //List<EntityDefinition> allEntityDefinitions = worldDefinitionForSimulation.getEntityDefinitions();
+//        for(EntityToPopulation currentEntityToPopulation: this.getInformationOfWorld().getEntitiesToPopulations()){
+//            String entityDefName = currentEntityToPopulation.getCurrEntityDef().getEntityName();
+//            if(currentEntityToPopulation.getCurrEntityPopulation() == 0){
+//                this.allEntities.put(entityDefName, new ArrayList<>());
+//                continue;
+//            }
+//
+//            for(int i = 0; i < currentEntityToPopulation.getCurrEntityPopulation(); i++){
+//                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityToPopulation.getCurrEntityDef(), i);
+//                if(i == 0){
+//                    this.allEntities.put(entityDefName, new ArrayList<>());
+//                }
+//
+//                this.allEntities.get(entityDefName).add(newEntityInstance);
+//                this.physicalSpace.putEntityInWorld(newEntityInstance);
+//            }
+//        }
+//        for(EntityDefinition currentEntityDefinition: this.entityDefinitions){
+//            String entityDefinitionName = currentEntityDefinition.getEntityName();
+//            if(this.primaryEntityPopulation == 0){
+//                allEntities.put(entityDefinitionName, new ArrayList<>());
+//                continue;
+//            }
+//            for (int i = 0; i < currentEntityDefinition.getStartPopulation(); i++) {
+//                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityDefinition, i);
+//                if (i == 0){
+//                    allEntities.put(entityDefinitionName,new ArrayList<>());
+//                }
+//                allEntities.get(entityDefinitionName).add(newEntityInstance);
+//                this.physicalSpace.putEntityInWorld(newEntityInstance);
+//            }
+//        }
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
-        this.allRules = worldDefinitionForSimulation.getRules();
-        this.termination = worldDefinitionForSimulation.getTermination();
+//        this.allRules = worldDefinitionForSimulation.getRules();
+//        this.termination = worldDefinitionForSimulation.getTermination();
+        Termination currentTermination = this.informationOfWorld.getTermination();
 
         int currentTickCount = 0;
         Random random = new Random();
@@ -160,20 +181,21 @@ public class WorldInstance implements Serializable, Runnable {
         long currentTime = System.currentTimeMillis();
         List<String> entityNamesForChecking = new ArrayList<>();
 
-        while (worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
-                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)){
+        while (currentTermination.isTicksActive(currentTickCount) && currentTermination.isSecondsActive(currentTime - timeStarted)/*worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
+                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)*/){
             for(String currentEntityName: allEntities.keySet()){
 //                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
 //                moveAllInstances(currentEntityInstanceList);
                 entityNamesForChecking.add(currentEntityName);
 
             }
+            //TODO: REMEMBER TO DELETE THE FOLLOWING FOUR LINES. THIS IS ONLY A TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             EntityInstance instance1 = this.allEntities.get(entityNamesForChecking.get(0)).get(0);
             EntityInstance instance2 = this.allEntities.get(entityNamesForChecking.get(1)).get(0);
             instance1.setPositionInWorld(new PointCoord(5, 5));
             instance2.setPositionInWorld(new PointCoord(3, 4));
 
-            for(Rule currentRuleToInvokeOnEntities: allRules){
+            for(Rule currentRuleToInvokeOnEntities: this.allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
                 float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
                 ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
@@ -198,7 +220,8 @@ public class WorldInstance implements Serializable, Runnable {
                                 if (currentActionToInvoke.getSecondaryEntity() == null) {
                                     if (currentActionToInvoke instanceof ActionReplace) {
                                         ActionReplace parsedAction = (ActionReplace)currentActionToInvoke;
-                                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
+                                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(parsedAction.getEntityToCreate());
+                                        //EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
                                         necessaryVariables.setSecondaryEntityDefinition(definitionOfSecondEntity);
                                     }
 
@@ -259,10 +282,10 @@ public class WorldInstance implements Serializable, Runnable {
             currentTime = System.currentTimeMillis();
         }
 
-        if(worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount){
+        if(currentTermination.getTicks() <= currentTick/*worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount*/){
             endedByTicks = true;
         }
-        if((currentTime - timeStarted) / 1000 >= worldDefinitionForSimulation.getTermination().getSeconds()){
+        if((currentTime - timeStarted / 1000) >= currentTermination.getSeconds()/*(currentTime - timeStarted) / 1000 >= worldDefinitionForSimulation.getTermination().getSeconds()*/){
             endedBySeconds = true;
         }
 
@@ -282,8 +305,28 @@ public class WorldInstance implements Serializable, Runnable {
 
     }
 
-    private EntityDefinition getDefinitionByName(WorldDefinition worldDefinitionForSimulation, String entityName) {
-        for(EntityDefinition currEntityDef: worldDefinitionForSimulation.getEntityDefinitions()){
+    private void initializeAllEntityInstancesLists() throws GeneralException{
+        for(EntityToPopulation currentEntityToPopulation: this.getInformationOfWorld().getEntitiesToPopulations()){
+            String entityDefName = currentEntityToPopulation.getCurrEntityDef().getEntityName();
+            if(currentEntityToPopulation.getCurrEntityPopulation() == 0){
+                this.allEntities.put(entityDefName, new ArrayList<>());
+                continue;
+            }
+
+            for(int i = 0; i < currentEntityToPopulation.getCurrEntityPopulation(); i++){
+                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityToPopulation.getCurrEntityDef(), i);
+                if(i == 0){
+                    this.allEntities.put(entityDefName, new ArrayList<>());
+                }
+
+                this.allEntities.get(entityDefName).add(newEntityInstance);
+                this.physicalSpace.putEntityInWorld(newEntityInstance);
+            }
+        }
+    }
+
+    private EntityDefinition getDefinitionByName(String entityName) {
+        for(EntityDefinition currEntityDef: this.entityDefinitions){
             if(currEntityDef.getEntityName().equalsIgnoreCase(entityName)){
                 return currEntityDef;
             }
@@ -398,9 +441,25 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     private void removeFromEntityInstancesList(EntityInstance entityInstanceToKill, List<EntityInstance> listOfEntityInstances) {
-        entityInstanceToKill.getDefinitionOfEntity().setEndPopulation(entityInstanceToKill.getDefinitionOfEntity().getEndPopulation() - 1);
+        decreaseOneEntity(entityInstanceToKill.getDefinitionOfEntity().getEntityName());
+        //entityInstanceToKill.getDefinitionOfEntity().setEndPopulation(entityInstanceToKill.getDefinitionOfEntity().getEndPopulation() - 1);
         this.physicalSpace.removeEntityFromWorld(entityInstanceToKill.getPositionInWorld());
         listOfEntityInstances.remove(entityInstanceToKill);
+    }
+
+    private void decreaseOneEntity(String entityName) {
+        for(EntityToPopulation currEntToPopulation: this.informationOfWorld.getEntitiesToPopulations()){
+            if(entityName.equalsIgnoreCase(currEntToPopulation.getCurrEntityDef().getEntityName())){
+                currEntToPopulation.setCurrEntityPopulation(currEntToPopulation.getCurrEntityPopulation() - 1);
+            }
+        }
+    }
+    private void increaseOneEntity(String entityName) {
+        for(EntityToPopulation currEntToPopulation: this.informationOfWorld.getEntitiesToPopulations()){
+            if(entityName.equalsIgnoreCase(currEntToPopulation.getCurrEntityDef().getEntityName())){
+                currEntToPopulation.setCurrEntityPopulation(currEntToPopulation.getCurrEntityPopulation() + 1);
+            }
+        }
     }
 
     private void killAndReplaceAllEntities()throws GeneralException{
@@ -425,7 +484,8 @@ public class WorldInstance implements Serializable, Runnable {
                 break;
         }
 
-        currentKillAndReplace.getCreate().setEndPopulation(currentKillAndReplace.getCreate().getEndPopulation() + 1);
+        //currentKillAndReplace.getCreate().setEndPopulation(currentKillAndReplace.getCreate().getEndPopulation() + 1);
+        increaseOneEntity(currentKillAndReplace.getCreate().getEntityName());
         //currentKillAndReplace.getKill().getDefinitionOfEntity().setEndPopulation(currentKillAndReplace.getKill().getDefinitionOfEntity().getEndPopulation() - 1);
         return createdInstance;
     }
@@ -477,5 +537,6 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public int getCurrentTimePassed() {
+        return 0;
     }
 }

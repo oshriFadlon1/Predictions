@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="835.0" prefWidth="1075.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="835.0" prefWidth="1075.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.resultsController.ResultsController">
     <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="833.0" prefWidth="1072.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
             <children>
-                <ListView layoutX="31.0" layoutY="108.0" prefHeight="327.0" prefWidth="200.0" />
+                <ListView fx:id="listViewSimulations" layoutX="31.0" layoutY="108.0" onMouseClicked="#selectedItem" prefHeight="327.0" prefWidth="200.0" />
                 <Label layoutX="37.0" layoutY="79.0" text="All simulations">
                     <font>
                         <Font size="20.0" />
@@ -24,7 +24,7 @@
                     <top>
                         <AnchorPane prefHeight="29.0" prefWidth="650.0" BorderPane.alignment="CENTER">
                             <children>
-                                <Label layoutX="262.0" layoutY="7.0" text="Simulation id: ">
+                                <Label fx:id="labelSimulationId" layoutX="262.0" layoutY="7.0" text="Simulation id: ">
                                     <font>
                                         <Font size="20.0" />
                                     </font>
@@ -50,26 +50,26 @@
                                         <Font size="15.0" />
                                     </font>
                                 </Label>
-                                <Button layoutX="26.0" layoutY="241.0" mnemonicParsing="false" text="Stop" />
-                                <Button layoutX="565.0" layoutY="241.0" mnemonicParsing="false" text="Resume" />
-                                <Button layoutX="299.0" layoutY="241.0" mnemonicParsing="false" text="Pause" />
-                                <TableView layoutX="288.0" layoutY="17.0" prefHeight="200.0" prefWidth="266.0">
+                                <Button fx:id="buttonStop" layoutX="26.0" layoutY="241.0" mnemonicParsing="false" text="Stop" />
+                                <Button fx:id="buttonResume" layoutX="565.0" layoutY="241.0" mnemonicParsing="false" text="Resume" />
+                                <Button fx:id="buttonPause" layoutX="299.0" layoutY="241.0" mnemonicParsing="false" text="Pause" />
+                                <TableView fx:id="tableViewEntities" layoutX="288.0" layoutY="17.0" prefHeight="200.0" prefWidth="266.0">
                                     <columns>
-                                        <TableColumn prefWidth="134.0" text="Entity" />
-                                        <TableColumn prefWidth="131.0" text="Population" />
+                                        <TableColumn fx:id="tableColumnEntity" prefWidth="134.0" text="Entity" />
+                                        <TableColumn fx:id="tableColumnPopulation" prefWidth="131.0" text="Population" />
                                     </columns>
                                 </TableView>
-                                <Label layoutX="152.0" layoutY="28.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label fx:id="labelSimulationStatus" layoutX="152.0" layoutY="28.0" prefHeight="17.0" prefWidth="66.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
                                 </Label>
-                                <Label layoutX="152.0" layoutY="61.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label fx:id="labelCurrTick" layoutX="152.0" layoutY="61.0" prefHeight="17.0" prefWidth="66.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
                                 </Label>
-                                <Label layoutX="152.0" layoutY="96.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label fx:id="labelCurrTimer" layoutX="152.0" layoutY="96.0" prefHeight="17.0" prefWidth="66.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
@@ -79,7 +79,7 @@
                         </AnchorPane>
                     </center>
                 </BorderPane>
-                <AnchorPane layoutX="349.0" layoutY="435.0" prefHeight="396.0" prefWidth="692.0" />
+                <AnchorPane layoutX="349.0" layoutY="435.0" prefHeight="396.0" prefWidth="720.0" />
             </children></AnchorPane>
     </content>
 </ScrollPane>
