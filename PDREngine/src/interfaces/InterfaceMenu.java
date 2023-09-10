@@ -35,5 +35,4 @@ public interface InterfaceMenu {
     void executeSimulation(DtoUiToEngine envInputFromUser);
 
     DtoSimulationDetails getSimulationById(int idOfCurrentSimulation);
-
 }

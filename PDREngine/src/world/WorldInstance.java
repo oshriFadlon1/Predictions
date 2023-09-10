@@ -131,7 +131,7 @@ public class WorldInstance implements Serializable, Runnable {
 //        this.allEnvironments.put(environmentDataMember.getEnvPropertyDefinition().getPropertyName(), environmentDataMember);
 //    }
           //dto response of ending simulation
-    public DtoResponseTermination runSimulation(/*WorldDefinition worldDefinitionForSimulation*/) throws GeneralException{
+       public void runSimulation() throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
         initializeAllEntityInstancesLists();

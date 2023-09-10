@@ -147,7 +147,6 @@ public class MainEngine implements InterfaceMenu {
         return previewWorldInfo();
     }
     //func 3
-
     public void executeSimulation(DtoUiToEngine envInputFromUser){
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         List<EntityToPopulation> entitiesToPopulations = createEntitiesToPopulationList(envInputFromUser);
