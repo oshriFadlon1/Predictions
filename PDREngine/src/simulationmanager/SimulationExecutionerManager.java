@@ -54,8 +54,16 @@ public class SimulationExecutionerManager {
     public DtoSimulationDetails getSimulationById(int userSimulationChoice) {
         synchronized (this){
             WorldInstance chosenSimulation = this.idToSimulationMap.get(userSimulationChoice);
-            return new DtoSimulationDetails(chosenSimulation.getPrimaryEntityPopulation(), chosenSimulation.getSecondaryEntityPopulation(),
-                    chosenSimulation.getCurrentTick(), chosenSimulation.getCurrentTimePassed());
+            int numberOfTicks = chosenSimulation.getCurrentTick();
+            int numberOfSeconds  = chosenSimulation.getCurrentTimePassed();
+            if(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().size() == 1){
+                return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
+                        -1, numberOfTicks, numberOfSeconds);
+            }
+
+            return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
+                    chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityPopulation(),
+                    numberOfTicks, numberOfSeconds);
         }
     }
 }
