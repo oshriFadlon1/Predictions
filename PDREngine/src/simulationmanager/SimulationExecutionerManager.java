@@ -13,11 +13,13 @@ public class SimulationExecutionerManager {
     private Map<Integer, WorldInstance> idToSimulationMap;
     private int threadPoolSize;
     private ExecutorService currentThreadPool;
+    private int countOfThreadInWork;
 
     public SimulationExecutionerManager(int numberOfThreads) {
         this.idToSimulationMap = new HashMap<>();
         this.threadPoolSize = numberOfThreads;
         this.currentThreadPool = Executors.newFixedThreadPool(numberOfThreads);
+        this.countOfThreadInWork = 0;
     }
 
     public int getThreadPoolSize() {
@@ -31,6 +33,7 @@ public class SimulationExecutionerManager {
     public void addCurrentSimulationToManager(WorldInstance worldInstance) {
         this.idToSimulationMap.put(GeneralInformation.getIdOfSimulation(), worldInstance);
         this.currentThreadPool.execute(worldInstance);
+        this.countOfThreadInWork++;
     }
 
     public void disposeThreadPool(){

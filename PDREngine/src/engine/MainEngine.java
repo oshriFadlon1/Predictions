@@ -30,11 +30,6 @@ public class MainEngine implements InterfaceMenu {
     private XmlParser xmlParser;
     private WorldDefinition xmlWorldDefinition;
     private WorldDefinition worldDefinitionForSimulation;
-//    private List<WorldInstance> allSimulations; // current running simulation
-//
-//    private List<WorldInstance> oldSimulation; // old simulation with results
-//
-//    private Map<Integer, String> simulationId2CurrentTimeAndDate;// get old World simulation info need to take index from map - 1;
     private SimulationExecutionerManager simulationExecutionerManager;
 
 
@@ -152,44 +147,20 @@ public class MainEngine implements InterfaceMenu {
         return previewWorldInfo();
     }
     //func 3
-    @Override
-    public DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser){
-        //TODO PUT POPULATION IN WORLD INSTANCE
-//        this.worldDefinitionForSimulation.resetEntityDefinition();
-//        this.worldDefinitionForSimulation.setPopulation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2());
-//        Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
-//        DtoResponseSimulationEnded responseForUser = null;
-//        Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
-//        WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, worldDefinitionForSimulation.getWorldSize());
-//        this.allSimulations.add(worldInstance);
-//       try {
-//           //for (WorldInstance currentSimulation : this.allSimulations)
-//           for (int i = 0; i < this.allSimulations.size(); i++) {
-//               WorldInstance currentSimulation = this.allSimulations.get(i);
-//               currentSimulation.setAllEnvironments(environmentInstancesMap);
-//               DtoResponseTermination currSimulationTermination = currentSimulation.runSimulation(this.worldDefinitionForSimulation);
-//
-//               Integer indexOfCurrentMovedSimulation = moveSimulationToOldSimulations(allSimulations.indexOf(currentSimulation));
-//               responseForUser = new DtoResponseSimulationEnded(currSimulationTermination, indexOfCurrentMovedSimulation);
-//               //here we will call function, move world to current simulation
-//           }
-//           return responseForUser;
-//       }
-//       catch(GeneralException e){
-//           return new DtoResponseSimulationEnded(e.getErrorMsg());
-//           //now we return a dto response that represents the error message
-//       }
-        return null;
-    }
 
     public void executeSimulation(DtoUiToEngine envInputFromUser){
         Map<String, Object> environmentsForEngine = envInputFromUser.getEnvironmentToValue();
         List<EntityToPopulation> entitiesToPopulations = createEntitiesToPopulationList(envInputFromUser);
-        GeneralInformation infoForSimulation = new GeneralInformation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2(), envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2(),
+        GeneralInformation infoForSimulation = new GeneralInformation(envInputFromUser.getPopulation1(), envInputFromUser.getPopulation2(),
                 this.worldDefinitionForSimulation.getWorldSize(), LocalDateTime.now() , this.worldDefinitionForSimulation.getTermination(), entitiesToPopulations);
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
         WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, this.worldDefinitionForSimulation.getEntityDefinitions(), this.worldDefinitionForSimulation.getRules(), infoForSimulation);
         this.simulationExecutionerManager.addCurrentSimulationToManager(worldInstance);
+    }
+
+    @Override
+    public DtoSimulationDetails getSimulationById(int idOfCurrentSimulation) {
+        return this.simulationExecutionerManager.getSimulationById(idOfCurrentSimulation);
     }
 
     private List<EntityToPopulation> createEntitiesToPopulationList(DtoUiToEngine inputFromUser) {
@@ -208,16 +179,6 @@ public class MainEngine implements InterfaceMenu {
         }
         return entitiesToPopulationList;
     }
-
-//    private Integer moveSimulationToOldSimulations(int i) {
-//        this.oldSimulation.add(allSimulations.remove(i));
-//        int indexOfCurrentMovedWolrd = oldSimulation.size();
-//        String dateInfo = getCurrentTimeAndDateInTheFormat();
-//
-//        this.simulationId2CurrentTimeAndDate.put(indexOfCurrentMovedWolrd, dateInfo);
-//        return indexOfCurrentMovedWolrd;
-//    }
-
 
     private Map<String, EnvironmentInstance> createAllEnvironmentInstances(Map<String, Object> environmentsForEngine) {
         Map<String, EnvironmentDefinition> allEnvDefs = this.worldDefinitionForSimulation.getAllEnvironments();

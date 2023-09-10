@@ -115,6 +115,7 @@ public class WorldInstance implements Serializable, Runnable {
     public void run() {
         try {
             runSimulation();
+            this.informationOfWorld.setSimulationDone(true);
         }
         catch(GeneralException generalException){
 

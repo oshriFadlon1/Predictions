@@ -15,7 +15,7 @@ public interface InterfaceMenu {
     //func 2
     DtoResponsePreview showCurrentSimulation();
     //func 3
-    DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser);
+//    DtoResponseSimulationEnded runSimulations(DtoUiToEngine envInputFromUser);
     //func 4
 //    DtoOldSimulationsMap getMapOfOldSimulation();
     //send environments
@@ -33,5 +33,7 @@ public interface InterfaceMenu {
 //
 //    DtoResponse loadWorldState(String stringPath);
     void executeSimulation(DtoUiToEngine envInputFromUser);
+
+    DtoSimulationDetails getSimulationById(int idOfCurrentSimulation);
 
 }

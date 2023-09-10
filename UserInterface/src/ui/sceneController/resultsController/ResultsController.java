@@ -6,6 +6,7 @@ import interfaces.InterfaceMenu;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -13,12 +14,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import simulationmanager.SimulationExecutionerManager;
 import ui.presenter.EntityPresenter;
 import ui.presenter.SimulationPresenter;
+import ui.sceneController.SceneMenu;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ResultsController implements Initializable {
-    private SimulationExecutionerManager executionerManager;
+    private SceneMenu sceneMenu;
+
     private SimulationPresenter currSimulationPresenter;
     private ObservableList<EntityPresenter> obsListEntities;
     private InterfaceMenu interfaceMenu;
@@ -62,16 +65,21 @@ public class ResultsController implements Initializable {
         this.tableColumnPopulation.setCellValueFactory(new PropertyValueFactory<>("population"));
         this.tableViewEntities.setItems(this.obsListEntities);
     }
+
+    public void setSceneMenu(SceneMenu sceneMenu) {
+        this.sceneMenu = sceneMenu;
+    }
+
     @FXML
     private void selectedItem(){
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
         Thread bringDetailsThread = new Thread(()->{
             while(this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()){
-                DtoSimulationDetails currentDetails = this.executionerManager.getSimulationById(this.currSimulationPresenter.getSimulationId());
+                DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
                 Platform.runLater(()-> {
                     this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
                     this.labelCurrTimer.setText(Integer.toString(currentDetails.getSimulationTimePassed()));
-                    //חסר לי משהו population
+                    //חסר לי population
                 });
                 try {
                     Thread.sleep(200); // Sleep for 1 second (adjust as needed)
@@ -85,6 +93,12 @@ public class ResultsController implements Initializable {
 
     public void loadFromWorldDef(InterfaceMenu interfaceMenu) {
         this.interfaceMenu = interfaceMenu;
-        this.executionerManager = this.interfaceMenu.getExecutionsManager();
+        //this.executionerManager = this.interfaceMenu.getExecutionsManager();
     }
+
+    @FXML
+    void ReRunSimulation(ActionEvent event) {
+        this.sceneMenu.navigateToNewExecutionTab();
+    }
+
 }

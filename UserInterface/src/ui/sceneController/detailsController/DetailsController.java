@@ -10,13 +10,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import property.PropertyDefinitionEntity;
+import ui.sceneController.SceneMenu;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class DetailsController implements Initializable {
 
-
+    private SceneMenu sceneMenu;
 
     @FXML private TreeView<String> treeView;
 
@@ -34,6 +36,10 @@ public class DetailsController implements Initializable {
     private final String general = "General";
     private String rules = "Rules";
 
+
+    public void setSceneMenu(SceneMenu sceneMenu) {
+        this.sceneMenu = sceneMenu;
+    }
 
     public void loadFromWorldDef(DtoResponsePreview worldDefinition){
         this.worldPreview = worldDefinition;
