@@ -13,11 +13,13 @@ public class SimulationExecutionerManager {
     private Map<Integer, WorldInstance> idToSimulationMap;
     private int threadPoolSize;
     private ExecutorService currentThreadPool;
+    private int countOfThreadInWork;
 
     public SimulationExecutionerManager(int numberOfThreads) {
         this.idToSimulationMap = new HashMap<>();
         this.threadPoolSize = numberOfThreads;
         this.currentThreadPool = Executors.newFixedThreadPool(numberOfThreads);
+        this.countOfThreadInWork = 0;
     }
 
     public int getThreadPoolSize() {
@@ -31,6 +33,7 @@ public class SimulationExecutionerManager {
     public void addCurrentSimulationToManager(WorldInstance worldInstance) {
         this.idToSimulationMap.put(GeneralInformation.getIdOfSimulation(), worldInstance);
         this.currentThreadPool.execute(worldInstance);
+        this.countOfThreadInWork++;
     }
 
     public void disposeThreadPool(){
@@ -51,8 +54,16 @@ public class SimulationExecutionerManager {
     public DtoSimulationDetails getSimulationById(int userSimulationChoice) {
         synchronized (this){
             WorldInstance chosenSimulation = this.idToSimulationMap.get(userSimulationChoice);
-            return new DtoSimulationDetails(chosenSimulation.getPrimaryEntityPopulation(), chosenSimulation.getSecondaryEntityPopulation(),
-                    chosenSimulation.getCurrentTick(), chosenSimulation.getCurrentTimePassed());
+            int numberOfTicks = chosenSimulation.getCurrentTick();
+            int numberOfSeconds  = chosenSimulation.getCurrentTimePassed();
+            if(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().size() == 1){
+                return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
+                        -1, numberOfTicks, numberOfSeconds);
+            }
+
+            return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
+                    chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityPopulation(),
+                    numberOfTicks, numberOfSeconds);
         }
     }
 }

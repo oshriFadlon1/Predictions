@@ -26,6 +26,7 @@ import termination.Termination;
 import ui.javaFx.scenes.sceneNewExecution.tableViewModel;
 import ui.presenter.EntityPresenter;
 import ui.presenter.EnvironmentPresenter;
+import ui.sceneController.SceneMenu;
 import utility.Utilities;
 import world.GeneralInformation;
 import world.WorldDefinition;
@@ -46,6 +47,7 @@ public class NewExecutionController implements Initializable{
     private ObservableList<EntityPresenter> obsListEntities;
     private ObservableList<EnvironmentPresenter> obsListEnvironments;
     private ObservableList<EnvironmentPresenter> obsListEnvironmentsBefore;
+    private SceneMenu sceneMenu;
     @FXML
     private Label labelError;
     @FXML
@@ -120,6 +122,8 @@ public class NewExecutionController implements Initializable{
         labelError.setText("Label error");
 
     }
+
+
     public void loadFromWorldDef(DtoResponsePreview worldDef,InterfaceMenu i_interfaceMenu){
         this.buttonStart.setDisable(false);
         this.buttonValue.setDisable(false);
@@ -346,8 +350,13 @@ public class NewExecutionController implements Initializable{
             }
         }
         this.interfaceMenu.executeSimulation(new DtoUiToEngine(this.EnvToValue, this.population1, this.population2,entity1Label.getText(), entity2Label.getText()));
+        this.sceneMenu.navigateToResultTab();
 
         //this.interfaceMenu.runSimulations(new DtoUiToEngine(this.EnvToValue,this.population1,this.population2));
+    }
+
+    public void setSceneMenu(SceneMenu sceneMenu) {
+        this.sceneMenu = sceneMenu;
     }
 }
 

@@ -95,7 +95,7 @@ public class PropertyDefinition implements Serializable {
 
     public PropertyDefinition getCopyOfPropertyDefinition(){
         if (this.propertyRange == null){
-            return new PropertyDefinition(this.propertyName,this.propertyType,null);
+            return new PropertyDefinition(this.propertyName,this.propertyType);
         }
         return new PropertyDefinition(this.propertyName, this.propertyType, this.propertyRange.getCopyOfRange());
     }

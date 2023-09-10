@@ -44,6 +44,8 @@ public class SceneMenu implements Initializable {
     @FXML private TextField textFilePath;
     @FXML
     private Label fileStatus;
+    @FXML
+    private TabPane tabPaneManager;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -78,8 +80,11 @@ public class SceneMenu implements Initializable {
 
     private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
         this.detailsController.loadFromWorldDef(wrldDef);
+        this.detailsController.setSceneMenu(this);
         this.newExecutionController.loadFromWorldDef(wrldDef,interfaceMenu);
+        this.newExecutionController.setSceneMenu(this);
         this.resultsController.loadFromWorldDef(interfaceMenu);
+        this.resultsController.setSceneMenu(this);
     }
 
     @Override
@@ -91,32 +96,43 @@ public class SceneMenu implements Initializable {
         loaderDetail.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderDetail.load();
-            tabOfDetails.setContent(nestedControllersContainer);
+            this.tabOfDetails.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        detailsController = loaderDetail.getController();
+        this.detailsController = loaderDetail.getController();
         FXMLLoader loaderNewExecution = new FXMLLoader();
         mainFXML = getClass().getResource("/ui/javaFx/scenes/sceneNewExecution/newExecution.fxml");
         loaderNewExecution.setLocation(mainFXML);
         try {
             nestedControllersContainer = loaderNewExecution.load();
-            tabOfNewExecution.setContent(nestedControllersContainer);
+            this.tabOfNewExecution.setContent(nestedControllersContainer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        newExecutionController = loaderNewExecution.getController();
+        this.newExecutionController = loaderNewExecution.getController();
 
         FXMLLoader loaderResults = new FXMLLoader();
         mainFXML = getClass().getResource("/ui/javaFx/scenes/sceneResults/Results.fxml");
         loaderResults.setLocation(mainFXML);
         try{
             nestedControllersContainer = loaderResults.load();
-            tabOfResults.setContent(nestedControllersContainer);
+            this.tabOfResults.setContent(nestedControllersContainer);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.resultsController = loaderResults.getController();
+
+        //this.tabPaneManager.getTabs().addAll(this.tabOfDetails,this.tabOfNewExecution,this.tabOfResults);
+    }
+
+    public void navigateToResultTab() {
+        this.tabPaneManager.getSelectionModel().select(tabOfResults);
+    }
+
+    public void navigateToNewExecutionTab(){
+
     }
 }

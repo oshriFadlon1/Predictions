@@ -13,6 +13,10 @@ public class DtoSimulationDetails {
         this.simulationTimePassed = currentSimulationTimePassed;
     }
 
+    public DtoSimulationDetails(){
+
+    }
+
     public int getEntity1Population() {
         return entity1Population;
     }

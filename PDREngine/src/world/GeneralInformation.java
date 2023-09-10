@@ -10,21 +10,17 @@ import java.util.List;
 public class GeneralInformation {
     private int primaryEntityStartPopulation;
     private int secondaryEntityStartPopulation;
-    private int primaryEntityEndPopulation;
-    private int secondaryEntityEndPopulation;
     private PointCoord worldSize;
     private LocalDateTime startOfSimulationDate;
     private static int idOfSimulation = 0;
     private Termination termination;
-    private boolean isSimulationDone;
+    private boolean isSimulationDone = false;
     private List<EntityToPopulation> entitiesToPopulations;
 
-    public GeneralInformation(int primaryEntityStartPopulation, int secondaryEntityStartPopulation, int primaryEntityEndPopulation,
-                              int secondaryEntityEndPopulation, PointCoord worldSize, LocalDateTime startOfSimulationDate, Termination termination, List<EntityToPopulation> entitiesToPopulations) {
+    public GeneralInformation(int primaryEntityStartPopulation, int secondaryEntityStartPopulation, PointCoord worldSize, LocalDateTime startOfSimulationDate, Termination termination, List<EntityToPopulation> entitiesToPopulations) {
         this.primaryEntityStartPopulation = primaryEntityStartPopulation;
         this.secondaryEntityStartPopulation = secondaryEntityStartPopulation;
-        this.primaryEntityEndPopulation = primaryEntityEndPopulation;
-        this.secondaryEntityEndPopulation = secondaryEntityEndPopulation;
+
         this.worldSize = worldSize;
         this.startOfSimulationDate = startOfSimulationDate;
         this.termination = termination;
@@ -54,22 +50,6 @@ public class GeneralInformation {
 
     public void setSecondaryEntityStartPopulation(int secondaryEntityStartPopulation) {
         this.secondaryEntityStartPopulation = secondaryEntityStartPopulation;
-    }
-
-    public int getPrimaryEntityEndPopulation() {
-        return primaryEntityEndPopulation;
-    }
-
-    public void setPrimaryEntityEndPopulation(int primaryEntityEndPopulation) {
-        this.primaryEntityEndPopulation = primaryEntityEndPopulation;
-    }
-
-    public int getSecondaryEntityEndPopulation() {
-        return secondaryEntityEndPopulation;
-    }
-
-    public void setSecondaryEntityEndPopulation(int secondaryEntityEndPopulation) {
-        this.secondaryEntityEndPopulation = secondaryEntityEndPopulation;
     }
 
     public PointCoord getWorldSize() {

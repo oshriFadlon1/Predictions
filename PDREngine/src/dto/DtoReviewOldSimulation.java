@@ -17,7 +17,7 @@ public class DtoReviewOldSimulation {
     private List<DtoEntityInstanceToUi> entityInstanceList;
 
     public DtoReviewOldSimulation(EntityDefinition entityDefinition, List<EntityInstance> entityInstanceList) {
-        this.entityDefinition = createCopyEntityDefition(entityDefinition);
+        //this.entityDefinition = createCopyEntityDefition(entityDefinition);
         this.entityInstanceList = createCopysOfAllEntitiesInstances(entityInstanceList);
     }
 
@@ -37,34 +37,34 @@ public class DtoReviewOldSimulation {
         this.entityInstanceList = entityInstanceList;
     }
 
-    private DtoEntityDefitionToDisplay createCopyEntityDefition(EntityDefinition entityDefinition) {
-        String Name = entityDefinition.getEntityName();
-        int startPopulation = entityDefinition.getStartPopulation();
-        int endPopulation = entityDefinition.getEndPopulation();
-        Map<String, PropertyDefinitionEntity> propertyDefinitions = new HashMap<>();
-        for (String propertyName: entityDefinition.getPropertyDefinition().keySet()) {
-            PropertyDefinitionEntity propertyDefinitionEntity = entityDefinition.getPropertyDefinition().get(propertyName);
-            Range range = propertyDefinitionEntity.getPropertyDefinition().getPropertyRange();
-            if (range != null)
-            {
-                propertyDefinitions.put(propertyName,
-                        new PropertyDefinitionEntity(new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
-                                propertyDefinitionEntity.getPropertyDefinition().getPropertyType(),
-                                range),
-                                new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
-                                        propertyDefinitionEntity.getPropValue().getInit())));
-            } else {
-                propertyDefinitions.put(propertyName,
-                        new PropertyDefinitionEntity(new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
-                                propertyDefinitionEntity.getPropertyDefinition().getPropertyType()),
-                                new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
-                                        propertyDefinitionEntity.getPropValue().getInit())));
-            }
-
-        }
-        
-        return new DtoEntityDefitionToDisplay(Name, startPopulation, endPopulation, propertyDefinitions);
-    }
+//    private DtoEntityDefitionToDisplay createCopyEntityDefition(EntityDefinition entityDefinition) {
+//        String Name = entityDefinition.getEntityName();
+//        int startPopulation = entityDefinition.getStartPopulation();
+//        int endPopulation = entityDefinition.getEndPopulation();
+//        Map<String, PropertyDefinitionEntity> propertyDefinitions = new HashMap<>();
+//        for (String propertyName: entityDefinition.getPropertyDefinition().keySet()) {
+//            PropertyDefinitionEntity propertyDefinitionEntity = entityDefinition.getPropertyDefinition().get(propertyName);
+//            Range range = propertyDefinitionEntity.getPropertyDefinition().getPropertyRange();
+//            if (range != null)
+//            {
+//                propertyDefinitions.put(propertyName,
+//                        new PropertyDefinitionEntity(new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
+//                                propertyDefinitionEntity.getPropertyDefinition().getPropertyType(),
+//                                range),
+//                                new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
+//                                        propertyDefinitionEntity.getPropValue().getInit())));
+//            } else {
+//                propertyDefinitions.put(propertyName,
+//                        new PropertyDefinitionEntity(new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
+//                                propertyDefinitionEntity.getPropertyDefinition().getPropertyType()),
+//                                new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
+//                                        propertyDefinitionEntity.getPropValue().getInit())));
+//            }
+//
+//        }
+//
+//        return new DtoEntityDefitionToDisplay(Name, startPopulation, endPopulation, propertyDefinitions);
+//    }
 
     private List<DtoEntityInstanceToUi> createCopysOfAllEntitiesInstances(List<EntityInstance> entityInstanceList) {
         List<DtoEntityInstanceToUi> copyOfEntityInstances = new ArrayList<>();
