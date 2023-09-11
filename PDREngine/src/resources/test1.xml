@@ -59,18 +59,19 @@
 	<PRD-rules>
 		<PRD-rule name="r3">
 			<PRD-actions>
-				<PRD-action type="proximity">
-					<PRD-between source-entity="ent-1" target-entity="ent-2"/>
-					<PRD-env-depth of="2"/>
-					<PRD-actions>
-						<PRD-action type="increase" entity="ent-1" property="p1" by="percent(evaluate(ent-2.p2),environment(e1))"/>
-					</PRD-actions>
-				</PRD-action>
+				<PRD-action type="replace" kill="ent-1" create="ent-2" mode="scratch"/>
+<!--				<PRD-action type="proximity">-->
+<!--					<PRD-between source-entity="ent-1" target-entity="ent-2"/>-->
+<!--					<PRD-env-depth of="2"/>-->
+<!--					<PRD-actions>-->
+<!--						<PRD-action type="increase" entity="ent-1" property="p1" by="percent(evaluate(ent-2.p2),environment(e1))"/>-->
+<!--					</PRD-actions>-->
+<!--				</PRD-action>-->
 			</PRD-actions>
 		</PRD-rule>
 	</PRD-rules>
 	<PRD-termination>
-		<PRD-by-ticks count="200"/>
-		<PRD-by-second count="6000000"/>
+<!--		<PRD-by-ticks count="200"/>-->
+		<PRD-by-second count="15"/>
 	</PRD-termination>
 </PRD-world>

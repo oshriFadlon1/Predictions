@@ -43,8 +43,10 @@ public class WorldInstance implements Serializable, Runnable {
     private int primaryEntityPopulation;
     private int secondaryEntityPopulation;
     private int currentTick;
-    private int currentTimePassed;
+    private long currentTimePassed;
     private long currentTimeStarted;
+    private boolean isPaused;
+    private boolean isStopped;
 
 
 
@@ -63,6 +65,8 @@ public class WorldInstance implements Serializable, Runnable {
         this.currentTick = 0;
         this.currentTimePassed = 0;
         this.currentTimeStarted = System.currentTimeMillis();
+        this.isPaused = false;
+        this.isStopped = false;
     }
 
 //    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize, WorldDefinition worldDefinitionForSimulation){
@@ -81,6 +85,22 @@ public class WorldInstance implements Serializable, Runnable {
 
     public GeneralInformation getInformationOfWorld() {
         return informationOfWorld;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
+    public boolean isStopped() {
+        return isStopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        isStopped = stopped;
     }
 
     public void setInformationOfWorld(GeneralInformation informationOfWorld) {
@@ -182,19 +202,41 @@ public class WorldInstance implements Serializable, Runnable {
         long currentTime = System.currentTimeMillis();
         List<String> entityNamesForChecking = new ArrayList<>();
 
-        while (currentTermination.isTicksActive(currentTickCount) && currentTermination.isSecondsActive(currentTime - timeStarted)/*worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
-                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)*/){
+        while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(currentTime - timeStarted)/*worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
+                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)*/ && !isStopped){
+            if(isPaused){
+                long lastSavedSeconds = this.currentTimePassed;
+                int lastSavedTick = this.currentTick;
+                while(isPaused){
+                    try {
+                        Thread.sleep(100);
+                        if(!isPaused){
+
+                            this.currentTick = lastSavedTick;
+                            this.currentTimePassed = lastSavedSeconds;
+                            break;
+                        }
+                        else{
+                            isPaused = true;
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+
             for(String currentEntityName: allEntities.keySet()){
-//                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-//                moveAllInstances(currentEntityInstanceList);
-                entityNamesForChecking.add(currentEntityName);
+                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+                moveAllInstances(currentEntityInstanceList);
+                //entityNamesForChecking.add(currentEntityName);
 
             }
             //TODO: REMEMBER TO DELETE THE FOLLOWING FOUR LINES. THIS IS ONLY A TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            EntityInstance instance1 = this.allEntities.get(entityNamesForChecking.get(0)).get(0);
-            EntityInstance instance2 = this.allEntities.get(entityNamesForChecking.get(1)).get(0);
-            instance1.setPositionInWorld(new PointCoord(5, 5));
-            instance2.setPositionInWorld(new PointCoord(3, 4));
+//            EntityInstance instance1 = this.allEntities.get(entityNamesForChecking.get(0)).get(0);
+//            EntityInstance instance2 = this.allEntities.get(entityNamesForChecking.get(1)).get(0);
+//            instance1.setPositionInWorld(new PointCoord(5, 5));
+//            instance2.setPositionInWorld(new PointCoord(3, 4));
 
             for(Rule currentRuleToInvokeOnEntities: this.allRules){
                 List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
@@ -203,7 +245,7 @@ public class WorldInstance implements Serializable, Runnable {
                 int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
                 float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
                 if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
-                        && (currentTickCount != 0 && currentTickCount % activitionTicksForCurrentRule == 0)){
+                        && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
                     //need to invoke the rule for each entity instance
                     for (String currentEntityName: allEntities.keySet()) {
                         // the current list of entity instances from the map
@@ -279,8 +321,10 @@ public class WorldInstance implements Serializable, Runnable {
             killAndReplaceAllEntities();
             this.entitiesToKillAndReplace.clear();;
             this.entitiesToKill.clear();
-            currentTickCount++;
+            this.currentTick++;
             currentTime = System.currentTimeMillis();
+            this.currentTimePassed = (currentTime - timeStarted) / 1000;
+
         }
 
         if(currentTermination.getTicks() <= currentTick/*worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount*/){
@@ -302,7 +346,7 @@ public class WorldInstance implements Serializable, Runnable {
 //        }
 
         DtoResponseTermination responseOfSimulation = new DtoResponseTermination(endedByTicks, endedBySeconds);
-        return responseOfSimulation;
+        //return responseOfSimulation;
 
     }
 
@@ -534,10 +578,10 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public int getCurrentTick() {
-        return this.getCurrentTick();
+        return this.currentTick;
     }
 
-    public int getCurrentTimePassed() {
-        return 0;
+    public long getCurrentTimePassed() {
+        return this.currentTimePassed;
     }
 }

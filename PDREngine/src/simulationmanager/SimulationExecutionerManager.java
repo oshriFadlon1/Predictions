@@ -1,5 +1,6 @@
 package simulationmanager;
 
+import dto.DtoAllSimulationDetails;
 import dto.DtoSimulationDetails;
 import world.GeneralInformation;
 import world.WorldInstance;
@@ -55,15 +56,40 @@ public class SimulationExecutionerManager {
         synchronized (this){
             WorldInstance chosenSimulation = this.idToSimulationMap.get(userSimulationChoice);
             int numberOfTicks = chosenSimulation.getCurrentTick();
-            int numberOfSeconds  = chosenSimulation.getCurrentTimePassed();
+            long numberOfSeconds  = chosenSimulation.getCurrentTimePassed();
             if(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().size() == 1){
+                String entity1Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityDef().getEntityName();
                 return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
-                        -1, numberOfTicks, numberOfSeconds);
+                        -1, entity1Name, "", numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), userSimulationChoice);
             }
 
+            String entity1Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityDef().getEntityName();
+            String entity2Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityDef().getEntityName();
             return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
                     chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityPopulation(),
-                    numberOfTicks, numberOfSeconds);
+                    entity1Name, entity2Name, numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), userSimulationChoice);
         }
+    }
+
+    public DtoAllSimulationDetails createMapOfSimulationsToIsRunning() {
+        Map<Integer, Boolean> allSimulations = new HashMap<>();
+        for(int currId: this.idToSimulationMap.keySet()){
+            Boolean isSimulationRunning = this.idToSimulationMap.get(currId).getInformationOfWorld().isSimulationDone();
+            allSimulations.put(currId, isSimulationRunning);
+        }
+        DtoAllSimulationDetails allSimulationDetails = new DtoAllSimulationDetails(allSimulations);
+        return allSimulationDetails;
+    }
+
+    public void pauseCurrentSimulation(int simulationId) {
+        this.idToSimulationMap.get(simulationId).setPaused(true);
+    }
+
+    public void resumeCurrentSimulation(int simulationId) {
+        this.idToSimulationMap.get(simulationId).setPaused(false);
+    }
+
+    public void stopCurrentSimulation(int simulationId) {
+        this.idToSimulationMap.get(simulationId).setStopped(true);
     }
 }
