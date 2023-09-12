@@ -49,7 +49,7 @@
 			<PRD-actions>
 				<PRD-action type="set" entity="Sick" property="vacinated" value="true"></PRD-action>
 			</PRD-actions>
-			<PRD-activation ticks="5" probability="0.5"/>
+			<PRD-activation ticks="5" probability="1"/>
 		</PRD-rule>
 		<PRD-rule name="heal">
 			<PRD-actions>

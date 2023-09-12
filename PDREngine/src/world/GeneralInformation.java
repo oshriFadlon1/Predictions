@@ -26,6 +26,7 @@ public class GeneralInformation {
         this.termination = termination;
         this.isSimulationDone = false;
         this.entitiesToPopulations = entitiesToPopulations;
+        idOfSimulation++;
     }
 
     public List<EntityToPopulation> getEntitiesToPopulations() {

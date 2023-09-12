@@ -33,7 +33,7 @@ public class Termination implements Serializable {
     public boolean isSecondsActive(long currentSeconds){
         boolean result = false;
         if (this.seconds != -1){
-            if (currentSeconds/1000 <= this.seconds)
+            if (currentSeconds/1000 < this.seconds)
             {
                 result = true;
             }

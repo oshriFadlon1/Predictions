@@ -162,6 +162,26 @@ public class MainEngine implements InterfaceMenu {
         return this.simulationExecutionerManager.getSimulationById(idOfCurrentSimulation);
     }
 
+    @Override
+    public DtoAllSimulationDetails getAllSimulations() {
+        return this.simulationExecutionerManager.createMapOfSimulationsToIsRunning();
+    }
+
+    @Override
+    public void pauseCurrentSimulation(int simulationId) {
+        this.simulationExecutionerManager.pauseCurrentSimulation(simulationId);
+    }
+
+    @Override
+    public void resumeCurretnSimulation(int simulationId) {
+        this.simulationExecutionerManager.resumeCurrentSimulation(simulationId);
+    }
+
+    @Override
+    public void stopCurrentSimulation(int simulationId) {
+        this.simulationExecutionerManager.stopCurrentSimulation(simulationId);
+    }
+
     private List<EntityToPopulation> createEntitiesToPopulationList(DtoUiToEngine inputFromUser) {
         List<EntityToPopulation> entitiesToPopulationList = new ArrayList<>();
         List<EntityDefinition> entityDefsList = this.worldDefinitionForSimulation.getEntityDefinitions();

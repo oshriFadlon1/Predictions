@@ -129,6 +129,7 @@ public class SceneMenu implements Initializable {
     }
 
     public void navigateToResultTab() {
+        this.resultsController.fetchAllSimulations();
         this.tabPaneManager.getSelectionModel().select(tabOfResults);
     }
 
