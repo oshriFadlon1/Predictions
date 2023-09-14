@@ -61,6 +61,7 @@ public class ActionIncrease extends AbstractAction implements Serializable {
         result = ((Number)x).floatValue() + ((Number)y).floatValue();
         // updating result on the property
         propertyInstance.setPropValue(result);
+        propertyInstance.setIsPropertyChangedInCurrTick(true);
     }
 
     @Override

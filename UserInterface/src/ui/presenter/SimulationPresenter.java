@@ -1,14 +1,12 @@
 package ui.presenter;
 
-import javafx.scene.control.ListCell;
-
 public class SimulationPresenter {
     private int simulationId;
-    private boolean isSimulationFinished;
+    private String simulationState;
 
-    public SimulationPresenter(int simulationId, boolean isRunning) {
+    public SimulationPresenter(int simulationId, String simulationStates) {
         this.simulationId = simulationId;
-        this.isSimulationFinished = isRunning;
+        this.simulationState = simulationStates;
     }
 
     public int getSimulationId() {
@@ -18,11 +16,11 @@ public class SimulationPresenter {
         this.simulationId = simulationId;
     }
 
-    public boolean getIsSimulationFinished() {
-        return isSimulationFinished;
+    public String getSimulationState() {
+        return simulationState;
     }
 
-    public void setSimulationRunning(boolean simulationRunning) {
-        isSimulationFinished = simulationRunning;
+    public void setSimulationState(String simulationState) {
+        this.simulationState = simulationState;
     }
 }

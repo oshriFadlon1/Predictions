@@ -2,7 +2,7 @@ package ui.sceneController.resultsController;
 
 import dto.DtoAllSimulationDetails;
 import dto.DtoSimulationDetails;
-import engine.MainEngine;
+import enums.SimulationState;
 import interfaces.InterfaceMenu;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,8 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
-import simulationmanager.SimulationExecutionerManager;
 import ui.presenter.CustomItemCell;
 import ui.presenter.EntityPresenter;
 import ui.presenter.SimulationPresenter;
@@ -91,7 +89,7 @@ public class ResultsController implements Initializable {
                     this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
                     this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
                     this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
-                    this.labelSimulationStatus.setText((currentDetails.getIsSimulationFinished() == false? "Running": "Finished"));
+                    this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
                     this.obsListEntities.clear();
                     this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
                     if(population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")){
@@ -108,6 +106,15 @@ public class ResultsController implements Initializable {
         bringDetailsThread.start();
     }
 
+    private static String getModeOfCurrentSimulation(DtoSimulationDetails currentDetails) {
+        if (currentDetails.getIsSimulationFinished() == false)
+            return "Running";
+    else if (true)
+        return "Finished";
+    else
+        return "waiting";
+    }
+
     public void loadFromWorldDef(InterfaceMenu interfaceMenu) {
         this.interfaceMenu = interfaceMenu;
         //this.executionerManager = this.interfaceMenu.getExecutionsManager();
@@ -119,13 +126,36 @@ public class ResultsController implements Initializable {
     }
 
     public void fetchAllSimulations() {
-        this.obsListSimulations.clear();
+        //this.obsListSimulations.clear();
         DtoAllSimulationDetails allCurrentSimulations = this.interfaceMenu.getAllSimulations();
-        Map<Integer, Boolean> simulationToIsRunningMap = allCurrentSimulations.getMapOfAllSimulations();
-        for(int currId: simulationToIsRunningMap.keySet()){
-            SimulationPresenter currSimulationToAdd = new SimulationPresenter(currId, simulationToIsRunningMap.get(currId));
-            this.obsListSimulations.add(currSimulationToAdd);
+        Map<Integer, SimulationState> simulationToIsRunningMap = allCurrentSimulations.getMapOfAllSimulations();
+        for(int currId: simulationToIsRunningMap.keySet()) {
+            SimulationPresenter simulationToCheck = checkIfSimulationExists(currId);
+            if (simulationToCheck == null) {
+                SimulationPresenter currSimulationToAdd = new SimulationPresenter(currId, simulationToIsRunningMap.get(currId).toString());
+                this.obsListSimulations.add(currSimulationToAdd);
+            } else {
+                if (simulationToIsRunningMap.get(currId).toString().equalsIgnoreCase(SimulationState.FINISHED.toString())) {
+                    simulationToCheck.setSimulationState(SimulationState.FINISHED.toString());
+                }
+                else if (simulationToIsRunningMap.get(currId).toString().equalsIgnoreCase(SimulationState.WAITING.toString())) {
+                    simulationToCheck.setSimulationState(SimulationState.WAITING.toString());
+                }
+                else if (simulationToIsRunningMap.get(currId).toString().equalsIgnoreCase(SimulationState.RUNNING.toString())) {
+                    simulationToCheck.setSimulationState(SimulationState.RUNNING.toString());
+                }
+                this.obsListSimulations.set(currId - 1, simulationToCheck);
+            }
         }
+    }
+
+    private SimulationPresenter checkIfSimulationExists(int currId) {
+        for(SimulationPresenter currSimulation: this.obsListSimulations){
+            if(currId == currSimulation.getSimulationId()){
+                return currSimulation;
+            }
+        }
+        return null;
     }
 
     public void onPausePressed(){
@@ -143,4 +173,8 @@ public class ResultsController implements Initializable {
     }
 
 
+    public void clearScreen() {
+        this.obsListEntities.clear();
+        this.obsListSimulations.clear();
+    }
 }

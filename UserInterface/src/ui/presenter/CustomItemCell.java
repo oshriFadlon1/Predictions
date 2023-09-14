@@ -11,8 +11,7 @@ public class CustomItemCell extends ListCell<SimulationPresenter> {
             setText(null);
         } else {
             // Customize the text representation of the item
-            String text = item.getSimulationId() + ")" + (item.getIsSimulationFinished() == false? "Running": "Finished");
-            //String text = item.getSimulationId() + ") running(" + item.getIsSimulationRunning() + ")";
+            String text = item.getSimulationId() + ") " + (item.getSimulationState().toLowerCase());
             setText(text);
         }
     }

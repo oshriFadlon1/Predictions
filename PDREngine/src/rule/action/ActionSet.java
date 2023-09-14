@@ -72,6 +72,7 @@ public class ActionSet extends AbstractAction implements Serializable {
                     break;
             }
             propertyInstance.setPropValue(result);
+            propertyInstance.setIsPropertyChangedInCurrTick(true);
         } catch (GeneralException e) {
             throw e;
         }

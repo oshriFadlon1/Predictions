@@ -2,12 +2,15 @@ package simulationmanager;
 
 import dto.DtoAllSimulationDetails;
 import dto.DtoSimulationDetails;
+import dto.DtoQueueManagerInfo;
+import enums.SimulationState;
 import world.GeneralInformation;
 import world.WorldInstance;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class SimulationExecutionerManager {
@@ -72,10 +75,18 @@ public class SimulationExecutionerManager {
     }
 
     public DtoAllSimulationDetails createMapOfSimulationsToIsRunning() {
-        Map<Integer, Boolean> allSimulations = new HashMap<>();
+        Map<Integer, SimulationState> allSimulations = new HashMap<>();
         for(int currId: this.idToSimulationMap.keySet()){
             Boolean isSimulationRunning = this.idToSimulationMap.get(currId).getInformationOfWorld().isSimulationDone();
-            allSimulations.put(currId, isSimulationRunning);
+            if (isSimulationRunning){
+                allSimulations.put(currId, SimulationState.FINISHED);
+            } else if (this.idToSimulationMap.get(currId).getInformationOfWorld().isSimulationPaused()){
+                allSimulations.put(currId, SimulationState.WAITING);
+            }
+            else {
+                allSimulations.put(currId, SimulationState.RUNNING);
+            }
+
         }
         DtoAllSimulationDetails allSimulationDetails = new DtoAllSimulationDetails(allSimulations);
         return allSimulationDetails;
@@ -91,5 +102,20 @@ public class SimulationExecutionerManager {
 
     public void stopCurrentSimulation(int simulationId) {
         this.idToSimulationMap.get(simulationId).setStopped(true);
+    }
+
+    public DtoQueueManagerInfo getQueueManagerInfo(){
+        long doneSimulations = this.idToSimulationMap.entrySet().stream().filter(entry-> entry.getValue().getInformationOfWorld().isSimulationDone()).count();
+        long runningSimulations = this.idToSimulationMap.entrySet().stream().filter(entry-> !entry.getValue().getInformationOfWorld().isSimulationDone()).count();
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor)this.currentThreadPool;
+
+        return new DtoQueueManagerInfo(String.valueOf(runningSimulations - threadPoolExecutor.getQueue().size()), String.valueOf(doneSimulations), String.valueOf(threadPoolExecutor.getQueue().size()));
+    }
+
+    public void clearInformation() {
+        if(this.idToSimulationMap.size() > 0) {
+            GeneralInformation.setIdOfSimulation(0);
+        }
+        this.idToSimulationMap.clear();
     }
 }

@@ -24,8 +24,8 @@ public class EntityComponentController {
             return;
         }
 
-        entPropName.setText(propertyDefinitionChoose.getPropertyDefinition().getPropertyName());
-        propType.setText(propertyDefinitionChoose.getPropertyDefinition().getPropertyType());
+        entPropName.setText("Entity property name: " + propertyDefinitionChoose.getPropertyDefinition().getPropertyName());
+        propType.setText("Entity property type: " +propertyDefinitionChoose.getPropertyDefinition().getPropertyType());
         if (propertyDefinitionChoose.getPropertyDefinition().getPropertyRange() == null) {
             propRange.setText("");
         }

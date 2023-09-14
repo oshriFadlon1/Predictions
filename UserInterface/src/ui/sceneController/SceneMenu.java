@@ -1,27 +1,23 @@
 package ui.sceneController;
 
+import dto.DtoQueueManagerInfo;
 import dto.DtoResponse;
 import dto.DtoResponsePreview;
 import engine.MainEngine;
-import exceptions.GeneralException;
 import interfaces.InterfaceMenu;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ui.sceneController.detailsController.DetailsController;
 import ui.sceneController.newExecutionController.NewExecutionController;
 import ui.sceneController.resultsController.ResultsController;
-import world.WorldDefinition;
-import xmlParser.XmlParser;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +31,7 @@ public class SceneMenu implements Initializable {
     private ResultsController resultsController;
     private Stage primaryStage;
 
+    private Thread queueManager;
 
     @FXML private Tab tabOfDetails;
     @FXML private Tab tabOfNewExecution;
@@ -47,10 +44,22 @@ public class SceneMenu implements Initializable {
     @FXML
     private TabPane tabPaneManager;
 
+    @FXML
+    private Label endedSimulation;
+    private SimpleStringProperty endedSimulationCountProperty;
+
+    @FXML
+    private Label numberOfSimulationInProgress;
+    private SimpleStringProperty numberOfSimulationInProgressProperty;
+
+    @FXML
+    private Label simulationInWaiting;
+    private SimpleStringProperty  simulationInWaitingCountProperty;
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
+    @FXML
     public void onClickButtonLoadFile(ActionEvent e){
         if (this.interfaceMenu == null){
             this.interfaceMenu = new MainEngine();
@@ -60,10 +69,12 @@ public class SceneMenu implements Initializable {
         FileChooser.ExtensionFilter xmlFilter = new FileChooser.ExtensionFilter("XML Files", "*.xml");
         fileChooser.getExtensionFilters().add(xmlFilter);
         File selectedFile;
-        do {
-            selectedFile = fileChooser.showOpenDialog(primaryStage);
-        }while (selectedFile == null);
+        selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if (selectedFile == null){
+            return;
+        }
 
+        clearAllComponemts();
         String absolutePath = selectedFile.getAbsolutePath();
 
         DtoResponse dtoResponse = interfaceMenu.createWorldDefinition(absolutePath);
@@ -76,6 +87,13 @@ public class SceneMenu implements Initializable {
         }else {
             fileStatus.setText(fileStatus.getText() + dtoResponse.getResponse());
         }
+    }
+
+    private void clearAllComponemts() {
+        this.interfaceMenu.clearAllInformation();
+        this.resultsController.clearScreen();
+        this.newExecutionController.clearScreen();
+        this.detailsController.clearScreen();
     }
 
     private void loadEverythingFromWorldDefinition(DtoResponsePreview wrldDef) {
@@ -125,15 +143,58 @@ public class SceneMenu implements Initializable {
         }
         this.resultsController = loaderResults.getController();
 
-        //this.tabPaneManager.getTabs().addAll(this.tabOfDetails,this.tabOfNewExecution,this.tabOfResults);
+        this.endedSimulationCountProperty = new SimpleStringProperty();
+        this.endedSimulation.textProperty().bind(this.endedSimulationCountProperty);
+
+        this.numberOfSimulationInProgressProperty = new SimpleStringProperty();
+        this.numberOfSimulationInProgress.textProperty().bind(this.numberOfSimulationInProgressProperty);
+
+        this.simulationInWaitingCountProperty = new SimpleStringProperty();
+        this.simulationInWaiting.textProperty().bind(this.simulationInWaitingCountProperty);
+        createDaemonThreadToQueueManager();
+    }
+
+    private void createDaemonThreadToQueueManager() {
+        this.queueManager = new Thread(() -> {
+            while(true){
+                if (this.interfaceMenu != null){
+                    Platform.runLater(()-> {
+                        DtoQueueManagerInfo simulationsRunningStateInfo = this.interfaceMenu.getQueueManagerInfo();
+                        this.endedSimulationCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationEnded());
+                        this.simulationInWaitingCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationsPending());
+                        this.numberOfSimulationInProgressProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationInProgress());
+                    });}
+                try {
+                    // Sleep for 1 second
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.queueManager.setDaemon(true);
+        this.queueManager.start();
     }
 
     public void navigateToResultTab() {
-        this.resultsController.fetchAllSimulations();
         this.tabPaneManager.getSelectionModel().select(tabOfResults);
+        new Thread(()->{
+            while(this.interfaceMenu.getAllSimulations().getMapOfAllSimulations().size() >= 1) {
+                Platform.runLater(()-> {
+                    this.resultsController.fetchAllSimulations();
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 
     public void navigateToNewExecutionTab(){
-
+        this.tabPaneManager.getSelectionModel().select(tabOfNewExecution);
     }
+
+
 }

@@ -15,12 +15,13 @@ public class GeneralInformation {
     private static int idOfSimulation = 0;
     private Termination termination;
     private boolean isSimulationDone = false;
+    private boolean isSimulationPaused = false;
     private List<EntityToPopulation> entitiesToPopulations;
 
     public GeneralInformation(int primaryEntityStartPopulation, int secondaryEntityStartPopulation, PointCoord worldSize, LocalDateTime startOfSimulationDate, Termination termination, List<EntityToPopulation> entitiesToPopulations) {
         this.primaryEntityStartPopulation = primaryEntityStartPopulation;
         this.secondaryEntityStartPopulation = secondaryEntityStartPopulation;
-
+        this.isSimulationPaused = false;
         this.worldSize = worldSize;
         this.startOfSimulationDate = startOfSimulationDate;
         this.termination = termination;
@@ -91,5 +92,9 @@ public class GeneralInformation {
 
     public void setSimulationDone(boolean simulationDone) {
         isSimulationDone = simulationDone;
+    }
+
+    public boolean isSimulationPaused() {
+        return isSimulationPaused;
     }
 }

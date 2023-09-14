@@ -32,20 +32,41 @@ public class RuleComponentController {
         switch(DtoActionResponse.getActionName().toLowerCase()){
             case "increase":
             case "decrease":
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Action property: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText("By: " + DtoActionResponse.getActionValue());
+                this.actionArg2.setText("");
+                this.ActionElse.setText("");
+                break;
             case "set":
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Action property: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText("Value: " + DtoActionResponse.getActionValue());
+                this.actionArg2.setText("");
+                this.ActionElse.setText("");
+                break;
             case "replace":
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionEntity.setText("Entity to Kill: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Entity to create: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("In mode: " + DtoActionResponse.getActionValue());
+                this.actionValue.setText("");
+                this.actionArg2.setText("");
+                this.ActionElse.setText("");
+                break;
             case "proximity":
-                this.actionName.setText(DtoActionResponse.getActionName());
-                this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
-                this.EntitySecond.setText(DtoActionResponse.getSecEntityName());
-                this.actionProperty.setText(DtoActionResponse.getActionProperty());
-                this.actionValue.setText(DtoActionResponse.getActionValue());
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionProperty.setText("Action property: " + DtoActionResponse.getActionProperty());
                 this.actionArg2.setText("");
                 this.ActionElse.setText("");
                 break;
             case "kill":
-                this.actionName.setText(DtoActionResponse.getActionName());
-                this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionEntity.setText("Entity to kill: " + DtoActionResponse.getPrimEntityName());
                 this.EntitySecond.setText("");
                 this.actionProperty.setText("");
                 this.actionValue.setText("");
@@ -55,7 +76,7 @@ public class RuleComponentController {
             case "calculation divide":
             case "calculation multiply":
             case "single condition":
-                this.actionName.setText(DtoActionResponse.getActionName());
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
                 this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
                 this.EntitySecond.setText(DtoActionResponse.getSecEntityName());
                 this.actionProperty.setText(DtoActionResponse.getActionProperty());
@@ -64,7 +85,7 @@ public class RuleComponentController {
                 this.ActionElse.setText("");
                 break;
             case "multiple condition":
-                this.actionName.setText(DtoActionResponse.getActionName());
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
                 this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
                 this.EntitySecond.setText(DtoActionResponse.getSecEntityName());
                 this.actionProperty.setText(DtoActionResponse.getActionProperty());

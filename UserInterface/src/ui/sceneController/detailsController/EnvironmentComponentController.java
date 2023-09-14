@@ -21,8 +21,8 @@ public class EnvironmentComponentController {
             return;
         }
         PropertyDefinition propertyDefinition = environmentDefinition.getEnvPropertyDefinition();
-        envName.setText(propertyDefinition.getPropertyName());
-        envType.setText(propertyDefinition.getPropertyType());
+        envName.setText("Environment property name: " + propertyDefinition.getPropertyName());
+        envType.setText("Environment property type: " + propertyDefinition.getPropertyType());
         if (propertyDefinition.getPropertyRange() == null) {
             envRange.setText("");
         }

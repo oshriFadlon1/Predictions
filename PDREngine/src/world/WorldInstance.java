@@ -28,10 +28,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class WorldInstance implements Serializable, Runnable {
-    // map<String, Integer> population;
-    // from name of entity to number of population
-    // save with prefix start to set the start population
-    // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
     private List<EntityDefinition> entityDefinitions;
@@ -68,19 +64,6 @@ public class WorldInstance implements Serializable, Runnable {
         this.isPaused = false;
         this.isStopped = false;
     }
-
-//    public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, PointCoord worldSize, WorldDefinition worldDefinitionForSimulation){
-//        this.allEnvironments = allEnvironments;
-//        this.worldSize = worldSize;
-//        this.physicalSpace = new WorldPhysicalSpace(worldSize);
-//        this.worldDefinitionForSimulation = worldDefinitionForSimulation;
-//        this.allEntities = new HashMap<>();
-//        this.allRules = new ArrayList<>();
-//        this.entitiesToKillAndReplace = new ArrayList<>();
-//        this.entitiesToKill = new ArrayList<>();
-//        idOfSimulation++;
-//        this.startOfSimulationDate = LocalDateTime.now();
-//    }
 
 
     public GeneralInformation getInformationOfWorld() {
@@ -142,54 +125,12 @@ public class WorldInstance implements Serializable, Runnable {
         }
     }
 
-//    public void addEnvironment(EnvironmentInstance environmentDataMember) throws GeneralException {
-//        if(this.allEnvironments.containsKey(environmentDataMember.getEnvironmentDefition().getPropertyName()))
-//        {
-//            throw new GeneralException("Current environment already exists");
-//        }
-//
-//        this.allEnvironments.put(environmentDataMember.getEnvPropertyDefinition().getPropertyName(), environmentDataMember);
-//    }
           //dto response of ending simulation
        public void runSimulation() throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
         initializeAllEntityInstancesLists();
 
-//        initializing all entity instances
-        //List<EntityDefinition> allEntityDefinitions = worldDefinitionForSimulation.getEntityDefinitions();
-//        for(EntityToPopulation currentEntityToPopulation: this.getInformationOfWorld().getEntitiesToPopulations()){
-//            String entityDefName = currentEntityToPopulation.getCurrEntityDef().getEntityName();
-//            if(currentEntityToPopulation.getCurrEntityPopulation() == 0){
-//                this.allEntities.put(entityDefName, new ArrayList<>());
-//                continue;
-//            }
-//
-//            for(int i = 0; i < currentEntityToPopulation.getCurrEntityPopulation(); i++){
-//                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityToPopulation.getCurrEntityDef(), i);
-//                if(i == 0){
-//                    this.allEntities.put(entityDefName, new ArrayList<>());
-//                }
-//
-//                this.allEntities.get(entityDefName).add(newEntityInstance);
-//                this.physicalSpace.putEntityInWorld(newEntityInstance);
-//            }
-//        }
-//        for(EntityDefinition currentEntityDefinition: this.entityDefinitions){
-//            String entityDefinitionName = currentEntityDefinition.getEntityName();
-//            if(this.primaryEntityPopulation == 0){
-//                allEntities.put(entityDefinitionName, new ArrayList<>());
-//                continue;
-//            }
-//            for (int i = 0; i < currentEntityDefinition.getStartPopulation(); i++) {
-//                EntityInstance newEntityInstance = initializeEntityInstanceAccordingToEntityDefinition(currentEntityDefinition, i);
-//                if (i == 0){
-//                    allEntities.put(entityDefinitionName,new ArrayList<>());
-//                }
-//                allEntities.get(entityDefinitionName).add(newEntityInstance);
-//                this.physicalSpace.putEntityInWorld(newEntityInstance);
-//            }
-//        }
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
 //        this.allRules = worldDefinitionForSimulation.getRules();
@@ -319,6 +260,7 @@ public class WorldInstance implements Serializable, Runnable {
             }
             killAllEntities();
             killAndReplaceAllEntities();
+            checkAllPropertyInstancesIfChanged();
             this.entitiesToKillAndReplace.clear();;
             this.entitiesToKill.clear();
             this.currentTick++;
@@ -334,20 +276,27 @@ public class WorldInstance implements Serializable, Runnable {
             endedBySeconds = true;
         }
 
-//        for(String currentEntityName: allEntities.keySet()){
-//
-//            for(EntityInstance entityInstance:allEntities.get(currentEntityName)){
-//                System.out.println(entityInstance.getId());
-//                for(String propName: entityInstance.getAllProperties().keySet()){
-//                    System.out.println(entityInstance.getAllProperties().get(propName));
-//                }
-//
-//            }
-//        }
-
         DtoResponseTermination responseOfSimulation = new DtoResponseTermination(endedByTicks, endedBySeconds);
         //return responseOfSimulation;
 
+    }
+
+    private void checkAllPropertyInstancesIfChanged() {
+        for(String currEntityName: this.allEntities.keySet()){
+            List<EntityInstance> currentEntityInstancesList = this.allEntities.get(currEntityName);
+            for(EntityInstance currentEntityInstance: currentEntityInstancesList){
+                for(String currentPropertyInstanceName: currentEntityInstance.getAllProperties().keySet()){
+                    PropertyInstance currentPropertyInstance = currentEntityInstance.getAllProperties().get(currentPropertyInstanceName);
+                    if(!currentPropertyInstance.getIsPropertyChangedInCurrTick()){
+                        currentPropertyInstance.increaseTick();
+                    }
+                    else{
+                        currentPropertyInstance.setIsPropertyChangedInCurrTick(false);
+                        currentPropertyInstance.resetTicksToZero();
+                    }
+                }
+            }
+        }
     }
 
     private void initializeAllEntityInstancesLists() throws GeneralException{

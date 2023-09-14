@@ -52,10 +52,15 @@ public class MainEngine implements InterfaceMenu {
     }
 
     public DtoResponsePreview previewWorldInfo(){
-
-        return new DtoResponsePreview(getEnvironmentsInfo(), getEntitiesInfoSimulation(),getRulesInfoSimulation() ,
+        return new DtoResponsePreview(getEnvironmentsInfo(), getEntitiesInfoSimulation(),getRulesInfoSimulation(),
                 new DtoResponsePreviewTermination(worldDefinitionForSimulation.getTermination().getTicks(),
                         worldDefinitionForSimulation.getTermination().getSeconds()));
+    }
+
+    public void clearAllInformation(){
+        if(this.simulationExecutionerManager != null) {
+            this.simulationExecutionerManager.clearInformation();
+        }
     }
 
     private DtoEnvironments getEnvironmentsInfo() {
@@ -85,9 +90,8 @@ public class MainEngine implements InterfaceMenu {
                     propertyDefinitionEntityList.add(new PropertyDefinitionEntity(
                             new PropertyDefinition(propertyDefinitionEntity.getPropertyDefinition().getPropertyName(),
                                     propertyDefinitionEntity.getPropertyDefinition().getPropertyType(),
-                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyRange()!=null?
-                                            new Range(propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getFrom(),
-                                                    propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getTo()):null),
+                                    new Range(propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getFrom(),
+                                            propertyDefinitionEntity.getPropertyDefinition().getPropertyRange().getTo())),
                             new Value(propertyDefinitionEntity.getPropValue().getRandomInit(),
                                     propertyDefinitionEntity.getPropValue().getInit())));
                 }
@@ -182,6 +186,12 @@ public class MainEngine implements InterfaceMenu {
         this.simulationExecutionerManager.stopCurrentSimulation(simulationId);
     }
 
+    @Override
+    public DtoQueueManagerInfo getQueueManagerInfo() {
+        DtoQueueManagerInfo simulationsStateManager = this.simulationExecutionerManager.getQueueManagerInfo();
+        return simulationsStateManager;
+    }
+
     private List<EntityToPopulation> createEntitiesToPopulationList(DtoUiToEngine inputFromUser) {
         List<EntityToPopulation> entitiesToPopulationList = new ArrayList<>();
         List<EntityDefinition> entityDefsList = this.worldDefinitionForSimulation.getEntityDefinitions();
@@ -204,42 +214,16 @@ public class MainEngine implements InterfaceMenu {
         Map<String, EnvironmentInstance> allEnvIns = new HashMap<>();
         for(String envName: environmentsForEngine.keySet()){
             EnvironmentDefinition currEnvDef = allEnvDefs.get(envName);
-            allEnvIns.put(envName, new EnvironmentInstance(currEnvDef, environmentsForEngine.get(envName)));
+            allEnvIns.put(envName, new EnvironmentInstance(currEnvDef.createCloneOfEnvironmentDefinition(), environmentsForEngine.get(envName)));
         }
 
         return allEnvIns;
     }
 
-    //func 4
-//    @Override
-//    public DtoOldSimulationsMap getMapOfOldSimulation() {
-//        return new DtoOldSimulationsMap(this.simulationId2CurrentTimeAndDate);
-//    }
-
     @Override
     public DtoSimulationDetails fetchChosenWorld(int userSimulationChoice) {
-//        Map<String, EntityDefinition> entityDefsAvailable = new HashMap<>();
-//        for(EntityDefinition currEntDef: this.worldDefinitionForSimulation.getEntityDefinitions()){
-//            entityDefsAvailable.put(currEntDef.getEntityName(), currEntDef);
-//        }
-//
-//        List<DtoReviewOldSimulation> resultOfOldSimulation = new ArrayList<>();
-        // fetch the required world
         DtoSimulationDetails currentChosenSimulation = this.simulationExecutionerManager.getSimulationById(userSimulationChoice);
         return currentChosenSimulation;
-//        //WorldInstance worldInstance = this.simulationExecutionerManager.getSimulationById(userSimulationChoice);
-//
-//        for (String nameOfEntity: worldInstance.getAllEntities().keySet()) {
-//            List<EntityInstance> entityInstances = worldInstance.getAllEntities().get(nameOfEntity);
-//            EntityDefinition currentEntityDefinition = entityDefsAvailable.get(nameOfEntity);
-//            if (entityInstances.size() != 0)
-//            {
-//                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, entityInstances));
-//            } else {
-//                resultOfOldSimulation.add(new DtoReviewOldSimulation(currentEntityDefinition, new ArrayList<>()));
-//            }
-//        }
-//        return resultOfOldSimulation;
     }
 
     public DtoEnvironments sendEnvironmentsToUser(){
@@ -252,10 +236,6 @@ public class MainEngine implements InterfaceMenu {
     public Object initializeRandomEnvironmentValues(PropertyDefinition propertyDef){
         Object initVal = null;
         switch(propertyDef.getPropertyType().toLowerCase()){
-//            case "decimal":
-//                int initEnvValInt = Utilities.initializeRandomInt((int)propertyDef.getPropertyRange().getFrom(), (int)propertyDef.getPropertyRange().getTo());
-//                initVal = initEnvValInt;
-//                break;
             case "float":
                 float initEnvValFloat = Utilities.initializeRandomFloat(propertyDef.getPropertyRange());
                 initVal = initEnvValFloat;
@@ -276,17 +256,6 @@ public class MainEngine implements InterfaceMenu {
 
     public boolean validateUserEnvInput(String userInput, PropertyDefinition propDef){
         switch(propDef.getPropertyType().toLowerCase()){
-            case "decimal":
-                if(!Utilities.isInteger(userInput)){
-                    return false;
-                }
-                else{
-                    int valueOfInputInt = Integer.parseInt(userInput);
-                    if(!(valueOfInputInt >= propDef.getPropertyRange().getFrom() && valueOfInputInt <= propDef.getPropertyRange().getTo())){
-                        return false;
-                    }
-                }
-                break;
             case "float":
                 if(!Utilities.isFloat(userInput)){
                     return false;
@@ -313,10 +282,6 @@ public class MainEngine implements InterfaceMenu {
     public Object initializeValueFromUserInput(String userInput, PropertyDefinition propDef){
         Object initVal = null;
         switch(propDef.getPropertyType().toLowerCase()){
-            case "decimal":
-                int initInt = Integer.parseInt(userInput);
-                initVal = initInt;
-                break;
             case "float":
                 float initFloat = Float.parseFloat(userInput);
                 initVal = initFloat;
@@ -338,46 +303,4 @@ public class MainEngine implements InterfaceMenu {
     public SimulationExecutionerManager getExecutionsManager() {
         return this.simulationExecutionerManager;
     }
-
-//    @Override
-//    public DtoResponse saveWorldState(String stringPath){
-//        String path = stringPath+".dat";
-//        try (ObjectOutputStream out =
-//                     new ObjectOutputStream(
-//                             new FileOutputStream(path))) {
-//            out.writeObject(new DtoWorldState(this.worldDefinitionForSimulation,
-//                    this.oldSimulation,
-//                    this.simulationId2CurrentTimeAndDate));
-//            out.flush();
-//        }
-//        catch (IOException ex){
-//            return new DtoResponse("Failed to save the simulation from current path.", false);
-//        }
-//
-//        return new DtoResponse("The Simulation saved succesfully", true);
-//    }
-//
-//    @Override
-//    public DtoResponse loadWorldState(String stringPath){
-//        String path = stringPath+".dat";
-//        try (ObjectInputStream in =
-//                     new ObjectInputStream(
-//                             new FileInputStream(path))) {
-//            DtoWorldState worldState =
-//                    (DtoWorldState) in.readObject();
-//            if (worldState != null){
-//                this.worldDefinitionForSimulation = worldState.getWorldDefinitionForSimulation();
-//                this.oldSimulation = worldState.getOldSimulation();
-//                this.simulationId2CurrentTimeAndDate = worldState.getSimulationId2CurrentTimeAndDate();
-//            }
-//        }
-//
-//        catch(IOException | ClassNotFoundException ex)
-//        {
-//            return new DtoResponse("Failed to load the simulation from current path.", false);
-//        }
-//        return new DtoResponse("The Simulation was loaded succesfully", true);
-//    }
-
-
 }
