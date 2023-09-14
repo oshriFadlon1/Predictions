@@ -28,10 +28,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class WorldInstance implements Serializable, Runnable {
-    // map<String, Integer> population;
-    // from name of entity to number of population
-    // save with prefix start to set the start population
-    // and End to set the end population.
     private Map<String, EnvironmentInstance> allEnvironments;
     private Map<String,List<EntityInstance>> allEntities;
     private List<EntityDefinition> entityDefinitions;

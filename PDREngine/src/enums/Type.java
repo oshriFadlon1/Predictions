@@ -13,7 +13,7 @@ public enum Type {
         boolean getValue(String value){return value.toLowerCase().equals("true")||value.toLowerCase().equals("False");}
     },
     STRING{
-        String  getValue(String value) {return value;}
+        String getValue(String value) {return value;}
     };
 
     public Integer convertInt(Object propValue) {

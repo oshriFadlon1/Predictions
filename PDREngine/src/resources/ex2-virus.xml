@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PRD-world xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="predictions-v2.xsd">
-	<PRD-thread-count>1</PRD-thread-count>
+	<PRD-thread-count>2</PRD-thread-count>
 	<PRD-environment>
 		<PRD-env-property type="float">
 			<PRD-name>infection-proximity</PRD-name>

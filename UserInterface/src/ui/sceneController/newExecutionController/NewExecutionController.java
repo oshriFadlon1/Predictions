@@ -358,5 +358,11 @@ public class NewExecutionController implements Initializable{
     public void setSceneMenu(SceneMenu sceneMenu) {
         this.sceneMenu = sceneMenu;
     }
+
+    public void clearScreen(){
+        this.obsListEntities.clear();
+        this.obsListEnvironments.clear();
+        this.obsListEnvironmentsBefore.clear();
+    }
 }
 

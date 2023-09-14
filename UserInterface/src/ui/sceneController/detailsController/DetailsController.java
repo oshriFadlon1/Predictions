@@ -84,15 +84,19 @@ public class DetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         TreeItem<String> rootItem = new TreeItem<>(world);
+        addBasicTreeItems(rootItem);
+        treeView.setRoot(rootItem);
+        treeView.setEditable(true);
+        treeView.setShowRoot(false);
+    }
+
+    private void addBasicTreeItems(TreeItem<String> rootItem) {
         TreeItem<String> Env = new TreeItem<>(environment);
         TreeItem<String> Ent = new TreeItem<>(entities);
         TreeItem<String> Rule = new TreeItem<>(rules);
         TreeItem<String> Term = new TreeItem<>(general);
 
         rootItem.getChildren().addAll(Env, Ent,Rule, Term);
-        treeView.setRoot(rootItem);
-        treeView.setEditable(true);
-        treeView.setShowRoot(false);
     }
 
     public void SelectedItem(){
@@ -199,5 +203,10 @@ public class DetailsController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clearScreen() {
+        this.treeView.getRoot().getChildren().clear();
+        addBasicTreeItems(this.treeView.getRoot());
     }
 }
