@@ -1,5 +1,6 @@
 package ui.sceneController;
 
+import dto.DtoQueueManagerInfo;
 import dto.DtoResponse;
 import dto.DtoResponsePreview;
 import engine.MainEngine;
@@ -129,8 +130,19 @@ public class SceneMenu implements Initializable {
     }
 
     public void navigateToResultTab() {
-        this.resultsController.fetchAllSimulations();
         this.tabPaneManager.getSelectionModel().select(tabOfResults);
+        new Thread(()->{
+            while(this.interfaceMenu.getAllSimulations().getMapOfAllSimulations().size() >= 1) {
+                Platform.runLater(()-> {
+                    this.resultsController.fetchAllSimulations();
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 
     public void navigateToNewExecutionTab(){

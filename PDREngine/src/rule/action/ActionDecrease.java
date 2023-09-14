@@ -65,6 +65,7 @@ public class ActionDecrease extends AbstractAction implements Serializable {
 
         // updating result on the property
         propertyInstance.setPropValue(result);
+        propertyInstance.setIsPropertyChangedInCurrTick(true);
     }
 
     @Override

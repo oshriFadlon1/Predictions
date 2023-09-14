@@ -8,6 +8,7 @@ public class PropertyInstance implements Serializable {
     private int currentTicksWithoutChange;
     private int numberOfReset;
     private int totalTickWithoutChange;
+    private boolean isPropertyChangedInCurrTick;
 
     public PropertyInstance(PropertyDefinition propertyDefinition, Object propValue) {
         this.propertyDefinition = propertyDefinition.getCopyOfPropertyDefinition();
@@ -15,6 +16,7 @@ public class PropertyInstance implements Serializable {
         this.currentTicksWithoutChange = 0;
         this.numberOfReset = 0;
         this.totalTickWithoutChange = 0;
+        this.isPropertyChangedInCurrTick = false;
     }
 
     public PropertyInstance(PropertyDefinition propertyDefinition) {
@@ -67,6 +69,14 @@ public class PropertyInstance implements Serializable {
 
     public void setCurrentTicksWithoutChange(int currentTicksWithoutChange) {
         this.currentTicksWithoutChange = currentTicksWithoutChange;
+    }
+
+    public void setIsPropertyChangedInCurrTick(boolean value){
+        this.isPropertyChangedInCurrTick = value;
+    }
+
+    public boolean getIsPropertyChangedInCurrTick(){
+        return this.isPropertyChangedInCurrTick;
     }
 
     public float calculateAvgTicksWithoutChange(){

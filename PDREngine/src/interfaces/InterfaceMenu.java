@@ -42,4 +42,8 @@ public interface InterfaceMenu {
     void resumeCurretnSimulation(int simulationId);
 
     void stopCurrentSimulation(int simulationId);
+
+    DtoQueueManagerInfo getQueueManagerInfo();
+
+    void clearAllInformation();
 }

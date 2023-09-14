@@ -54,6 +54,7 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
         // updating result on the property
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement());
         propertyInstance.setPropValue(result);
+        propertyInstance.setIsPropertyChangedInCurrTick(true);
     }
 
     @Override

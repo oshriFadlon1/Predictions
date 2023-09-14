@@ -119,13 +119,22 @@ public class ResultsController implements Initializable {
     }
 
     public void fetchAllSimulations() {
-        this.obsListSimulations.clear();
+        //this.obsListSimulations.clear();
         DtoAllSimulationDetails allCurrentSimulations = this.interfaceMenu.getAllSimulations();
         Map<Integer, Boolean> simulationToIsRunningMap = allCurrentSimulations.getMapOfAllSimulations();
         for(int currId: simulationToIsRunningMap.keySet()){
             SimulationPresenter currSimulationToAdd = new SimulationPresenter(currId, simulationToIsRunningMap.get(currId));
             this.obsListSimulations.add(currSimulationToAdd);
         }
+    }
+
+    private SimulationPresenter checkIfSimulationExists(int currId) {
+        for(SimulationPresenter currSimulation: this.obsListSimulations){
+            if(currId == currSimulation.getSimulationId()){
+                return currSimulation;
+            }
+        }
+        return null;
     }
 
     public void onPausePressed(){

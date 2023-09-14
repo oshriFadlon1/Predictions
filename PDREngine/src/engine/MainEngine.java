@@ -58,6 +58,12 @@ public class MainEngine implements InterfaceMenu {
                         worldDefinitionForSimulation.getTermination().getSeconds()));
     }
 
+    public void clearAllInformation(){
+        if(this.simulationExecutionerManager != null) {
+            this.simulationExecutionerManager.clearInformation();
+        }
+    }
+
     private DtoEnvironments getEnvironmentsInfo() {
         return new DtoEnvironments(this.worldDefinitionForSimulation.getAllEnvironments());
     }
