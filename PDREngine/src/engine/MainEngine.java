@@ -52,7 +52,7 @@ public class MainEngine implements InterfaceMenu {
     }
 
     public DtoResponsePreview previewWorldInfo(){
-        return new DtoResponsePreview(getEnvironmentsInfo(), getEntitiesInfoSimulation(),getRulesInfoSimulation(),
+        return new DtoResponsePreview(this.worldDefinitionForSimulation.getWorldSize().getRow(), this.worldDefinitionForSimulation.getWorldSize().getCol(), getEnvironmentsInfo(), getEntitiesInfoSimulation(),getRulesInfoSimulation(),
                 new DtoResponsePreviewTermination(worldDefinitionForSimulation.getTermination().getTicks(),
                         worldDefinitionForSimulation.getTermination().getSeconds()));
     }

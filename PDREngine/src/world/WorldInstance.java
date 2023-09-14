@@ -125,8 +125,8 @@ public class WorldInstance implements Serializable, Runnable {
         }
     }
 
-          //dto response of ending simulation
-       public void runSimulation() throws GeneralException{
+    //dto response of ending simulation
+    public void runSimulation() throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
         initializeAllEntityInstancesLists();
