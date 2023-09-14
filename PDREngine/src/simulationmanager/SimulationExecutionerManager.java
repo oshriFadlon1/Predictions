@@ -97,7 +97,16 @@ public class SimulationExecutionerManager {
     }
 
     public void resumeCurrentSimulation(int simulationId) {
-        this.idToSimulationMap.get(simulationId).setPaused(false);
+        if (this.idToSimulationMap.get(simulationId).isPaused()){
+            synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
+                if (this.idToSimulationMap.get(simulationId).isPaused()){
+                    this.idToSimulationMap.get(simulationId).setCurrentTimeResume(System.currentTimeMillis());
+                    this.idToSimulationMap.get(simulationId).getLockForSyncPause().notify();
+                    this.idToSimulationMap.get(simulationId).setPaused(false);
+                }
+            }
+        }
+
     }
 
     public void stopCurrentSimulation(int simulationId) {
