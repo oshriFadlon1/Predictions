@@ -20,8 +20,7 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
     private EntityInstance primaryEntityInstance;
     private EntityInstance secondaryEntityInstance;
     private EntityDefinition secondaryEntityDefinition;
-    private List<EntityInstance> secondaryInstanceManager;
-    private List<EntityInstance> entityInstanceManager;
+    private List<EntityDefinition> entityDefinitions;
 
     private Map<String, EnvironmentInstance> activeEnvironment;
 
@@ -32,20 +31,20 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
 
     public NecessaryVariablesImpl(EntityInstance primaryEntityInstance, List<EntityInstance> entityInstanceManager, Map<String, EnvironmentInstance> activeEnvironment) {
         this.primaryEntityInstance = primaryEntityInstance;
-        this.entityInstanceManager = entityInstanceManager;
         this.activeEnvironment = activeEnvironment;
         this.entityToKillAndCreate = new CreateAndKillEntities();
+        this.entityDefinitions = new ArrayList<>();
         this.entityToKill = null;
         this.worldPhysicalSpace = null;
     }
 
     public NecessaryVariablesImpl(Map<String, EnvironmentInstance> activeEnvironment) {
         this.activeEnvironment = activeEnvironment;
-        this.entityInstanceManager = new ArrayList<>();
         this.primaryEntityInstance = null;//not sure yet
         this.entityToKillAndCreate= new CreateAndKillEntities();
         this.entityToKill = null;
         this.worldPhysicalSpace = null;
+        this.entityDefinitions = new ArrayList<>();
     }
 
     public void setPrimaryEntityInstance(EntityInstance primaryEntityInstance) {
@@ -60,12 +59,12 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         this.secondaryEntityDefinition = secondaryEntityDefinition;
     }
 
-    public List<EntityInstance> getEntityInstanceManager() {
-        return entityInstanceManager;
+    public List<EntityDefinition> getEntityDefinitions() {
+        return entityDefinitions;
     }
 
-    public void setEntityInstanceManager(List<EntityInstance> entityInstanceManager) {
-        this.entityInstanceManager = entityInstanceManager;
+    public void setEntityDefinitions(List<EntityDefinition> entityDefinitions) {
+        this.entityDefinitions = entityDefinitions;
     }
 
     public Map<String, EnvironmentInstance> getActiveEnvironment() {
@@ -106,13 +105,13 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
         this.entityToKill = entityToKill;
     }
 
-    public List<EntityInstance> getSecondaryInstanceManager() {
-        return secondaryInstanceManager;
-    }
-
-    public void setSecondaryInstanceManager(List<EntityInstance> secondaryInstanceManager) {
-        this.secondaryInstanceManager = secondaryInstanceManager;
-    }
+//    public List<EntityInstance> getSecondaryInstanceManager() {
+//        return secondaryInstanceManager;
+//    }
+//
+//    public void setSecondaryInstanceManager(List<EntityInstance> secondaryInstanceManager) {
+//        this.secondaryInstanceManager = secondaryInstanceManager;
+//    }
 
     public WorldPhysicalSpace getWorldPhysicalSpace() {
         return worldPhysicalSpace;
@@ -124,15 +123,15 @@ public class NecessaryVariablesImpl implements NecessaryVariables, Serializable 
 
     @Override
     public void removeEntity(EntityInstance entityInstance) {
-        EntityInstance entityToRemove = null;
-        for (EntityInstance instance: entityInstanceManager) {
-            if (instance.getId() == entityInstance.getId()){
-                entityToRemove = instance;
-                break;
-            }
-        }
+//        EntityInstance entityToRemove = null;
+//        for (EntityInstance instance: entityInstanceManager) {
+//            if (instance.getId() == entityInstance.getId()){
+//                entityToRemove = instance;
+//                break;
+//            }
+//        }
         // the entity removes himself from the list and updates the quantity
-        entityToKill = entityToRemove;
+        entityToKill = entityInstance;
 //        entityToRemove.getDefinitionOfEntity().setEndPopulation(entityToRemove.getDefinitionOfEntity().getEndPopulation() - 1);
 //        entityInstanceManager.remove(entityToRemove);
     }

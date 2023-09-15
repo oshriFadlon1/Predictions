@@ -149,8 +149,9 @@ public class WorldInstance implements Serializable, Runnable {
 
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
-//        this.allRules = worldDefinitionForSimulation.getRules();
-//        this.termination = worldDefinitionForSimulation.getTermination();
+        for (EntityDefinition entityDefinition:this.entityDefinitions) {
+            necessaryVariables.getEntityDefinitions().add(entityDefinition);
+        }
         Termination currentTermination = this.informationOfWorld.getTermination();
 
         int currentTickCount = 0;
@@ -175,39 +176,112 @@ public class WorldInstance implements Serializable, Runnable {
                 continue;
             }
 
+            moveAllEntitiesInPhysicalWorld();
 
-            for(String currentEntityName: allEntities.keySet()){
-                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-                moveAllInstances(currentEntityInstanceList);
-            }
 
-            for(Rule currentRuleToInvokeOnEntities: this.allRules){
-                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
+            List<IAction> activeActionsInCurrentTick = new ArrayList<>();
+            for (Rule rule : this.allRules ) {
                 float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
-                ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
+                ActivationForRule activitionForCurrentRule = rule.getActivation();
                 int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
                 float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
                 if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
                         && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
-                    //need to invoke the rule for each entity instance
-                    for (String currentEntityName: allEntities.keySet()) {
-                        // the current list of entity instances from the map
-                        List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-                        // set the list of entities to the "context" object to invoke
-                        necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
-                        // create a copy of the entity instance list to run on it.
-                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
-                        // get secondary entities
-
-                        // invoke each action on each entity
-                        invokeActionsOnEntityInstances(necessaryVariables, allActionsForCurrentRule, copyOfEntityInstancesList);
+                    for (IAction action: rule.getActions()) {
+                        activeActionsInCurrentTick.add(action);
                     }
                 }
             }
+
+            for (String entityName:this.allEntities.keySet()) {
+                List<EntityInstance> listOfEntityInstance = this.allEntities.get(entityName);
+                for (EntityInstance entityInstance: listOfEntityInstance ) {
+                    for (IAction action:activeActionsInCurrentTick) {
+                        if (action.getContextEntity().getEntityName().equalsIgnoreCase(entityInstance.getDefinitionOfEntity().getEntityName())){
+                            if (action.getSecondaryEntity() != null){
+                                // TODO GET ENTITIES SECONDARY INSTANCES FOR CURRENT ACTION AND ACTIVATE IT
+                                SecondEntity secondaryEntity = action.getSecondaryEntity();
+                                List<EntityInstance> secondaryEntityInstances;
+                                List<EntityInstance> filteredSecondaryEntityInstances;
+                                // we hava all the entity instances that we need
+                                if(secondaryEntity.getCondition() != null){
+                                    secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondaryEntity.getEntity().getEntityName()), secondaryEntity.getCondition(), necessaryVariables);
+                                }
+                                else{
+                                    secondaryEntityInstances = this.allEntities.get(secondaryEntity.getEntity().getEntityName());
+                                }
+
+                                if(!secondaryEntity.getCount().equalsIgnoreCase("all")){
+                                   filteredSecondaryEntityInstances =  getSecondaryInstancesByNumber(secondaryEntityInstances, secondaryEntity.getCount());
+                                }
+                                else{
+                                    filteredSecondaryEntityInstances = secondaryEntityInstances;
+                                }
+
+                                for(EntityInstance currentSecondaryEntityInstance: filteredSecondaryEntityInstances){
+                                    necessaryVariables.setSecondaryEntityInstance(currentSecondaryEntityInstance);
+                                    action.invoke(necessaryVariables);
+                                    if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
+                                        this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                        break;
+                                    }
+                                    if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                            necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                        this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                        break;
+                                    }
+                                }
+
+                            }
+                            else{
+                                // i have a physical world + environment + entity instance primary no need for secondary
+                                necessaryVariables.setPrimaryEntityInstance(entityInstance);
+                                action.invoke(necessaryVariables);
+                                if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
+                                    this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                    break;
+                                }
+                                if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                        necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                    this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                    break;
+                                }
+                            }
+                        }
+                        necessaryVariables.resetKillAndCreateAndKill();
+                    }
+                }
+            }
+            
+
+//            for(Rule currentRuleToInvokeOnEntities: this.allRules){
+//                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
+//                float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
+//                ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
+//                int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
+//                float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
+//                if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
+//                        && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
+//                    //need to invoke the rule for each entity instance
+//                    for (String currentEntityName: allEntities.keySet()) {
+//                        // the current list of entity instances from the map
+//                        List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+//                        // set the list of entities to the "context" object to invoke
+//                        necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
+//                        // create a copy of the entity instance list to run on it.
+//                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
+//                        // get secondary entities
+//
+//                        // invoke each action on each entity
+//                        invokeActionsOnEntityInstances(necessaryVariables, allActionsForCurrentRule, copyOfEntityInstancesList);
+//                    }
+//                }
+//            }
+
             killAllEntities();
             killAndReplaceAllEntities();
             checkAllPropertyInstancesIfChanged();
-            this.entitiesToKillAndReplace.clear();;
+            this.entitiesToKillAndReplace.clear();
             this.entitiesToKill.clear();
             this.currentTick++;
 
@@ -218,6 +292,13 @@ public class WorldInstance implements Serializable, Runnable {
         }
 
         this.timeFinished = System.currentTimeMillis();
+    }
+
+    private void moveAllEntitiesInPhysicalWorld() {
+        for(String currentEntityName: allEntities.keySet()){
+            List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+            moveAllInstances(currentEntityInstanceList);
+        }
     }
 
     private void invokeActionsOnEntityInstances(NecessaryVariablesImpl necessaryVariables, List<IAction> allActionsForCurrentRule, List<EntityInstance> copyOfEntityInstancesList) throws GeneralException {
