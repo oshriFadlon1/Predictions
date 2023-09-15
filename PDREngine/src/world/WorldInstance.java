@@ -41,6 +41,7 @@ public class WorldInstance implements Serializable, Runnable {
     private int currentTick;
     private long currentTimePassed;
     private long currentTimeStarted;
+    private long timeFinished;
     private boolean isPaused;
     private boolean isStopped;
 
@@ -60,9 +61,9 @@ public class WorldInstance implements Serializable, Runnable {
         this.secondaryEntityPopulation = informationOfWorld.getSecondaryEntityStartPopulation();
         this.currentTick = 0;
         this.currentTimePassed = 0;
-        this.currentTimeStarted = System.currentTimeMillis();
         this.isPaused = false;
         this.isStopped = false;
+        this.currentTimeStarted = -1;
     }
 
 
@@ -142,6 +143,7 @@ public class WorldInstance implements Serializable, Runnable {
         long timeStarted = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
         List<String> entityNamesForChecking = new ArrayList<>();
+        this.currentTimeStarted = System.currentTimeMillis();
 
         while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(currentTime - timeStarted)/*worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
                 worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)*/ && !isStopped){
@@ -268,6 +270,9 @@ public class WorldInstance implements Serializable, Runnable {
             this.currentTimePassed = (currentTime - timeStarted) / 1000;
 
         }
+
+        this.timeFinished = System.currentTimeMillis();
+        this.isStopped = true;
 
         if(currentTermination.getTicks() <= currentTick/*worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount*/){
             endedByTicks = true;
@@ -531,6 +536,15 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public long getCurrentTimePassed() {
-        return this.currentTimePassed;
+        if(this.currentTimeStarted != -1) {
+            if (!isStopped) {
+                return (System.currentTimeMillis() - this.currentTimeStarted) / 1000;
+            } else {
+                return (this.timeFinished - this.currentTimeStarted) / 1000;
+            }
+        }
+        else{
+            return 0;
+        }
     }
 }

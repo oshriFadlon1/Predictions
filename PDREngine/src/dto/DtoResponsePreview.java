@@ -12,12 +12,12 @@ public class DtoResponsePreview {
     private DtoResponsePreviewTermination dtoResponseTermination;
     private PointCoord worldSize;
 
-    public DtoResponsePreview(DtoEnvironments dtoEnvironments, List<DtoResponseEntities> dtoResponseEntities, List<DtoResponseRules> dtoResponseRules, DtoResponsePreviewTermination dtoResponseTermination) {
+    public DtoResponsePreview(int rows, int cols, DtoEnvironments dtoEnvironments, List<DtoResponseEntities> dtoResponseEntities, List<DtoResponseRules> dtoResponseRules, DtoResponsePreviewTermination dtoResponseTermination) {
         this.dtoEnvironments = dtoEnvironments;
         this.dtoResponseEntities = dtoResponseEntities;
         this.dtoResponseRules = dtoResponseRules;
         this.dtoResponseTermination = dtoResponseTermination;
-        this.worldSize = new PointCoord(100,100);
+        this.worldSize = new PointCoord(rows, cols);
     }
 
     public List<DtoResponseEntities> getDtoResponseEntities() {
