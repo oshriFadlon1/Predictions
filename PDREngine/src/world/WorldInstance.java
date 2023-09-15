@@ -1,7 +1,6 @@
 package world;
 
 import createAndKillEntities.CreateAndKillEntities;
-import dto.DtoResponseTermination;
 import entity.EntityDefinition;
 import entity.EntityInstance;
 import entity.EntityToPopulation;
@@ -10,7 +9,6 @@ import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
-import pointCoord.PointCoord;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
@@ -40,10 +38,13 @@ public class WorldInstance implements Serializable, Runnable {
     private int secondaryEntityPopulation;
     private int currentTick;
     private long currentTimePassed;
+    private long currentTimeResume;
     private long currentTimeStarted;
     private long timeFinished;
-    private boolean isPaused;
-    private boolean isStopped;
+    private volatile boolean isPaused;
+    private volatile boolean isStopped;
+    private long deltaS;
+    private Object lockForSyncPause;
 
 
 
@@ -61,9 +62,11 @@ public class WorldInstance implements Serializable, Runnable {
         this.secondaryEntityPopulation = informationOfWorld.getSecondaryEntityStartPopulation();
         this.currentTick = 0;
         this.currentTimePassed = 0;
+        this.currentTimeResume = 0;
         this.isPaused = false;
         this.isStopped = false;
         this.currentTimeStarted = -1;
+        this.lockForSyncPause = new Object();
     }
 
 
@@ -115,6 +118,18 @@ public class WorldInstance implements Serializable, Runnable {
         this.allRules = allRules;
     }
 
+    public Object getLockForSyncPause() {
+        return lockForSyncPause;
+    }
+
+    public long getCurrentTimeResume() {
+        return currentTimeResume;
+    }
+
+    public void setCurrentTimeResume(long currentTimeResume) {
+        this.currentTimeResume = currentTimeResume;
+    }
+
     @Override
     public void run() {
         try {
@@ -126,16 +141,17 @@ public class WorldInstance implements Serializable, Runnable {
         }
     }
 
-          //dto response of ending simulation
-       public void runSimulation() throws GeneralException{
+    //dto response of ending simulation
+    public void runSimulation() throws GeneralException{
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
         initializeAllEntityInstancesLists();
 
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
-//        this.allRules = worldDefinitionForSimulation.getRules();
-//        this.termination = worldDefinitionForSimulation.getTermination();
+        for (EntityDefinition entityDefinition:this.entityDefinitions) {
+            necessaryVariables.getEntityDefinitions().add(entityDefinition);
+        }
         Termination currentTermination = this.informationOfWorld.getTermination();
 
         int currentTickCount = 0;
@@ -145,145 +161,211 @@ public class WorldInstance implements Serializable, Runnable {
         List<String> entityNamesForChecking = new ArrayList<>();
         this.currentTimeStarted = System.currentTimeMillis();
 
-        while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(currentTime - timeStarted)/*worldDefinitionForSimulation.getTermination().isTicksActive(currentTickCount) &&
-                worldDefinitionForSimulation.getTermination().isSecondsActive(currentTime - timeStarted)*/ && !isStopped){
-            if(isPaused){
-                long lastSavedSeconds = this.currentTimePassed;
-                int lastSavedTick = this.currentTick;
-                while(isPaused){
-                    try {
-                        Thread.sleep(100);
-                        if(!isPaused){
-
-                            this.currentTick = lastSavedTick;
-                            this.currentTimePassed = lastSavedSeconds;
-                            break;
+        while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(this.deltaS) && !isStopped){
+            if (isPaused){
+                synchronized (this.lockForSyncPause){
+                    if (isPaused){
+                        try {
+                            this.currentTimePassed = System.currentTimeMillis();
+                            this.lockForSyncPause.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
                         }
-                        else{
-                            isPaused = true;
-                        }
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
                     }
                 }
+                continue;
             }
 
+            moveAllEntitiesInPhysicalWorld();
 
-            for(String currentEntityName: allEntities.keySet()){
-                List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-                moveAllInstances(currentEntityInstanceList);
-                //entityNamesForChecking.add(currentEntityName);
 
-            }
-            //TODO: REMEMBER TO DELETE THE FOLLOWING FOUR LINES. THIS IS ONLY A TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//            EntityInstance instance1 = this.allEntities.get(entityNamesForChecking.get(0)).get(0);
-//            EntityInstance instance2 = this.allEntities.get(entityNamesForChecking.get(1)).get(0);
-//            instance1.setPositionInWorld(new PointCoord(5, 5));
-//            instance2.setPositionInWorld(new PointCoord(3, 4));
-
-            for(Rule currentRuleToInvokeOnEntities: this.allRules){
-                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
+            List<IAction> activeActionsInCurrentTick = new ArrayList<>();
+            for (Rule rule : this.allRules ) {
                 float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
-                ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
+                ActivationForRule activitionForCurrentRule = rule.getActivation();
                 int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
                 float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
                 if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
                         && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
-                    //need to invoke the rule for each entity instance
-                    for (String currentEntityName: allEntities.keySet()) {
-                        // the current list of entity instances from the map
-                        List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-                        // set the list of entities to the "context" object to invoke
-                        necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
-                        // create a copy of the entity instance list to run on it.
-                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
-                        // get secondary entities
+                    for (IAction action: rule.getActions()) {
+                        activeActionsInCurrentTick.add(action);
+                    }
+                }
+            }
 
-                        // invoke each action on each entity
-                        for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
-                            for(IAction currentActionToInvoke: allActionsForCurrentRule) {
-                                necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
-                                if (currentActionToInvoke.getSecondaryEntity() == null) {
-                                    if (currentActionToInvoke instanceof ActionReplace) {
-                                        ActionReplace parsedAction = (ActionReplace)currentActionToInvoke;
-                                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(parsedAction.getEntityToCreate());
-                                        //EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
-                                        necessaryVariables.setSecondaryEntityDefinition(definitionOfSecondEntity);
-                                    }
+            for (String entityName:this.allEntities.keySet()) {
+                List<EntityInstance> listOfEntityInstance = this.allEntities.get(entityName);
+                for (EntityInstance entityInstance: listOfEntityInstance ) {
+                    for (IAction action:activeActionsInCurrentTick) {
+                        if (action.getContextEntity().getEntityName().equalsIgnoreCase(entityInstance.getDefinitionOfEntity().getEntityName())){
+                            if (action.getSecondaryEntity() != null){
+                                // TODO GET ENTITIES SECONDARY INSTANCES FOR CURRENT ACTION AND ACTIVATE IT
+                                SecondEntity secondaryEntity = action.getSecondaryEntity();
+                                List<EntityInstance> secondaryEntityInstances;
+                                List<EntityInstance> filteredSecondaryEntityInstances;
+                                // we hava all the entity instances that we need
+                                if(secondaryEntity.getCondition() != null){
+                                    secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondaryEntity.getEntity().getEntityName()), secondaryEntity.getCondition(), necessaryVariables);
+                                }
+                                else{
+                                    secondaryEntityInstances = this.allEntities.get(secondaryEntity.getEntity().getEntityName());
+                                }
 
-                                    currentActionToInvoke.invoke(necessaryVariables);
-                                    if (necessaryVariables.getEntityToKill() != null) {
+                                if(!secondaryEntity.getCount().equalsIgnoreCase("all")){
+                                   filteredSecondaryEntityInstances =  getSecondaryInstancesByNumber(secondaryEntityInstances, secondaryEntity.getCount());
+                                }
+                                else{
+                                    filteredSecondaryEntityInstances = secondaryEntityInstances;
+                                }
+
+                                for(EntityInstance currentSecondaryEntityInstance: filteredSecondaryEntityInstances){
+                                    necessaryVariables.setSecondaryEntityInstance(currentSecondaryEntityInstance);
+                                    action.invoke(necessaryVariables);
+                                    if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
                                         this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                        break;
                                     }
                                     if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
                                             necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
                                         this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                        break;
                                     }
-                                    necessaryVariables.resetKillAndCreateAndKill();
-                                } else {
-                                    SecondEntity secondEntity = currentActionToInvoke.getSecondaryEntity();
-                                    List<EntityInstance> secondaryEntityInstances;
-                                    {
-                                        if (secondEntity.getCondition() == null) {
-                                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
-                                                secondaryEntityInstances = this.allEntities.get(secondEntity.getEntity().getEntityName());
-                                            } else {
-                                                secondaryEntityInstances = getSecondaryInstancesByNumber(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCount());
-                                            }
+                                }
 
-                                        } else {
-                                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
-                                                secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
-                                            } else {
-                                                List<EntityInstance> conditionList = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
-                                                secondaryEntityInstances = getSecondaryInstancesByNumber(conditionList, secondEntity.getCount());
-                                            }
-                                        }
-
-                                        for (EntityInstance currSecondaryEntityInstance : secondaryEntityInstances) {
-                                            necessaryVariables.setSecondaryEntityInstance(currSecondaryEntityInstance);
-                                            currentActionToInvoke.invoke(necessaryVariables);
-                                            if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
-                                                this.entitiesToKill.add(necessaryVariables.getEntityToKill());
-                                            }
-                                            if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
-                                                    necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
-                                                this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
-                                            }
-                                            necessaryVariables.resetKillAndCreateAndKill();
-                                        }
-                                    }
-
+                            }
+                            else{
+                                // i have a physical world + environment + entity instance primary no need for secondary
+                                necessaryVariables.setPrimaryEntityInstance(entityInstance);
+                                action.invoke(necessaryVariables);
+                                if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
+                                    this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                    break;
+                                }
+                                if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                        necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                    this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                    break;
                                 }
                             }
                         }
+                        necessaryVariables.resetKillAndCreateAndKill();
                     }
                 }
             }
+            
+
+//            for(Rule currentRuleToInvokeOnEntities: this.allRules){
+//                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
+//                float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
+//                ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
+//                int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
+//                float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
+//                if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
+//                        && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
+//                    //need to invoke the rule for each entity instance
+//                    for (String currentEntityName: allEntities.keySet()) {
+//                        // the current list of entity instances from the map
+//                        List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+//                        // set the list of entities to the "context" object to invoke
+//                        necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
+//                        // create a copy of the entity instance list to run on it.
+//                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
+//                        // get secondary entities
+//
+//                        // invoke each action on each entity
+//                        invokeActionsOnEntityInstances(necessaryVariables, allActionsForCurrentRule, copyOfEntityInstancesList);
+//                    }
+//                }
+//            }
+
             killAllEntities();
             killAndReplaceAllEntities();
             checkAllPropertyInstancesIfChanged();
-            this.entitiesToKillAndReplace.clear();;
+            this.entitiesToKillAndReplace.clear();
             this.entitiesToKill.clear();
             this.currentTick++;
-            currentTime = System.currentTimeMillis();
-            this.currentTimePassed = (currentTime - timeStarted) / 1000;
 
+            this.deltaS += (currentTime - timeStarted) - (this.currentTimeResume - this.currentTimePassed);
+            timeStarted = currentTime;
+            currentTime = System.currentTimeMillis();
+            this.currentTimeResume = this.currentTimePassed = 0;
         }
 
         this.timeFinished = System.currentTimeMillis();
-        this.isStopped = true;
+    }
 
-        if(currentTermination.getTicks() <= currentTick/*worldDefinitionForSimulation.getTermination().getTicks() <= currentTickCount*/){
-            endedByTicks = true;
+    private void moveAllEntitiesInPhysicalWorld() {
+        for(String currentEntityName: allEntities.keySet()){
+            List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
+            moveAllInstances(currentEntityInstanceList);
         }
-        if((currentTime - timeStarted / 1000) >= currentTermination.getSeconds()/*(currentTime - timeStarted) / 1000 >= worldDefinitionForSimulation.getTermination().getSeconds()*/){
-            endedBySeconds = true;
+    }
+
+    private void invokeActionsOnEntityInstances(NecessaryVariablesImpl necessaryVariables, List<IAction> allActionsForCurrentRule, List<EntityInstance> copyOfEntityInstancesList) throws GeneralException {
+        // for each entity instance in the list
+        for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
+            // for each action in current rule in action list
+            for(IAction currentActionToInvoke: allActionsForCurrentRule) {
+
+                necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
+                // check if we have a secondary entity
+                if (currentActionToInvoke.getSecondaryEntity() == null) {
+
+                    if (currentActionToInvoke instanceof ActionReplace) {
+                        ActionReplace parsedAction = (ActionReplace)currentActionToInvoke;
+                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(parsedAction.getEntityToCreate());
+                        //EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
+                        necessaryVariables.setSecondaryEntityDefinition(definitionOfSecondEntity);
+                    }
+
+                    currentActionToInvoke.invoke(necessaryVariables);
+                    if (necessaryVariables.getEntityToKill() != null) {
+                        this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                    }
+                    if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                            necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                        this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                    }
+                    necessaryVariables.resetKillAndCreateAndKill();
+                }
+                else {
+                    SecondEntity secondEntity = currentActionToInvoke.getSecondaryEntity();
+                    List<EntityInstance> secondaryEntityInstances;
+                    {
+                        if (secondEntity.getCondition() == null) {
+                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
+                                secondaryEntityInstances = this.allEntities.get(secondEntity.getEntity().getEntityName());
+                            } else {
+                                secondaryEntityInstances = getSecondaryInstancesByNumber(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCount());
+                            }
+
+                        } else {
+                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
+                                secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
+                            } else {
+                                List<EntityInstance> conditionList = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
+                                secondaryEntityInstances = getSecondaryInstancesByNumber(conditionList, secondEntity.getCount());
+                            }
+                        }
+
+                        for (EntityInstance currSecondaryEntityInstance : secondaryEntityInstances) {
+                            necessaryVariables.setSecondaryEntityInstance(currSecondaryEntityInstance);
+                            currentActionToInvoke.invoke(necessaryVariables);
+                            if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
+                                this.entitiesToKill.add(necessaryVariables.getEntityToKill());
+                                break;
+                            }
+                            if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
+                                    necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
+                                this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
+                                break;
+                            }
+                        }
+                        necessaryVariables.resetKillAndCreateAndKill();
+                    }
+                }
+            }
         }
-
-        DtoResponseTermination responseOfSimulation = new DtoResponseTermination(endedByTicks, endedBySeconds);
-        //return responseOfSimulation;
-
     }
 
     private void checkAllPropertyInstancesIfChanged() {
@@ -536,15 +618,6 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public long getCurrentTimePassed() {
-        if(this.currentTimeStarted != -1) {
-            if (!isStopped) {
-                return (System.currentTimeMillis() - this.currentTimeStarted) / 1000;
-            } else {
-                return (this.timeFinished - this.currentTimeStarted) / 1000;
-            }
-        }
-        else{
-            return 0;
-        }
+        return this.deltaS/1000;
     }
 }

@@ -20,6 +20,7 @@ import ui.sceneController.SceneMenu;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
 
 public class ResultsController implements Initializable {
     private SceneMenu sceneMenu;
@@ -28,6 +29,7 @@ public class ResultsController implements Initializable {
     private ObservableList<EntityPresenter> obsListEntities;
     private ObservableList<SimulationPresenter> obsListSimulations;
     private InterfaceMenu interfaceMenu;
+    //private ExecutorService bringDetailsThread;
     // TODO TASK THAT CALL main engine and get a map of integer boolean and by it know which simulation is running and which finished(first, learn how to do task lol XD)
     @FXML
     private Button buttonPause;

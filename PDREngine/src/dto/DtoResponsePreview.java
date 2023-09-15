@@ -17,7 +17,7 @@ public class DtoResponsePreview {
         this.dtoResponseEntities = dtoResponseEntities;
         this.dtoResponseRules = dtoResponseRules;
         this.dtoResponseTermination = dtoResponseTermination;
-        this.worldSize = new PointCoord(rows, cols);
+        this.worldSize = new PointCoord(rows,cols);
     }
 
     public List<DtoResponseEntities> getDtoResponseEntities() {

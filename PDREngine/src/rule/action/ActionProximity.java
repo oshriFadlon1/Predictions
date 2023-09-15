@@ -43,6 +43,7 @@ public class ActionProximity extends AbstractAction {
         for (PointCoord pointCoord : allTheCell) {
             if (pointCoord.equals(entity2point)){
                 findTheSecEntity = true;
+                context.setSecondaryEntityDefinition(context.getSecondaryEntityInstance().getDefinitionOfEntity());
                 break;
             }
         }
@@ -56,7 +57,7 @@ public class ActionProximity extends AbstractAction {
 
     @Override
     public EntityDefinition getContextEntity() {
-        return null;
+        return super.getEntityDefinition();
     }
 
     @Override
