@@ -111,7 +111,7 @@
 		</PRD-rule>
 	</PRD-rules>
 	<PRD-termination>
-<!--		<PRD-by-user />-->
-		<PRD-by-ticks count="50"/>
+<!--	<PRD-by-user />-->
+		<PRD-by-ticks count="20"/>
 	</PRD-termination>
 </PRD-world>

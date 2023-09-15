@@ -57,7 +57,7 @@ public class ActionProximity extends AbstractAction {
 
     @Override
     public EntityDefinition getContextEntity() {
-        return null;
+        return super.getEntityDefinition();
     }
 
     @Override
