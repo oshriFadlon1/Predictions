@@ -54,7 +54,14 @@ public class ActionReplace extends AbstractAction implements Serializable{
         if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
             return;
         }
-        context.killAndCreateEntity(context.getPrimaryEntityInstance(), context.getSecondaryEntityDefinition(), this.creationType);
+        EntityDefinition currentEntityToCreate = null;
+        for (EntityDefinition entityDefinition:context.getEntityDefinitions()) {
+            if (entityDefinition.getEntityName().equalsIgnoreCase(this.entityToCreate)){
+                currentEntityToCreate = entityDefinition;
+                break;
+            }
+        }
+        context.killAndCreateEntity(context.getPrimaryEntityInstance(), currentEntityToCreate, this.creationType);
     }
 
     @Override
