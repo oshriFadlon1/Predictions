@@ -111,6 +111,11 @@ public class SimulationExecutionerManager {
 
     public void stopCurrentSimulation(int simulationId) {
         this.idToSimulationMap.get(simulationId).setStopped(true);
+        if ( this.idToSimulationMap.get(simulationId).isPaused()){
+            synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
+                this.idToSimulationMap.get(simulationId).getLockForSyncPause().notify();
+            }
+        }
     }
 
     public DtoQueueManagerInfo getQueueManagerInfo(){
