@@ -88,7 +88,7 @@
                                 <Button fx:id="buttonStop" layoutX="457.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStopPressed" text="Stop" />
                                 <Button fx:id="buttonPause" layoutX="513.0" layoutY="15.0" mnemonicParsing="false" onAction="#onPausePressed" text="Pause" />
                                 <Button fx:id="buttonResume" layoutX="578.0" layoutY="15.0" mnemonicParsing="false" onAction="#onResumePressed" text="Resume" />
-                                <Button layoutX="28.0" layoutY="13.0" mnemonicParsing="false" onAction="#ReRunSimulation" text="Re-Run" />
+                                <Button fx:id="buttonRerun" layoutX="28.0" layoutY="13.0" mnemonicParsing="false" onAction="#ReRunSimulation" text="Re-Run" />
                      </children>
                   </AnchorPane>
                </bottom>

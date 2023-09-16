@@ -124,7 +124,7 @@ public class ResultsController implements Initializable {
 
     @FXML
     void ReRunSimulation(ActionEvent event) {
-        this.sceneMenu.navigateToNewExecutionTab();
+        this.sceneMenu.navigateToNewExecutionTab(this.currSimulationPresenter.getSimulationId());
     }
 
     public void fetchAllSimulations() {

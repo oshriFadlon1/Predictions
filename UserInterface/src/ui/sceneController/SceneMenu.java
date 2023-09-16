@@ -194,7 +194,8 @@ public class SceneMenu implements Initializable {
         }).start();
     }
 
-    public void navigateToNewExecutionTab(){
+    public void navigateToNewExecutionTab(int idOfSimulation){
+        this.newExecutionController.loadSimulationDetailsAgain(idOfSimulation);
         this.tabPaneManager.getSelectionModel().select(tabOfNewExecution);
     }
 
