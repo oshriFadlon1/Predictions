@@ -29,9 +29,9 @@ public class ActionProximity extends AbstractAction {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
-            return;
-        }
+//        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+//            return;
+//        }
         PointCoord entity1point = context.getPrimaryEntityInstance().getPositionInWorld();
         PointCoord entity2point = context.getSecondaryEntityInstance().getPositionInWorld();
         boolean findTheSecEntity = false;

@@ -188,8 +188,11 @@ public class MainEngine implements InterfaceMenu {
 
     @Override
     public DtoQueueManagerInfo getQueueManagerInfo() {
-        DtoQueueManagerInfo simulationsStateManager = this.simulationExecutionerManager.getQueueManagerInfo();
-        return simulationsStateManager;
+        if (this.simulationExecutionerManager != null){
+            DtoQueueManagerInfo simulationsStateManager = this.simulationExecutionerManager.getQueueManagerInfo();
+            return simulationsStateManager;
+        }
+        return null;
     }
 
     private List<EntityToPopulation> createEntitiesToPopulationList(DtoUiToEngine inputFromUser) {
