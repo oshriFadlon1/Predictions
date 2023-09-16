@@ -31,10 +31,12 @@ public class MainEngine implements InterfaceMenu {
     private WorldDefinition xmlWorldDefinition;
     private WorldDefinition worldDefinitionForSimulation;
     private SimulationExecutionerManager simulationExecutionerManager;
+    private DtoBasicSimulationInfo dtoAllSimulationsStartingInfo;
 
 
     public MainEngine() {
         this.simulationExecutionerManager = null;
+        this.dtoAllSimulationsStartingInfo = null;
 
     }
 
@@ -132,6 +134,7 @@ public class MainEngine implements InterfaceMenu {
                 this.simulationExecutionerManager.disposeThreadPool();
             }
             this.simulationExecutionerManager = new SimulationExecutionerManager(this.worldDefinitionForSimulation.getNumberOfThreads());
+            this.dtoAllSimulationsStartingInfo = new DtoBasicSimulationInfo();
         }
         catch(JAXBException | IOException | GeneralException e){
             if(e instanceof  JAXBException || e instanceof IOException){
@@ -158,12 +161,17 @@ public class MainEngine implements InterfaceMenu {
                 this.worldDefinitionForSimulation.getWorldSize(), LocalDateTime.now() , this.worldDefinitionForSimulation.getTermination(), entitiesToPopulations);
         Map<String, EnvironmentInstance> environmentInstancesMap = createAllEnvironmentInstances(environmentsForEngine);
         WorldInstance worldInstance = new WorldInstance(environmentInstancesMap, this.worldDefinitionForSimulation.getEntityDefinitions(), this.worldDefinitionForSimulation.getRules(), infoForSimulation);
+        this.dtoAllSimulationsStartingInfo.addStartingSimulationDetails(envInputFromUser, GeneralInformation.getIdOfSimulation());
         this.simulationExecutionerManager.addCurrentSimulationToManager(worldInstance);
     }
 
     @Override
     public DtoSimulationDetails getSimulationById(int idOfCurrentSimulation) {
         return this.simulationExecutionerManager.getSimulationById(idOfCurrentSimulation);
+    }
+
+    public DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation){
+        return this.dtoAllSimulationsStartingInfo.getChosenRerunSimulation(idOfChosenSimulation);
     }
 
     @Override

@@ -364,5 +364,18 @@ public class NewExecutionController implements Initializable{
         this.obsListEnvironments.clear();
         this.obsListEnvironmentsBefore.clear();
     }
+
+    public void loadSimulationDetailsAgain(int idOfSimulation) {
+        DtoUiToEngine simulationStartingDetails = this.interfaceMenu.getSimulationStartingInfoById(idOfSimulation);
+        this.textFieldEntity1.setText(Integer.toString(simulationStartingDetails.getPopulation1()));
+        if(simulationStartingDetails.getPopulation2() != -1){
+            this.textFieldEntity2.setText(Integer.toString(simulationStartingDetails.getPopulation2()));
+        }
+        this.obsListEnvironments.clear();
+        for(String envName: simulationStartingDetails.getEnvironmentToValue().keySet()){
+            EnvironmentPresenter startSimulationPresenter = new EnvironmentPresenter(envName, simulationStartingDetails.getEnvironmentToValue().get(envName));
+            this.obsListEnvironments.add(startSimulationPresenter);
+        }
+    }
 }
 

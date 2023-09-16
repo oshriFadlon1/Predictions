@@ -46,4 +46,5 @@ public interface InterfaceMenu {
     DtoQueueManagerInfo getQueueManagerInfo();
 
     void clearAllInformation();
+    DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation);
 }
