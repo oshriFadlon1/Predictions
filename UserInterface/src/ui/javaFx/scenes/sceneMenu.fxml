@@ -56,18 +56,18 @@
                         </Label>
                         <TextField fx:id="textFilePath" layoutX="213.0" layoutY="40.0" prefHeight="17.0" prefWidth="566.0" />
                         <Button id="LoadXmlFileButton" fx:id="ButtonLoadFile" layoutX="37.0" layoutY="40.0" mnemonicParsing="false" onAction="#onClickButtonLoadFile" prefHeight="25.0" prefWidth="161.0" text="Load xml file" textAlignment="CENTER" />
-                        <Label id="QueueManagment" layoutX="810.0" layoutY="2.0" prefHeight="26.0" prefWidth="152.0" text="Queue Managment">
+                        <Label id="QueueManagment" layoutX="788.0" layoutY="2.0" prefHeight="26.0" prefWidth="152.0" text="Queue Managment">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="810.0" layoutY="29.0" prefHeight="17.0" prefWidth="135.0" text="Simulations in progress :" />
-                        <Label layoutX="810.0" layoutY="47.0" prefHeight="17.0" prefWidth="108.0" text="Ended simulations :" />
+                        <Label layoutX="788.0" layoutY="29.0" prefHeight="18.0" prefWidth="165.0" text="Simulations in progress :" />
+                        <Label layoutX="788.0" layoutY="47.0" prefHeight="18.0" prefWidth="165.0" text="Ended simulations :" />
                         <Label fx:id="fileStatus" layoutX="213.0" layoutY="67.0" prefHeight="18.0" prefWidth="564.0" text="File status :" />
-                        <Label fx:id="numberOfSimulationInProgress" layoutX="948.0" layoutY="29.0" text="Label" />
-                        <Label layoutX="810.0" layoutY="64.0" prefHeight="17.0" prefWidth="119.0" text="Simulations pending :" />
-                        <Label fx:id="endedSimulation" layoutX="948.0" layoutY="47.0" text="Label" />
-                        <Label fx:id="simulationInWaiting" layoutX="948.0" layoutY="64.0" text="Label" />
+                        <Label fx:id="numberOfSimulationInProgress" layoutX="958.0" layoutY="29.0" text="Label" />
+                        <Label layoutX="788.0" layoutY="64.0" prefHeight="18.0" prefWidth="165.0" text="Simulations pending :" />
+                        <Label fx:id="endedSimulation" layoutX="958.0" layoutY="47.0" text="Label" />
+                        <Label fx:id="simulationInWaiting" layoutX="958.0" layoutY="64.0" text="Label" />
                      </children>
                   </AnchorPane>
                </top>

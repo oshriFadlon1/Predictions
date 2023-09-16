@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PRD-world xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="predictions-v2.xsd">
-	<PRD-thread-count>2</PRD-thread-count>
+	<PRD-thread-count>1</PRD-thread-count>
 	<PRD-environment>
 		<PRD-env-property type="float">
 			<PRD-name>infection-proximity</PRD-name>
-			<PRD-range from="1" to="5"/>
+			<PRD-range from="1" to="5"/>			
 		</PRD-env-property>
 	</PRD-environment>
-	<PRD-grid rows="10" columns="10"/>
+	<PRD-grid rows="50" columns="30"/>
 	<PRD-entities>
 		<PRD-entity name="Healthy">
 			<PRD-properties>
@@ -35,12 +35,12 @@
 	<PRD-rules>
 		<PRD-rule name="infect">
 			<PRD-actions>
-				<PRD-action type="proximity">
+				<PRD-action type="proximity">					
 					<PRD-between source-entity="Healthy" target-entity="Sick"/>
 					<PRD-env-depth of="environment(infection-proximity)"/>
-					<PRD-actions>
+					<PRD-actions>						
 						<PRD-action type="replace" kill="Healthy" create="Sick" mode="derived"/>
-					</PRD-actions>
+					</PRD-actions>	
 				</PRD-action>
 			</PRD-actions>
 			<PRD-activation probability="0.7"/>
