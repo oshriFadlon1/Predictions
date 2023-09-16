@@ -160,9 +160,11 @@ public class SceneMenu implements Initializable {
                 if (this.interfaceMenu != null){
                     Platform.runLater(()-> {
                         DtoQueueManagerInfo simulationsRunningStateInfo = this.interfaceMenu.getQueueManagerInfo();
-                        this.endedSimulationCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationEnded());
-                        this.simulationInWaitingCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationsPending());
-                        this.numberOfSimulationInProgressProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationInProgress());
+                        if (simulationsRunningStateInfo != null){
+                            this.endedSimulationCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationEnded());
+                            this.simulationInWaitingCountProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationsPending());
+                            this.numberOfSimulationInProgressProperty.setValue(simulationsRunningStateInfo.getCountOfSimulationInProgress());
+                        }
                     });}
                 try {
                     // Sleep for 1 second
