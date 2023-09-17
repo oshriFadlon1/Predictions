@@ -349,10 +349,21 @@ public class NewExecutionController implements Initializable{
                 this.EnvToValue.put(envName,valueInitToCurrentEnv);
             }
         }
-        this.interfaceMenu.executeSimulation(new DtoUiToEngine(this.EnvToValue, this.population1, this.population2,entity1Label.getText(), entity2Label.getText()));
+        Map<String, Object> copyOfEnvToValue = createCopyFromEnvToNameMap();
+        this.interfaceMenu.executeSimulation(new DtoUiToEngine(copyOfEnvToValue, this.population1, this.population2,entity1Label.getText(), entity2Label.getText()));
         this.sceneMenu.navigateToResultTab();
 
         //this.interfaceMenu.runSimulations(new DtoUiToEngine(this.EnvToValue,this.population1,this.population2));
+    }
+
+    private Map<String, Object> createCopyFromEnvToNameMap() {
+        Map<String, Object> copyOfEnvToValue = new HashMap<>();
+        for(String envName: this.EnvToValue.keySet()){
+            Object copyOfValue = this.EnvToValue.get(envName);
+            copyOfEnvToValue.put(envName, copyOfValue);
+        }
+
+        return copyOfEnvToValue;
     }
 
     public void setSceneMenu(SceneMenu sceneMenu) {
@@ -367,15 +378,22 @@ public class NewExecutionController implements Initializable{
 
     public void loadSimulationDetailsAgain(int idOfSimulation) {
         DtoUiToEngine simulationStartingDetails = this.interfaceMenu.getSimulationStartingInfoById(idOfSimulation);
+        this.obsListEntities.clear();
         this.textFieldEntity1.setText(Integer.toString(simulationStartingDetails.getPopulation1()));
-        if(simulationStartingDetails.getPopulation2() != -1){
+        this.obsListEntities.add(new EntityPresenter(this.entity1Label.getText(), simulationStartingDetails.getPopulation1()));
+        if (simulationStartingDetails.getPopulation2() != -1) {
             this.textFieldEntity2.setText(Integer.toString(simulationStartingDetails.getPopulation2()));
+            this.obsListEntities.add(new EntityPresenter(this.entity2Label.getText(), simulationStartingDetails.getPopulation2()));
         }
         this.obsListEnvironments.clear();
-        for(String envName: simulationStartingDetails.getEnvironmentToValue().keySet()){
+        for (String envName : simulationStartingDetails.getEnvironmentToValue().keySet()) {
             EnvironmentPresenter startSimulationPresenter = new EnvironmentPresenter(envName, simulationStartingDetails.getEnvironmentToValue().get(envName));
             this.obsListEnvironments.add(startSimulationPresenter);
         }
+
+        this.labelError.setText("");
+        this.labelErrorEntity1.setText("");
+        this.labelErrorEntity2.setText("");
     }
 }
 
