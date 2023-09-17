@@ -201,7 +201,7 @@ public class WorldInstance implements Serializable, Runnable {
             }
 
             for (String entityName:this.allEntities.keySet()) {
-                List<EntityInstance> listOfEntityInstance = this.allEntities.get(entityName);
+                List<EntityInstance> listOfEntityInstance = new ArrayList<>(this.allEntities.get(entityName));
                 for (EntityInstance entityInstance: listOfEntityInstance ) {
                     for (IAction action:activeActionsInCurrentTick) {
                         if (action.getContextEntity().getEntityName().equalsIgnoreCase(entityInstance.getDefinitionOfEntity().getEntityName())){
@@ -293,12 +293,12 @@ public class WorldInstance implements Serializable, Runnable {
             this.entitiesToKillAndReplace.clear();
             this.entitiesToKill.clear();
             this.currentTick++;
-            if (this.currentTick % 100 == 0) {
-                savePopulationInCurrentTick(this.informationOfWorld.getEntitiesToPopulations(),this.currentTick);
-            }
+            savePopulationInCurrentTick(this.informationOfWorld.getEntitiesToPopulations(),this.currentTick);
         }
 
         this.timeFinished = System.currentTimeMillis();
+        this.informationOfWorld.setSimulationDone(true);
+        this.isStopped = true;
     }
 
     private void savePopulationInCurrentTick(List<EntityToPopulation> entitiesToPopulations, int currentTick) {
@@ -646,7 +646,7 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public long getCurrentTimePassed() {
-        if (this.isStopped){
+        if (this.isStopped || this.informationOfWorld.isSimulationDone()){
             return (this.timeFinished - this.startTheSimulation - this.totalTimeInPause)/1000;
         }
         else{

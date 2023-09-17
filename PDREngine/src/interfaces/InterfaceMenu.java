@@ -52,4 +52,6 @@ public interface InterfaceMenu {
     List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId);
 
     List<String> bringPropertiesByEntityName(int simulationId, String entityName);
+    
+    DtoHistogramInfo fetchInfoOnChosenProperty(int simulationId, String entityName, String propertyName);
 }
