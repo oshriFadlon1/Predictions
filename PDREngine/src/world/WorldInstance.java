@@ -633,4 +633,16 @@ public class WorldInstance implements Serializable, Runnable {
             }
         }
     }
+
+    public List<String> bringPropertyNamesListAccordingToEntityName(String entityName) {
+        List<String> propertyNames = null;
+        for(EntityDefinition currEntityDef: this.entityDefinitions){
+            if(entityName.equalsIgnoreCase(currEntityDef.getEntityName())){
+                Set<String> allPropertyNames = currEntityDef.getPropertyDefinition().keySet();
+                propertyNames = new ArrayList<>(allPropertyNames);
+                break;
+            }
+        }
+        return propertyNames;
+    }
 }

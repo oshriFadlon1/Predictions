@@ -30,6 +30,7 @@ public class ResultsController implements Initializable {
     private ObservableList<EntityPresenter> obsListEntities;
     private ObservableList<SimulationPresenter> obsListSimulations;
     private ObservableList<String> obsListEntityNames;
+    private ObservableList<String> obsListPropertyNames;
     private InterfaceMenu interfaceMenu;
     //private ExecutorService bringDetailsThread;
     // TODO TASK THAT CALL main engine and get a map of integer boolean and by it know which simulation is running and which finished(first, learn how to do task lol XD)
@@ -97,6 +98,7 @@ public class ResultsController implements Initializable {
         this.obsListEntities = FXCollections.observableArrayList();
         this.obsListSimulations = FXCollections.observableArrayList();
         this.obsListEntityNames = FXCollections.observableArrayList();
+        this.obsListPropertyNames = FXCollections.observableArrayList();
         this.tableColumnEntity.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         this.tableColumnPopulation.setCellValueFactory(new PropertyValueFactory<>("population"));
         this.tableViewEntities.setItems(this.obsListEntities);
@@ -113,6 +115,8 @@ public class ResultsController implements Initializable {
     @FXML
     private void selectedItem(){
         this.obsListEntityNames.clear();
+        this.obsListPropertyNames.clear();
+        this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
         DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
         if(!currentDetailsForSimulation.getIsSimulationFinished()) {

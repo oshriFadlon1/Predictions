@@ -2,6 +2,7 @@ package interfaces;
 
 import dto.*;
 import environment.EnvironmentDefinition;
+import javafx.collections.ObservableList;
 import property.PropertyDefinition;
 import simulationmanager.SimulationExecutionerManager;
 import world.GeneralInformation;

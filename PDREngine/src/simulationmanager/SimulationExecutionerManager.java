@@ -3,6 +3,7 @@ package simulationmanager;
 import dto.DtoAllSimulationDetails;
 import dto.DtoSimulationDetails;
 import dto.DtoQueueManagerInfo;
+import entity.EntityDefinition;
 import enums.SimulationState;
 import world.GeneralInformation;
 import world.WorldInstance;
