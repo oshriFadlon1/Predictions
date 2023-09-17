@@ -96,14 +96,14 @@
                   </AnchorPane>
                </bottom>
                 </BorderPane>
-            <HBox fx:id="hboxFinalDetails" layoutX="12.0" layoutY="308.0" prefHeight="341.0" prefWidth="1046.0">
+            <HBox fx:id="hboxFinalDetails" layoutY="312.0">
                <children>
-                  <BarChart prefHeight="332.0" prefWidth="522.0">
+                  <BarChart fx:id="barchartPopulation" prefHeight="330.0" prefWidth="514.0" title="Population during simulation">
                     <xAxis>
-                      <CategoryAxis side="BOTTOM" />
+                      <CategoryAxis label="Tick(K)" side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                      <NumberAxis side="LEFT" />
+                      <NumberAxis label="Population" side="LEFT" />
                     </yAxis>
                   </BarChart>
                   <VBox prefHeight="342.0" prefWidth="214.0">
@@ -113,7 +113,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <ComboBox fx:id="comboBoxEntityName" prefWidth="150.0">
+                        <ComboBox fx:id="comboBoxEntityName" onAction="#onSelectedComboBoxEntitiesItem" prefWidth="150.0">
                            <VBox.margin>
                               <Insets bottom="5.0" />
                            </VBox.margin>
@@ -134,8 +134,8 @@
                            </VBox.margin></Label>
                         <TableView fx:id="tableViewHistogram" prefHeight="215.0" prefWidth="183.0" VBox.vgrow="NEVER">
                           <columns>
-                            <TableColumn fx:id="columnValue" prefWidth="127.20001375675201" text="Property value" />
-                            <TableColumn fx:id="columnCount" prefWidth="75.19994354248047" text="count" />
+                            <TableColumn fx:id="columnValue" prefWidth="127.20001828670502" text="Property value" />
+                            <TableColumn fx:id="columnCount" prefWidth="86.4000244140625" text="count" />
                           </columns>
                         </TableView>
                      </children>

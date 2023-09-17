@@ -65,6 +65,11 @@ public class MainEngine implements InterfaceMenu {
         }
     }
 
+    public List<String> bringPropertiesByEntityName(int simulationId, String entityName){
+        List<String> propertyNamesList = this.simulationExecutionerManager.bringPropertyNamesList(simulationId, entityName);
+        return propertyNamesList;
+    }
+
     private DtoEnvironments getEnvironmentsInfo() {
         return new DtoEnvironments(this.worldDefinitionForSimulation.getAllEnvironments());
     }
@@ -172,6 +177,11 @@ public class MainEngine implements InterfaceMenu {
 
     public DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation){
         return this.dtoAllSimulationsStartingInfo.getChosenRerunSimulation(idOfChosenSimulation);
+    }
+
+    @Override
+    public List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId) {
+        return this.simulationExecutionerManager.getSimulationListOfPopulationPerTick(simulationId);
     }
 
     @Override

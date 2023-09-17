@@ -2,6 +2,7 @@ package interfaces;
 
 import dto.*;
 import environment.EnvironmentDefinition;
+import javafx.collections.ObservableList;
 import property.PropertyDefinition;
 import simulationmanager.SimulationExecutionerManager;
 import world.GeneralInformation;
@@ -47,4 +48,8 @@ public interface InterfaceMenu {
 
     void clearAllInformation();
     DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation);
+
+    List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId);
+
+    List<String> bringPropertiesByEntityName(int simulationId, String entityName);
 }
