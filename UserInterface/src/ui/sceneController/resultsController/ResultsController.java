@@ -39,6 +39,8 @@ public class ResultsController implements Initializable {
 
     @FXML
     private Button buttonStop;
+    @FXML
+    private Button buttonRerun;
 
     @FXML
     private Label labelCurrTick;
@@ -96,6 +98,12 @@ public class ResultsController implements Initializable {
                     this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
                     if(population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")){
                         this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+                    }
+                    if(currentDetails.getIsSimulationFinished() == false){
+                        this.buttonRerun.setDisable(true);
+                    }
+                    else{
+                        this.buttonRerun.setDisable(false);
                     }
                 });
                 try {
