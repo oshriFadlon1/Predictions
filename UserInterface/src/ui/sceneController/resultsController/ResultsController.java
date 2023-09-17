@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import ui.presenter.CustomItemCell;
 import ui.presenter.EntityPresenter;
 import ui.presenter.SimulationPresenter;
@@ -28,6 +29,7 @@ public class ResultsController implements Initializable {
     private SimulationPresenter currSimulationPresenter;
     private ObservableList<EntityPresenter> obsListEntities;
     private ObservableList<SimulationPresenter> obsListSimulations;
+    private ObservableList<String> obsListEntityNames;
     private InterfaceMenu interfaceMenu;
     //private ExecutorService bringDetailsThread;
     // TODO TASK THAT CALL main engine and get a map of integer boolean and by it know which simulation is running and which finished(first, learn how to do task lol XD)
@@ -79,24 +81,29 @@ public class ResultsController implements Initializable {
     private TableColumn<?, ?> columnValue;
 
     @FXML
-    private ComboBox<?> comboBoxEntityName;
+    private ComboBox<String> comboBoxEntityName;
 
     @FXML
     private ComboBox<?> comboBoxEntityProperty;
 
     @FXML
     private TableView<?> tableViewHistogram;
+    @FXML
+    private HBox hboxFinalDetails;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.obsListEntities = FXCollections.observableArrayList();
         this.obsListSimulations = FXCollections.observableArrayList();
+        this.obsListEntityNames = FXCollections.observableArrayList();
         this.tableColumnEntity.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         this.tableColumnPopulation.setCellValueFactory(new PropertyValueFactory<>("population"));
         this.tableViewEntities.setItems(this.obsListEntities);
         this.listViewSimulations.setItems(this.obsListSimulations);
         this.listViewSimulations.setCellFactory(param -> new CustomItemCell());
+        this.comboBoxEntityName.setItems(this.obsListEntityNames);
+        this.hboxFinalDetails.setVisible(false);
     }
 
     public void setSceneMenu(SceneMenu sceneMenu) {
@@ -105,38 +112,49 @@ public class ResultsController implements Initializable {
 
     @FXML
     private void selectedItem(){
+        this.obsListEntityNames.clear();
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        Thread bringDetailsThread = new Thread(()->{
-            while(this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()){
-                DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-                int population1 = currentDetails.getEntity1Population();
-                int population2 = currentDetails.getEntity2Population();
+        DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+        if(!currentDetailsForSimulation.getIsSimulationFinished()) {
+            this.hboxFinalDetails.setVisible(false);
+            Thread bringDetailsThread = new Thread(() -> {
+                while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
+                    DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+                    int population1 = currentDetails.getEntity1Population();
+                    int population2 = currentDetails.getEntity2Population();
 
-                Platform.runLater(()-> {
-                    this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
-                    this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
-                    this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
-                    this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
-                    this.obsListEntities.clear();
-                    this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
-                    if(population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")){
-                        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+                    Platform.runLater(() -> {
+                        this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
+                        this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
+                        this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
+                        this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
+                        this.obsListEntities.clear();
+                        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
+                        if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
+                            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+                        }
+                        if (currentDetails.getIsSimulationFinished() == false) {
+                            this.buttonRerun.setDisable(true);
+                        } else {
+                            this.buttonRerun.setDisable(false);
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    if(currentDetails.getIsSimulationFinished() == false){
-                        this.buttonRerun.setDisable(true);
-                    }
-                    else{
-                        this.buttonRerun.setDisable(false);
-                    }
-                });
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            });
+            bringDetailsThread.start();
+        }
+        else{
+            this.obsListEntityNames.add(currentDetailsForSimulation.getEntity1Name());
+            if(!currentDetailsForSimulation.getEntity2Name().equalsIgnoreCase("")){
+                this.obsListEntityNames.add(currentDetailsForSimulation.getEntity2Name());
             }
-        });
-        bringDetailsThread.start();
+            this.hboxFinalDetails.setVisible(true);
+        }
     }
 
     private static String getModeOfCurrentSimulation(DtoSimulationDetails currentDetails) {
