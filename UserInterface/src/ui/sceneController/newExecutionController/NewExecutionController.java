@@ -380,8 +380,10 @@ public class NewExecutionController implements Initializable{
         DtoUiToEngine simulationStartingDetails = this.interfaceMenu.getSimulationStartingInfoById(idOfSimulation);
         this.obsListEntities.clear();
         this.textFieldEntity1.setText(Integer.toString(simulationStartingDetails.getPopulation1()));
+        this.population1 = simulationStartingDetails.getPopulation1();
         this.obsListEntities.add(new EntityPresenter(this.entity1Label.getText(), simulationStartingDetails.getPopulation1()));
         if (simulationStartingDetails.getPopulation2() != -1) {
+            this.population2 = simulationStartingDetails.getPopulation2();
             this.textFieldEntity2.setText(Integer.toString(simulationStartingDetails.getPopulation2()));
             this.obsListEntities.add(new EntityPresenter(this.entity2Label.getText(), simulationStartingDetails.getPopulation2()));
         }
@@ -389,6 +391,7 @@ public class NewExecutionController implements Initializable{
         for (String envName : simulationStartingDetails.getEnvironmentToValue().keySet()) {
             EnvironmentPresenter startSimulationPresenter = new EnvironmentPresenter(envName, simulationStartingDetails.getEnvironmentToValue().get(envName));
             this.obsListEnvironments.add(startSimulationPresenter);
+            this.EnvToValue.put(envName,simulationStartingDetails.getEnvironmentToValue().get(envName));
         }
 
         this.labelError.setText("");

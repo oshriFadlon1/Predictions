@@ -731,7 +731,7 @@ public class XmlParser {
 
 
         List<IAction> listOfAction = createActionListFromPrdActions(prdAction.getPRDActions().getPRDAction(), entityDefinitions, environments);
-        actionProximity = new ActionProximity(firstEntityDef, new SecondEntity(secondaryEntityDef,"All",null), depth, listOfAction);
+        actionProximity = new ActionProximity(firstEntityDef, null, secondEntityName, depth, listOfAction);
         return actionProximity;
     }
 
