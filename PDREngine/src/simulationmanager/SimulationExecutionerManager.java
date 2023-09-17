@@ -1,11 +1,11 @@
 package simulationmanager;
 
-import dto.DtoAllSimulationDetails;
-import dto.DtoCountTickPopulation;
-import dto.DtoSimulationDetails;
-import dto.DtoQueueManagerInfo;
+import dto.*;
 import entity.EntityDefinition;
+import entity.EntityInstance;
+import entity.EntityToPopulation;
 import enums.SimulationState;
+import property.PropertyInstance;
 import world.GeneralInformation;
 import world.WorldInstance;
 
@@ -144,5 +144,81 @@ public class SimulationExecutionerManager {
     public List<String> bringPropertyNamesList(int simulationId, String entityName) {
         List<String> propertyNamesList = this.idToSimulationMap.get(simulationId).bringPropertyNamesListAccordingToEntityName(entityName);
         return propertyNamesList;
+    }
+
+    public DtoHistogramInfo fetchInfoOnChosenProperty(int simulationId, String entityName, String propertyName){
+        float avgOfProp = -1;
+        WorldInstance worldInstance = this.idToSimulationMap.get(simulationId);
+        List<EntityInstance> entityInstanceList = worldInstance.getAllEntities().get(entityName);
+        if(entityInstanceList.size() > 0){
+            if(entityInstanceList.get(0).getPropertyByName(propertyName).getPropertyDefinition().getPropertyType().equalsIgnoreCase("float")){
+                avgOfProp = getAvgOfPropertyIfFloat(entityName, propertyName, worldInstance, entityInstanceList);
+            }
+        }
+        float avgPropertyPerTick = 0;
+        for(EntityInstance currEntityInstance: entityInstanceList){
+            PropertyInstance propertyInstance =  currEntityInstance.getPropertyByName(propertyName);
+            if (propertyInstance.getNumberOfReset() != 0){
+                avgPropertyPerTick = ( (float) propertyInstance.getTotalTickWithoutChange() / propertyInstance.getNumberOfReset());
+            }
+        }
+        int populationFinal = 0;
+        List<EntityToPopulation> entityToPopulationList = worldInstance.getInformationOfWorld().getEntitiesToPopulations();
+        for (EntityToPopulation entityToPopulation : entityToPopulationList) {
+            if (entityToPopulation.getCurrEntityDef().getEntityName().equalsIgnoreCase(entityName)) {
+                populationFinal = entityToPopulation.getCurrEntityPopulation();
+                break;
+            }
+        }
+        float avgTotalPerProperty = avgPropertyPerTick / populationFinal ;
+        Map<String,Integer> value2Count = fetchPropertyHistogram(entityInstanceList);
+        return new DtoHistogramInfo(value2Count, avgOfProp, avgTotalPerProperty);
+
+    }
+
+    private Map<String, Integer> fetchPropertyHistogram(List<EntityInstance> entityInstanceList) {
+        List<Object> allProperty = new ArrayList<>();
+        for(EntityInstance currEntityInstance: entityInstanceList){
+            for (String str:currEntityInstance.getAllProperties().keySet()) {
+                PropertyInstance propertyInstance = currEntityInstance.getAllProperties().get(str);
+                allProperty.add(propertyInstance.getPropValue());
+            }
+        }
+        String valueInString;
+        Map<String, Integer> histogram = new HashMap<>();
+        for (Object o : allProperty) {
+            valueInString = o.toString();
+            if (!histogram.containsKey(valueInString))
+            {
+                histogram.put(valueInString,1);
+            } else{
+                histogram.put(valueInString, histogram.get(valueInString) + 1);
+            }
+        }
+        return histogram;
+    }
+
+    private float getAvgOfPropertyIfFloat(String entityName, String propertyName, WorldInstance worldInstance, List<EntityInstance> entityInstanceList) {
+        float sum = 0;
+        float avgOfProp = 0;
+        for(EntityInstance currEntityInstance: entityInstanceList) {
+            sum += (float) currEntityInstance.getAllProperties().get(propertyName).getPropValue();
+        }
+
+        int populationFinal = 0;
+        List<EntityToPopulation> entityToPopulationList = worldInstance.getInformationOfWorld().getEntitiesToPopulations();
+        for (EntityToPopulation entityToPopulation : entityToPopulationList) {
+            if (entityToPopulation.getCurrEntityDef().getEntityName().equalsIgnoreCase(entityName)) {
+                populationFinal = entityToPopulation.getCurrEntityPopulation();
+                break;
+            }
+        }
+        if (populationFinal == 0) {
+            avgOfProp = 0;
+        } else {
+            avgOfProp = sum / populationFinal;
+        }
+
+        return avgOfProp;
     }
 }

@@ -88,4 +88,28 @@ public class PropertyInstance implements Serializable {
         return "\r\npropertyDefinition: " + propertyDefinition +
                 "\r\npropValue: " + propValue;
     }
+
+    public int getNumberOfReset() {
+        return numberOfReset;
+    }
+
+    public void setNumberOfReset(int numberOfReset) {
+        this.numberOfReset = numberOfReset;
+    }
+
+    public int getTotalTickWithoutChange() {
+        return totalTickWithoutChange;
+    }
+
+    public void setTotalTickWithoutChange(int totalTickWithoutChange) {
+        this.totalTickWithoutChange = totalTickWithoutChange;
+    }
+
+    public boolean isPropertyChangedInCurrTick() {
+        return isPropertyChangedInCurrTick;
+    }
+
+    public void setPropertyChangedInCurrTick(boolean propertyChangedInCurrTick) {
+        isPropertyChangedInCurrTick = propertyChangedInCurrTick;
+    }
 }

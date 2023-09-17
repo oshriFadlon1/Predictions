@@ -123,26 +123,26 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <ComboBox fx:id="comboBoxEntityProperty" prefWidth="150.0">
+                        <ComboBox fx:id="comboBoxEntityProperty" onAction="#onSelectedComboBoxPropertyItem" prefWidth="150.0">
                            <VBox.margin>
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </ComboBox>
-                        <Label text="histogram of property">
+                        <Label text="Histogram of property">
                            <VBox.margin>
                               <Insets bottom="3.0" />
                            </VBox.margin></Label>
                         <TableView fx:id="tableViewHistogram" prefHeight="215.0" prefWidth="183.0" VBox.vgrow="NEVER">
                           <columns>
                             <TableColumn fx:id="columnValue" prefWidth="127.20001828670502" text="Property value" />
-                            <TableColumn fx:id="columnCount" prefWidth="86.4000244140625" text="count" />
+                            <TableColumn fx:id="columnCount" prefWidth="87.99993896484375" text="count" />
                           </columns>
                         </TableView>
                      </children>
                   </VBox>
                   <AnchorPane prefHeight="293.0" prefWidth="335.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="22.0" text=" avg. oconsistency " />
+                        <Label layoutX="9.0" layoutY="22.0" text=" avg. consistency " />
                         <Label fx:id="avgTickValue" layoutX="14.0" layoutY="48.0" text="avg. value" />
                         <Label layoutX="14.0" layoutY="112.0" text="avg. in final population" />
                         <Label fx:id="avgPropertyValue" layoutX="14.0" layoutY="162.0" text="avg. in final population" />

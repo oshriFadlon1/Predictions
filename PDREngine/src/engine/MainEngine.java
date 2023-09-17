@@ -70,6 +70,11 @@ public class MainEngine implements InterfaceMenu {
         return propertyNamesList;
     }
 
+    @Override
+    public DtoHistogramInfo fetchInfoOnChosenProperty(int simulationId, String entityName, String propertyName) {
+        return this.simulationExecutionerManager.fetchInfoOnChosenProperty(simulationId, entityName, propertyName);
+    }
+
     private DtoEnvironments getEnvironmentsInfo() {
         return new DtoEnvironments(this.worldDefinitionForSimulation.getAllEnvironments());
     }
@@ -324,4 +329,6 @@ public class MainEngine implements InterfaceMenu {
     public SimulationExecutionerManager getExecutionsManager() {
         return this.simulationExecutionerManager;
     }
+
+
 }
