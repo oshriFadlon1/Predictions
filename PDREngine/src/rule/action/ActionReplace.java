@@ -51,9 +51,9 @@ public class ActionReplace extends AbstractAction implements Serializable{
     }
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
-            return;
-        }
+//        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+//            return;
+//        }
         EntityDefinition currentEntityToCreate = null;
         for (EntityDefinition entityDefinition:context.getEntityDefinitions()) {
             if (entityDefinition.getEntityName().equalsIgnoreCase(this.entityToCreate)){

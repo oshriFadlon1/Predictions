@@ -16,7 +16,6 @@ import property.Value;
 import range.Range;
 import rule.ActivationForRule;
 import rule.Rule;
-import rule.action.ActionReplace;
 import rule.action.IAction;
 import termination.Termination;
 import utility.Utilities;
@@ -39,11 +38,11 @@ public class WorldInstance implements Serializable, Runnable {
     private int currentTick;
     private long currentTimePassed;
     private long currentTimeResume;
-    private long currentTimeStarted;
+    private long startTheSimulation;
     private long timeFinished;
     private volatile boolean isPaused;
     private volatile boolean isStopped;
-    private long deltaS;
+    private long totalTimeInPause;
     private Object lockForSyncPause;
 
 
@@ -58,14 +57,13 @@ public class WorldInstance implements Serializable, Runnable {
         this.entitiesToKill = new ArrayList<>();
         this.entitiesToKillAndReplace = new ArrayList<>();
         this.physicalSpace = new WorldPhysicalSpace(informationOfWorld.getWorldSize());
-//        this.primaryEntityPopulation = informationOfWorld.getPrimaryEntityStartPopulation();
-//        this.secondaryEntityPopulation = informationOfWorld.getSecondaryEntityStartPopulation();
+        this.totalTimeInPause = 0;
         this.currentTick = 0;
         this.currentTimePassed = 0;
         this.currentTimeResume = 0;
         this.isPaused = false;
         this.isStopped = false;
-        this.currentTimeStarted = -1;
+        this.startTheSimulation = -1;
         this.lockForSyncPause = new Object();
     }
 
@@ -156,15 +154,17 @@ public class WorldInstance implements Serializable, Runnable {
 
         int currentTickCount = 0;
         Random random = new Random();
-        long timeStarted = System.currentTimeMillis();
-        long currentTime = System.currentTimeMillis();
+//        long timeStarted = System.currentTimeMillis();
+//        long currentTime = System.currentTimeMillis();
         List<String> entityNamesForChecking = new ArrayList<>();
-        this.currentTimeStarted = System.currentTimeMillis();
+        this.startTheSimulation = System.currentTimeMillis();
 
-        while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(this.deltaS) && !isStopped){
+        while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(getCurrentTimePassed()) && !isStopped){
+            System.out.println("thread number "+Thread.currentThread() +"current tick : "+this.currentTick + "general info: " + this.informationOfWorld );
+
             if (isPaused){
                 synchronized (this.lockForSyncPause){
-                    if (isPaused){
+                    while (isPaused){
                         try {
                             this.currentTimePassed = System.currentTimeMillis();
                             this.lockForSyncPause.wait();
@@ -172,6 +172,9 @@ public class WorldInstance implements Serializable, Runnable {
                             throw new RuntimeException(e);
                         }
                     }
+                    this.currentTimeResume = System.currentTimeMillis();
+                    //TODO CREATE A LONG TOTAL PAUSE TIME DO (currentTimeResume - currentTimePassed)
+                    this.totalTimeInPause += this.currentTimeResume - this.currentTimePassed;
                 }
                 continue;
             }
@@ -196,6 +199,7 @@ public class WorldInstance implements Serializable, Runnable {
                 for (EntityInstance entityInstance: listOfEntityInstance ) {
                     for (IAction action:activeActionsInCurrentTick) {
                         if (action.getContextEntity().getEntityName().equalsIgnoreCase(entityInstance.getDefinitionOfEntity().getEntityName())){
+                            necessaryVariables.resetKillAndCreateAndKill();
                             necessaryVariables.setPrimaryEntityInstance(entityInstance);
                             if (action.getSecondaryEntity() != null){
                                 // TODO GET ENTITIES SECONDARY INSTANCES FOR CURRENT ACTION AND ACTIVATE IT
@@ -283,11 +287,11 @@ public class WorldInstance implements Serializable, Runnable {
             this.entitiesToKillAndReplace.clear();
             this.entitiesToKill.clear();
             this.currentTick++;
-
-            this.deltaS += (currentTime - timeStarted) - (this.currentTimeResume - this.currentTimePassed);
-            timeStarted = currentTime;
-            currentTime = System.currentTimeMillis();
-            this.currentTimeResume = this.currentTimePassed = 0;
+//
+//            this.totalTimeInPause += (currentTime - timeStarted) - (this.currentTimeResume - this.currentTimePassed);
+//            timeStarted = currentTime;
+//            currentTime = System.currentTimeMillis();
+//            this.currentTimeResume = this.currentTimePassed = 0;
         }
 
         this.timeFinished = System.currentTimeMillis();
@@ -617,6 +621,16 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     public long getCurrentTimePassed() {
-        return this.deltaS/1000;
+        if (this.isStopped){
+            return (this.timeFinished - this.startTheSimulation - this.totalTimeInPause)/1000;
+        }
+        else{
+            if (isPaused){
+                return (this.currentTimePassed - this.startTheSimulation - this.totalTimeInPause)/1000;
+            }
+            else{
+                return (System.currentTimeMillis() - this.startTheSimulation - this.totalTimeInPause)/1000;
+            }
+        }
     }
 }

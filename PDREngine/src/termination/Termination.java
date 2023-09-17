@@ -68,7 +68,10 @@ public class Termination implements Serializable {
 
     @Override
     public String toString() {
-        return "\nticks: " + ticks +
-                "\nseconds: " + seconds;
+        return "Termination{" +
+                "ticks=" + ticks +
+                ", seconds=" + seconds +
+                ", byUser=" + byUser +
+                '}';
     }
 }

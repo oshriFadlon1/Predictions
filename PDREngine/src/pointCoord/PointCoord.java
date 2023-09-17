@@ -39,4 +39,12 @@ public class PointCoord {
     public int hashCode() {
         return Objects.hash(row, col);
     }
+
+    @Override
+    public String toString() {
+        return "PointCoord{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
+    }
 }

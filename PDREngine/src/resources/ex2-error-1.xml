@@ -55,7 +55,7 @@
 				<PRD-action type="condition">
 					<PRD-condition singularity="multiple" logical="and">
 						<PRD-condition singularity="single" entity="Sick" property="vacinated" operator="=" value="true"/>
-						<PRD-condition singularity="single" entity="Sick" property="ticks(vacinated)" operator="bt" value="30"/>
+						<PRD-condition singularity="single" entity="Sick" property="ticks(Sick.vacinated)" operator="bt" value="30"/>
 					</PRD-condition>
 					<PRD-then>
 						<PRD-action type="replace" kill="Sick" create="Healthy" mode="derived"/>
