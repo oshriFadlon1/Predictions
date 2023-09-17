@@ -65,6 +65,29 @@ public class ResultsController implements Initializable {
 
     @FXML
     private TableView<EntityPresenter> tableViewEntities;
+
+    @FXML
+    private Label avgPropertyValue;
+
+    @FXML
+    private Label avgTickValue;
+
+    @FXML
+    private TableColumn<?, ?> columnCount;
+
+    @FXML
+    private TableColumn<?, ?> columnValue;
+
+    @FXML
+    private ComboBox<?> comboBoxEntityName;
+
+    @FXML
+    private ComboBox<?> comboBoxEntityProperty;
+
+    @FXML
+    private TableView<?> tableViewHistogram;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.obsListEntities = FXCollections.observableArrayList();

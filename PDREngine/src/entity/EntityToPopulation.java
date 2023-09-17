@@ -24,4 +24,12 @@ public class EntityToPopulation {
     public void setCurrEntityPopulation(int currEntityPopulation) {
         this.currEntityPopulation = currEntityPopulation;
     }
+
+    @Override
+    public String toString() {
+        return "EntityToPopulation{" +
+                "currEntityDef=" + currEntityDef +
+                ", currEntityPopulation=" + currEntityPopulation +
+                '}';
+    }
 }

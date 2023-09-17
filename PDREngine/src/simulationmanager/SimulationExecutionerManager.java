@@ -100,8 +100,8 @@ public class SimulationExecutionerManager {
         if (this.idToSimulationMap.get(simulationId).isPaused()){
             synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
                 if (this.idToSimulationMap.get(simulationId).isPaused()){
-                    this.idToSimulationMap.get(simulationId).setCurrentTimeResume(System.currentTimeMillis());
-                    this.idToSimulationMap.get(simulationId).getLockForSyncPause().notify();
+                    //this.idToSimulationMap.get(simulationId).setCurrentTimeResume(System.currentTimeMillis());
+                    this.idToSimulationMap.get(simulationId).getLockForSyncPause().notifyAll();
                     this.idToSimulationMap.get(simulationId).setPaused(false);
                 }
             }
@@ -113,7 +113,7 @@ public class SimulationExecutionerManager {
         this.idToSimulationMap.get(simulationId).setStopped(true);
         if ( this.idToSimulationMap.get(simulationId).isPaused()){
             synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
-                this.idToSimulationMap.get(simulationId).getLockForSyncPause().notify();
+                this.idToSimulationMap.get(simulationId).getLockForSyncPause().notifyAll();
             }
         }
     }

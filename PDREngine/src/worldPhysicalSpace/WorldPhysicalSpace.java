@@ -148,31 +148,58 @@ public class WorldPhysicalSpace {
         return coord.getRow() > 0 && coord.getRow() <= this.worldSize.getRow() && coord.getCol() > 0 && coord.getCol() <= this.worldSize.getCol();
     }
 
-    private PointCoord adjustCoordinate(PointCoord coord) {
-        int adjustedX = (coord.getRow() - 1) % this.worldSize.getRow() + 1;
-        int adjustedY = (coord.getCol() - 1) % this.worldSize.getCol() + 1;
-        return new PointCoord(adjustedX, adjustedY);
-    }
+//    private PointCoord adjustCoordinate(PointCoord coord) {
+//        int adjustedX = (coord.getRow() - 1) % this.worldSize.getRow() + 1;
+//        int adjustedY = (coord.getCol() - 1) % this.worldSize.getCol() + 1;
+//        return new PointCoord(adjustedX, adjustedY);
+//    }
+//
+//    public Set<PointCoord> findEnvironmentCells(PointCoord source, int rank) {
+//        Set<PointCoord> result = new HashSet<>();
+//        result.add(adjustCoordinate(source));
+//
+//        for (int currentRank = 1; currentRank <= rank; currentRank++) {
+//            Set<PointCoord> newCoordinates = new HashSet<>();
+//            for (PointCoord coord : result) {
+//                for (int dx = -1; dx <= 1; dx++) {
+//                    for (int dy = -1; dy <= 1; dy++) {
+//                        PointCoord newCoord = new PointCoord(coord.getRow() + dx, coord.getCol() + dy);
+//                        if (!newCoord.equals(coord) && isValidCoordinate(newCoord)) {
+//                            newCoordinates.add(adjustCoordinate(newCoord));
+//                        }
+//                    }
+//                }
+//            }
+//            result.addAll(newCoordinates);
+//        }
+//
+//        return result;
+//    }
 
-    public Set<PointCoord> findEnvironmentCells(PointCoord source, int rank) {
-        Set<PointCoord> result = new HashSet<>();
-        result.add(adjustCoordinate(source));
+    // x = row
+    // y = col
+    public List<EntityInstance> getEntitiesInProximity(int x, int y, int depth, String entityTargetName) {
+        List<EntityInstance> nearbyEntities = new ArrayList<>();
 
-        for (int currentRank = 1; currentRank <= rank; currentRank++) {
-            Set<PointCoord> newCoordinates = new HashSet<>();
-            for (PointCoord coord : result) {
-                for (int dx = -1; dx <= 1; dx++) {
-                    for (int dy = -1; dy <= 1; dy++) {
-                        PointCoord newCoord = new PointCoord(coord.getRow() + dx, coord.getCol() + dy);
-                        if (!newCoord.equals(coord) && isValidCoordinate(newCoord)) {
-                            newCoordinates.add(adjustCoordinate(newCoord));
-                        }
+        for (int i = x - depth; i <= x + depth; i++) {
+            for (int j = y - depth; j <= y + depth; j++) {
+                int wrappedX = (i + this.worldSize.getRow()) % this.worldSize.getRow();
+                int wrappedY = (j + this.worldSize.getCol()) % this.worldSize.getCol();
+
+                if (isValidCell(wrappedX, wrappedY) && !(x == wrappedX && y == wrappedY)) {
+                    EntityInstance entity = this.worldSpace[wrappedX][wrappedY];
+                    if (entity != null && entity.getDefinitionOfEntity().getEntityName().equalsIgnoreCase(entityTargetName)) {
+                        nearbyEntities.add(entity);
                     }
                 }
             }
-            result.addAll(newCoordinates);
         }
 
-        return result;
+        return nearbyEntities;
+    }
+
+    // Helper method to check if the cell coordinates are valid.
+    private boolean isValidCell(int x, int y) {
+        return x >= 0 && x < this.worldSize.getRow() && y >= 0 && y < this.worldSize.getCol();
     }
 }

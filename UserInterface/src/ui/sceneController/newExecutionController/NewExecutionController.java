@@ -391,6 +391,7 @@ public class NewExecutionController implements Initializable{
         for (String envName : simulationStartingDetails.getEnvironmentToValue().keySet()) {
             EnvironmentPresenter startSimulationPresenter = new EnvironmentPresenter(envName, simulationStartingDetails.getEnvironmentToValue().get(envName));
             this.obsListEnvironments.add(startSimulationPresenter);
+            this.EnvToValue.put(envName,simulationStartingDetails.getEnvironmentToValue().get(envName));
         }
 
         this.labelError.setText("");

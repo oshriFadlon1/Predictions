@@ -97,4 +97,18 @@ public class GeneralInformation {
     public boolean isSimulationPaused() {
         return isSimulationPaused;
     }
+
+    @Override
+    public String toString() {
+        return "GeneralInformation{" +
+                "primaryEntityStartPopulation=" + primaryEntityStartPopulation +
+                ", secondaryEntityStartPopulation=" + secondaryEntityStartPopulation +
+                ", worldSize=" + worldSize +
+                ", startOfSimulationDate=" + startOfSimulationDate +
+                ", termination=" + termination +
+                ", isSimulationDone=" + isSimulationDone +
+                ", isSimulationPaused=" + isSimulationPaused +
+                ", entitiesToPopulations=" + entitiesToPopulations +
+                '}';
+    }
 }
