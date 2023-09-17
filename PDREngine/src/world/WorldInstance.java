@@ -1,6 +1,7 @@
 package world;
 
 import createAndKillEntities.CreateAndKillEntities;
+import dto.DtoCountTickPopulation;
 import entity.EntityDefinition;
 import entity.EntityInstance;
 import entity.EntityToPopulation;
@@ -43,8 +44,8 @@ public class WorldInstance implements Serializable, Runnable {
     private volatile boolean isPaused;
     private volatile boolean isStopped;
     private long totalTimeInPause;
-    private Object lockForSyncPause;
-
+    private final Object lockForSyncPause;
+    private List<DtoCountTickPopulation> entityPopulationInEachTick;
 
 
     public WorldInstance(Map<String, EnvironmentInstance> allEnvironments, List<EntityDefinition> entitiesDefinition,
@@ -65,6 +66,7 @@ public class WorldInstance implements Serializable, Runnable {
         this.isStopped = false;
         this.startTheSimulation = -1;
         this.lockForSyncPause = new Object();
+        this.entityPopulationInEachTick = new ArrayList<>();
     }
 
 
@@ -126,6 +128,10 @@ public class WorldInstance implements Serializable, Runnable {
 
     public void setCurrentTimeResume(long currentTimeResume) {
         this.currentTimeResume = currentTimeResume;
+    }
+
+    public List<DtoCountTickPopulation> getEntityPopulationInEachTick() {
+        return entityPopulationInEachTick;
     }
 
     @Override
@@ -287,14 +293,33 @@ public class WorldInstance implements Serializable, Runnable {
             this.entitiesToKillAndReplace.clear();
             this.entitiesToKill.clear();
             this.currentTick++;
-//
-//            this.totalTimeInPause += (currentTime - timeStarted) - (this.currentTimeResume - this.currentTimePassed);
-//            timeStarted = currentTime;
-//            currentTime = System.currentTimeMillis();
-//            this.currentTimeResume = this.currentTimePassed = 0;
+            if (this.currentTick % 100 == 0) {
+                savePopulationInCurrentTick(this.informationOfWorld.getEntitiesToPopulations(),this.currentTick);
+            }
         }
 
         this.timeFinished = System.currentTimeMillis();
+    }
+
+    private void savePopulationInCurrentTick(List<EntityToPopulation> entitiesToPopulations, int currentTick) {
+        int count = 0;
+        int population1 = 0;
+        int population2 = -1;
+        String population1Name = "";
+        String population2Name = "";
+        for (EntityToPopulation entityToPopulation : entitiesToPopulations) {
+            if (count == 0 ){
+                population1Name = entityToPopulation.getCurrEntityDef().getEntityName();
+                population1 = entityToPopulation.getCurrEntityPopulation();
+            }
+            if (count == 1){
+                population2Name = entityToPopulation.getCurrEntityDef().getEntityName();
+                population2 = entityToPopulation.getCurrEntityPopulation();
+            }
+            count++;
+        }
+        this.entityPopulationInEachTick.add(new DtoCountTickPopulation(population1Name, population1, population2Name, population2, currentTick));
+
     }
 
     private void moveAllEntitiesInPhysicalWorld() {

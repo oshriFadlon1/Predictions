@@ -8,16 +8,18 @@ public class DtoSimulationDetails {
     private int simulationTick;
     private long simulationTimePassed;
     private boolean isSimulationFinished;
+    private boolean isSimulationPaused;
     private int simulationId;
 
-    public DtoSimulationDetails(int currentEntity1Population, int currentEntity2Population, String entity1Name, String entity2Name, int currentSimulationTick, long currentSimulationTimePassed, boolean isSimulationFinished, int simulationId) {
-        this.entity1Population = currentEntity1Population;
-        this.entity2Population = currentEntity2Population;
-        this.simulationTick = currentSimulationTick;
-        this.simulationTimePassed = currentSimulationTimePassed;
-        this.isSimulationFinished = isSimulationFinished;
+    public DtoSimulationDetails(int entity1Population, int entity2Population, String entity1Name, String entity2Name, int simulationTick, long simulationTimePassed, boolean isSimulationFinished, boolean isSimulationPaused, int simulationId) {
+        this.entity1Population = entity1Population;
+        this.entity2Population = entity2Population;
         this.entity1Name = entity1Name;
         this.entity2Name = entity2Name;
+        this.simulationTick = simulationTick;
+        this.simulationTimePassed = simulationTimePassed;
+        this.isSimulationFinished = isSimulationFinished;
+        this.isSimulationPaused = isSimulationPaused;
         this.simulationId = simulationId;
     }
 
@@ -43,7 +45,7 @@ public class DtoSimulationDetails {
         return simulationTimePassed;
     }
 
-    public boolean getIsSimulationFinished() {
+    public boolean isSimulationFinished() {
         return isSimulationFinished;
     }
 
@@ -53,5 +55,9 @@ public class DtoSimulationDetails {
 
     public String getEntity2Name() {
         return entity2Name;
+    }
+
+    public boolean isSimulationPaused() {
+        return isSimulationPaused;
     }
 }

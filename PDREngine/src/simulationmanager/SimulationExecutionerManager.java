@@ -1,13 +1,17 @@
 package simulationmanager;
 
 import dto.DtoAllSimulationDetails;
+import dto.DtoCountTickPopulation;
 import dto.DtoSimulationDetails;
 import dto.DtoQueueManagerInfo;
 import entity.EntityDefinition;
 import enums.SimulationState;
 import world.GeneralInformation;
 import world.WorldInstance;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,14 +68,14 @@ public class SimulationExecutionerManager {
             if(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().size() == 1){
                 String entity1Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityDef().getEntityName();
                 return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
-                        -1, entity1Name, "", numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), userSimulationChoice);
+                        -1, entity1Name, "", numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), chosenSimulation.isPaused(), userSimulationChoice);
             }
 
             String entity1Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityDef().getEntityName();
             String entity2Name = chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityDef().getEntityName();
             return new DtoSimulationDetails(chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(0).getCurrEntityPopulation(),
                     chosenSimulation.getInformationOfWorld().getEntitiesToPopulations().get(1).getCurrEntityPopulation(),
-                    entity1Name, entity2Name, numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), userSimulationChoice);
+                    entity1Name, entity2Name, numberOfTicks, numberOfSeconds, chosenSimulation.getInformationOfWorld().isSimulationDone(), chosenSimulation.isPaused(), userSimulationChoice);
         }
     }
 
@@ -98,23 +102,21 @@ public class SimulationExecutionerManager {
     }
 
     public void resumeCurrentSimulation(int simulationId) {
-        if (this.idToSimulationMap.get(simulationId).isPaused()){
-            synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
-                if (this.idToSimulationMap.get(simulationId).isPaused()){
-                    //this.idToSimulationMap.get(simulationId).setCurrentTimeResume(System.currentTimeMillis());
-                    this.idToSimulationMap.get(simulationId).getLockForSyncPause().notifyAll();
-                    this.idToSimulationMap.get(simulationId).setPaused(false);
-                }
-            }
-        }
-
+        resumeSimulationRun(simulationId);
     }
 
     public void stopCurrentSimulation(int simulationId) {
         this.idToSimulationMap.get(simulationId).setStopped(true);
+        resumeSimulationRun(simulationId);
+    }
+
+    private void resumeSimulationRun(int simulationId) {
         if ( this.idToSimulationMap.get(simulationId).isPaused()){
             synchronized (this.idToSimulationMap.get(simulationId).getLockForSyncPause()){
-                this.idToSimulationMap.get(simulationId).getLockForSyncPause().notifyAll();
+                while ( this.idToSimulationMap.get(simulationId).isPaused()){
+                    this.idToSimulationMap.get(simulationId).getLockForSyncPause().notifyAll();
+                    this.idToSimulationMap.get(simulationId).setPaused(false);
+                }
             }
         }
     }
@@ -132,5 +134,14 @@ public class SimulationExecutionerManager {
             GeneralInformation.setIdOfSimulation(0);
         }
         this.idToSimulationMap.clear();
+    }
+
+    public List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId) {
+        return this.idToSimulationMap.get(simulationId).getEntityPopulationInEachTick();
+    }
+
+    public List<String> bringPropertyNamesList(int simulationId, String entityName) {
+        List<String> propertyNamesList = this.idToSimulationMap.get(simulationId).bringPropertyNamesListAccordingToEntityName(entityName);
+        return propertyNamesList;
     }
 }

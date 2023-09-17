@@ -48,4 +48,8 @@ public interface InterfaceMenu {
 
     void clearAllInformation();
     DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation);
+
+    List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId);
+
+    List<String> bringPropertiesByEntityName(int simulationId, String entityName);
 }

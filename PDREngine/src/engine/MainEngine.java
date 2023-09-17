@@ -180,6 +180,11 @@ public class MainEngine implements InterfaceMenu {
     }
 
     @Override
+    public List<DtoCountTickPopulation> getSimulationListOfPopulationPerTick(int simulationId) {
+        return this.simulationExecutionerManager.getSimulationListOfPopulationPerTick(simulationId);
+    }
+
+    @Override
     public DtoAllSimulationDetails getAllSimulations() {
         return this.simulationExecutionerManager.createMapOfSimulationsToIsRunning();
     }
