@@ -9,6 +9,7 @@ import enums.SimulationState;
 import world.GeneralInformation;
 import world.WorldInstance;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
