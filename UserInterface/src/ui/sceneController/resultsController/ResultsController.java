@@ -89,7 +89,7 @@ public class ResultsController implements Initializable {
     private ComboBox<String> comboBoxEntityName;
 
     @FXML
-    private ComboBox<?> comboBoxEntityProperty;
+    private ComboBox<String> comboBoxEntityProperty;
 
     @FXML
     private TableView<?> tableViewHistogram;
@@ -111,6 +111,7 @@ public class ResultsController implements Initializable {
         this.listViewSimulations.setItems(this.obsListSimulations);
         this.listViewSimulations.setCellFactory(param -> new CustomItemCell());
         this.comboBoxEntityName.setItems(this.obsListEntityNames);
+        this.comboBoxEntityProperty.setItems(this.obsListPropertyNames);
         this.hboxFinalDetails.setVisible(false);
     }
 
@@ -165,17 +166,20 @@ public class ResultsController implements Initializable {
             this.obsListEntityNames.add(currentDetailsForSimulation.getEntity2Name());
         }
         this.hboxFinalDetails.setVisible(true);
-        initializeBarChart();
+       // initializeBarChart();
     }
 
     @FXML
     void onSelectedComboBoxEntitiesItem(ActionEvent event) {
+        this.obsListPropertyNames.clear();
         String selectedItem = this.comboBoxEntityName.getValue();
         if(selectedItem != null) {
             int simulationId = this.currSimulationPresenter.getSimulationId();
             this.comboBoxEntityProperty.setDisable(false);
             List<String> allPropertyNames = interfaceMenu.bringPropertiesByEntityName(simulationId, selectedItem);
-            this.obsListPropertyNames = FXCollections.observableArrayList(allPropertyNames);
+            for(String name: allPropertyNames){
+                this.obsListPropertyNames.add(name);
+            }
         }
     }
 
