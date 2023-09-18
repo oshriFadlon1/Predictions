@@ -2,6 +2,7 @@ package ui.sceneController.resultsController;
 
 import dto.DtoAllSimulationDetails;
 import dto.DtoCountTickPopulation;
+import dto.DtoHistogramInfo;
 import dto.DtoSimulationDetails;
 import enums.SimulationState;
 import interfaces.InterfaceMenu;
@@ -183,42 +184,64 @@ public class ResultsController implements Initializable {
         }
     }
 
+    @FXML
+    void onSelectedComboBoxPropertyItem(ActionEvent event) {
+        String selectedItem = this.comboBoxEntityProperty.getValue();
+        if(selectedItem != null){
+            int simulationId = this.currSimulationPresenter.getSimulationId();
+            DtoHistogramInfo dtoHistogramInfo = this.interfaceMenu.fetchInfoOnChosenProperty(simulationId, this.comboBoxEntityName.getValue(), selectedItem);
+            if(dtoHistogramInfo.getAvgInFinalPopulation() != -1) {
+                this.avgPropertyValue.setText(String.valueOf(dtoHistogramInfo.getAvgInFinalPopulation()));
+            }
+            this.avgTickValue.setText(String.valueOf(dtoHistogramInfo.getAvgChangeInTicks()));
+        }
+    }
 
     private void initializeBarChart() {
         this.barchartPopulation.getData().clear();
         List<DtoCountTickPopulation> countTickPopulationList = this.interfaceMenu.getSimulationListOfPopulationPerTick(this.currSimulationPresenter.getSimulationId());
+        int ratio = countTickPopulationList.size() / 50;
+        if (ratio <= 0){
+            ratio = 1;
+        }
+        int count = 0;
+        boolean isSecondEntityFound = false;
         XYChart.Series<String, Integer> seriesEntity1 = new XYChart.Series();
         XYChart.Series<String, Integer> seriesEntity2 = new XYChart.Series();
         for (DtoCountTickPopulation dtoCountTickPopulation : countTickPopulationList){
-            // we have 2 entities
-            if (dtoCountTickPopulation.getPopulationEntity2() != -1){
+            if (count % ratio == 0 ){
+                isSecondEntityFound = true;
+                // we have 2 entities
+                if (dtoCountTickPopulation.getPopulationEntity2() != -1){
+                    seriesEntity1.setName(dtoCountTickPopulation.getEntity1Name());
+                    seriesEntity1.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity1()));
+                    seriesEntity2.setName(dtoCountTickPopulation.getEntity2Name());
+                    seriesEntity2.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity2()));
+                }
+                else{
+                    seriesEntity1.setName(dtoCountTickPopulation.getEntity1Name());
+                    seriesEntity1.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity1()));
+                }
 
-                seriesEntity1.setName(dtoCountTickPopulation.getEntity1Name());
-                seriesEntity1.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity1()));
-
-                seriesEntity2.setName(dtoCountTickPopulation.getEntity2Name());
-                seriesEntity2.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity2()));
-                this.barchartPopulation.getData().addAll(seriesEntity2);
             }
-            else{
-                //XYChart.Series seriesEntity1 = new XYChart.Series();
-                seriesEntity1.setName(dtoCountTickPopulation.getEntity1Name());
-                seriesEntity1.getData().add(new XYChart.Data<>(String.valueOf(dtoCountTickPopulation.getCurrentTick()), dtoCountTickPopulation.getPopulationEntity1()));
-
-            }
-
+            count++;
         }
-        this.barchartPopulation.getData().addAll(seriesEntity1);
+        if (isSecondEntityFound){
+            this.barchartPopulation.getData().addAll(seriesEntity1, seriesEntity2);
+        }
+        else {
+            this.barchartPopulation.getData().addAll(seriesEntity1);
+        }
     }
 
     private static String getModeOfCurrentSimulation(DtoSimulationDetails currentDetails) {
         if (currentDetails.isSimulationFinished()){
             return "Finished";
         }
-    else if (!currentDetails.isSimulationPaused()){
+        else if (!currentDetails.isSimulationPaused()){
             return "Running";
         }
-    else{
+        else{
             return "Waiting";
         }
     }
