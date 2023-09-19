@@ -126,38 +126,39 @@ public class ResultsController implements Initializable {
         this.obsListPropertyNames.clear();
         this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-        if(!currentDetailsForSimulation.isSimulationFinished()) {
-            this.hboxFinalDetails.setVisible(false);
-            Thread bringDetailsThread = new Thread(() -> {
-                while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
-                    DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-                    int population1 = currentDetails.getEntity1Population();
-                    int population2 = currentDetails.getEntity2Population();
+        if(this.currSimulationPresenter != null) {
+            DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+            if (!currentDetailsForSimulation.isSimulationFinished()) {
+                this.hboxFinalDetails.setVisible(false);
+                Thread bringDetailsThread = new Thread(() -> {
+                    while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
+                        DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+                        int population1 = currentDetails.getEntity1Population();
+                        int population2 = currentDetails.getEntity2Population();
 
-                    Platform.runLater(() -> {
-                        this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
-                        this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
-                        this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
-                        this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
-                        this.obsListEntities.clear();
-                        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
-                        if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
-                            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+                        Platform.runLater(() -> {
+                            this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
+                            this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
+                            this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
+                            this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
+                            this.obsListEntities.clear();
+                            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
+                            if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
+                                this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+                            }
+                            this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
+                        });
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
-                    });
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
-                }
-            });
-            bringDetailsThread.start();
-        }
-        else{
-            handleSimulationAfterFinish(currentDetailsForSimulation);
+                });
+                bringDetailsThread.start();
+            } else {
+                handleSimulationAfterFinish(currentDetailsForSimulation);
+            }
         }
     }
 
@@ -193,6 +194,7 @@ public class ResultsController implements Initializable {
             if(dtoHistogramInfo.getAvgInFinalPopulation() != -1) {
                 this.avgPropertyValue.setText(String.valueOf(dtoHistogramInfo.getAvgInFinalPopulation()));
             }
+
             this.avgTickValue.setText(String.valueOf(dtoHistogramInfo.getAvgChangeInTicks()));
         }
     }
