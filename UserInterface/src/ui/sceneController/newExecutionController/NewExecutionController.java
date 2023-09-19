@@ -21,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import range.Range;
 import termination.Termination;
 import ui.javaFx.scenes.sceneNewExecution.tableViewModel;
@@ -163,6 +164,7 @@ public class NewExecutionController implements Initializable{
     }
 
     public void checkValidationEnvironment(){
+        this.labelError.setTextFill(Color.RED);
         if(this.currentSelectedItem == null){
             this.labelError.setVisible(true);
             this.labelError.setText("You haven't selected a value yet");
@@ -199,6 +201,7 @@ public class NewExecutionController implements Initializable{
 
     private void SaveEnvPropValueSuccessfully(String valueToCheck, String envName) {
         labelError.setVisible(true);
+        this.labelError.setTextFill(Color.GREEN);
         labelError.setText("Value " + valueToCheck + " was set to environment " + envName + " succesfully");
         this.labelValue.setText("");
         textFieldValue.setText("");
@@ -254,6 +257,7 @@ public class NewExecutionController implements Initializable{
     @FXML
     void OnClickSetValueOfPopulationEntity1(ActionEvent event) {
         String valueOfTextField = textFieldEntity1.getText();
+        this.labelErrorEntity1.setTextFill(Color.RED);
         int sizeOfWorld = this.worldPreview.getWorldSize().getRow() * this.worldPreview.getWorldSize().getCol();
         if(!Utilities.isInteger(valueOfTextField)){
             labelErrorEntity1.setText("Invalid value for population. Please enter a number between 0 to" + (sizeOfWorld-this.population2));
@@ -269,6 +273,7 @@ public class NewExecutionController implements Initializable{
             else{
                 labelErrorEntity1.setVisible(true);
                 this.population1 = parsedValue;
+                this.labelErrorEntity1.setTextFill(Color.GREEN);
                 this.labelErrorEntity1.setText(this.entity1Label.getText() + " population: " + this.population1);
                 EntityPresenter entityPresenter = new EntityPresenter(this.entity1Label.getText(), this.population1);
                 addEntityToObserverList(entityPresenter);
@@ -281,6 +286,7 @@ public class NewExecutionController implements Initializable{
     @FXML
     void OnClickSetValueOfPopulationEntity2(ActionEvent event) {
         String valueOfTextField = textFieldEntity2.getText();
+        this.labelErrorEntity2.setTextFill(Color.RED);
         int sizeOfWorld = this.worldPreview.getWorldSize().getRow() * this.worldPreview.getWorldSize().getCol();
         if(!Utilities.isInteger(valueOfTextField)){
             labelErrorEntity2.setText("Invalid value for population. Please enter a number between 0 to" + (sizeOfWorld - this.population1));
@@ -294,6 +300,7 @@ public class NewExecutionController implements Initializable{
             }
             else{
                 labelErrorEntity2.setVisible(true);
+                this.labelErrorEntity1.setTextFill(Color.GREEN);
                 this.population2 = parsedValue;
                 this.labelErrorEntity2.setText(this.entity2Label.getText() + " population: " + this.population2);
                 EntityPresenter entityPresenter = new EntityPresenter(this.entity2Label.getText(), this.population2);

@@ -161,6 +161,9 @@ public class SimulationExecutionerManager {
             if (propertyInstance.getNumberOfReset() != 0){
                 avgPropertyPerTick = ( (float) propertyInstance.getTotalTickWithoutChange() / propertyInstance.getNumberOfReset());
             }
+            else {
+                avgPropertyPerTick = (float) propertyInstance.getCurrentTicksWithoutChange();
+            }
         }
         int populationFinal = 0;
         List<EntityToPopulation> entityToPopulationList = worldInstance.getInformationOfWorld().getEntitiesToPopulations();
@@ -170,19 +173,20 @@ public class SimulationExecutionerManager {
                 break;
             }
         }
-        float avgTotalPerProperty = avgPropertyPerTick / populationFinal ;
-        Map<String,Integer> value2Count = fetchPropertyHistogram(entityInstanceList);
+        float avgTotalPerProperty = -1;
+        if (populationFinal > 0){
+            avgTotalPerProperty = avgPropertyPerTick / populationFinal ;
+        }
+        Map<String,Integer> value2Count = fetchPropertyHistogram(entityInstanceList, propertyName);
         return new DtoHistogramInfo(value2Count, avgOfProp, avgTotalPerProperty);
 
     }
 
-    private Map<String, Integer> fetchPropertyHistogram(List<EntityInstance> entityInstanceList) {
+    private Map<String, Integer> fetchPropertyHistogram(List<EntityInstance> entityInstanceList,String propertyName) {
         List<Object> allProperty = new ArrayList<>();
         for(EntityInstance currEntityInstance: entityInstanceList){
-            for (String str:currEntityInstance.getAllProperties().keySet()) {
-                PropertyInstance propertyInstance = currEntityInstance.getAllProperties().get(str);
-                allProperty.add(propertyInstance.getPropValue());
-            }
+            PropertyInstance propertyInstance = currEntityInstance.getAllProperties().get(propertyName);
+            allProperty.add(propertyInstance.getPropValue());
         }
         String valueInString;
         Map<String, Integer> histogram = new HashMap<>();

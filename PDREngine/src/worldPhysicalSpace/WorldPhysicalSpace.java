@@ -148,33 +148,6 @@ public class WorldPhysicalSpace {
         return coord.getRow() > 0 && coord.getRow() <= this.worldSize.getRow() && coord.getCol() > 0 && coord.getCol() <= this.worldSize.getCol();
     }
 
-//    private PointCoord adjustCoordinate(PointCoord coord) {
-//        int adjustedX = (coord.getRow() - 1) % this.worldSize.getRow() + 1;
-//        int adjustedY = (coord.getCol() - 1) % this.worldSize.getCol() + 1;
-//        return new PointCoord(adjustedX, adjustedY);
-//    }
-//
-//    public Set<PointCoord> findEnvironmentCells(PointCoord source, int rank) {
-//        Set<PointCoord> result = new HashSet<>();
-//        result.add(adjustCoordinate(source));
-//
-//        for (int currentRank = 1; currentRank <= rank; currentRank++) {
-//            Set<PointCoord> newCoordinates = new HashSet<>();
-//            for (PointCoord coord : result) {
-//                for (int dx = -1; dx <= 1; dx++) {
-//                    for (int dy = -1; dy <= 1; dy++) {
-//                        PointCoord newCoord = new PointCoord(coord.getRow() + dx, coord.getCol() + dy);
-//                        if (!newCoord.equals(coord) && isValidCoordinate(newCoord)) {
-//                            newCoordinates.add(adjustCoordinate(newCoord));
-//                        }
-//                    }
-//                }
-//            }
-//            result.addAll(newCoordinates);
-//        }
-//
-//        return result;
-//    }
 
     // x = row
     // y = col

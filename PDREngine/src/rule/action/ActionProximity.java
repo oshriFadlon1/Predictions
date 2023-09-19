@@ -36,21 +36,10 @@ public class ActionProximity extends AbstractAction {
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
 
         PointCoord entity1point = context.getPrimaryEntityInstance().getPositionInWorld();
-        //PointCoord entity2point = context.getSecondaryEntityInstance().getPositionInWorld();
-        //boolean findTheSecEntity = false;
         int depth = ((Number)context.getValueFromString(this.envDepth)).intValue();
 
-        // send to find all the cell in the depth by sending point1entity and depth
         List<EntityInstance> secondEntity = context.getWorldPhysicalSpace().getEntitiesInProximity(entity1point.getRow(), entity1point.getCol(), depth, this.targetName);
-//        EntityInstance[][] worldSpace = context.getWorldPhysicalSpace().getWorldSpace();
-//        List<EntityInstance> secondEntity = new ArrayList<>();
-//         check if entity2point is in the set
-//        for (PointCoord pointCoord : allTheCell) {
-//            if (worldSpace[pointCoord.getRow()][pointCoord.getCol()] != null &&
-//                    worldSpace[pointCoord.getRow()][pointCoord.getCol()].getDefinitionOfEntity().getEntityName().equalsIgnoreCase(this.targetName)){
-//                    secondEntity.add(worldSpace[pointCoord.getRow()][pointCoord.getCol()]);
-//            }
-//        }
+
         if (secondEntity.size() > 0 ){
             context.setSecondaryEntityInstance(secondEntity.get(Utilities.initializeRandomInt(0,secondEntity.size() - 1)));
             for (IAction action: this.actionIfTrue) {
