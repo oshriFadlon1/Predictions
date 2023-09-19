@@ -57,6 +57,7 @@ public class ActionProximity extends AbstractAction {
     public DtoActionResponse getActionResponse() {
         DtoActionResponse actionResponse = super.getActionResponse();
         actionResponse.setActionName("Proximity");
+        actionResponse.setSecEntityName(this.targetName);
         actionResponse.setActionProperty(this.envDepth);
         actionResponse.setActionValue(String.valueOf(this.actionIfTrue.size()));
         return actionResponse;

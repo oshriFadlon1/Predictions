@@ -154,6 +154,15 @@ public class NewExecutionController implements Initializable{
             entity2Label.setText(entities.get(1).getEntityName());
             subTitleEntity2.setVisible(true);
         }
+        else{
+            entity2Label.setVisible(false);
+            entity2Label.setDisable(true);
+            textFieldEntity2.setVisible(false);
+            textFieldEntity2.setDisable(true);
+            buttonValueEntity2.setDisable(true);
+            buttonValueEntity2.setVisible(false);
+            subTitleEntity2.setVisible(false);
+        }
     }
 
     public void selectItem(){
@@ -300,7 +309,7 @@ public class NewExecutionController implements Initializable{
             }
             else{
                 labelErrorEntity2.setVisible(true);
-                this.labelErrorEntity1.setTextFill(Color.GREEN);
+                this.labelErrorEntity2.setTextFill(Color.GREEN);
                 this.population2 = parsedValue;
                 this.labelErrorEntity2.setText(this.entity2Label.getText() + " population: " + this.population2);
                 EntityPresenter entityPresenter = new EntityPresenter(this.entity2Label.getText(), this.population2);
@@ -404,6 +413,17 @@ public class NewExecutionController implements Initializable{
         this.labelError.setText("");
         this.labelErrorEntity1.setText("");
         this.labelErrorEntity2.setText("");
+    }
+
+    public void resetAllComponent() {
+        this.labelErrorEntity1.setText("");
+        this.labelError.setText("");
+        this.labelErrorEntity2.setText("");
+        this.textFieldValue.setText("");
+        this.textFieldEntity1.setText("");
+        this.textFieldEntity2.setText("");
+        this.tableEntities.setVisible(false);
+        this.tableEnvironments.setVisible(false);
     }
 }
 

@@ -10,7 +10,7 @@
 
 <ScrollPane styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.DetailsController">
     <content>
-        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="1068.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css">
+        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="1068.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints minWidth="10.0" prefWidth="50.0" />

@@ -134,26 +134,27 @@ public class ResultsController implements Initializable {
         this.obsListHistogram.clear();
         this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-        if(!currentDetailsForSimulation.isSimulationFinished()) {
-            this.hboxFinalDetails.setVisible(false);
-            Thread bringDetailsThread = new Thread(() -> {
-                while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
-                    Platform.runLater(() -> {
-                        presentSelectedSimulationInfo();
-                    });
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        if(this.currSimulationPresenter != null) {
+            DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+            if (!currentDetailsForSimulation.isSimulationFinished()) {
+                this.hboxFinalDetails.setVisible(false);
+                Thread bringDetailsThread = new Thread(() -> {
+                    while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
+                        Platform.runLater(() -> {
+                            presentSelectedSimulationInfo();
+                        });
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
-            bringDetailsThread.start();
-        }
-        else{
-            handleSimulationAfterFinish(currentDetailsForSimulation);
-            presentSelectedSimulationInfo();
+                });
+                bringDetailsThread.start();
+            } else {
+                handleSimulationAfterFinish(currentDetailsForSimulation);
+                presentSelectedSimulationInfo();
+            }
         }
     }
 
@@ -335,5 +336,13 @@ public class ResultsController implements Initializable {
     public void clearScreen() {
         this.obsListEntities.clear();
         this.obsListSimulations.clear();
+    }
+
+    public void resetAllComponent() {
+        this.labelCurrTick.setText("");
+        this.labelCurrTimer.setText("");
+        this.labelIdSimulation.setText("");
+        this.labelSimulationStatus.setText("");
+        this.hboxFinalDetails.setVisible(false);
     }
 }
