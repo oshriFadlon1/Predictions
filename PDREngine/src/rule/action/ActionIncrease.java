@@ -39,9 +39,9 @@ public class ActionIncrease extends AbstractAction implements Serializable {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
-            return;
-        }
+//        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+//            return;
+//        }
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         if (!Utilities.verifyNumericPropertyTYpe(propertyInstance)) {
             throw new GeneralException("increase action can't operate on a none number property [" + propertyName);
@@ -59,9 +59,9 @@ public class ActionIncrease extends AbstractAction implements Serializable {
         Object result;// need to take the value from
 
         result = ((Number)x).floatValue() + ((Number)y).floatValue();
-        // updating result on the property
-        propertyInstance.setPropValue(result);
-        propertyInstance.setIsPropertyChangedInCurrTick(true);
+
+        propertyInstance.updatePropertyValue(result);
+
     }
 
     @Override

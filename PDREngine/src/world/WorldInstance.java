@@ -10,6 +10,7 @@ import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
+import pointCoord.PointCoord;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
@@ -43,6 +44,7 @@ public class WorldInstance implements Serializable, Runnable {
     private long timeFinished;
     private volatile boolean isPaused;
     private volatile boolean isStopped;
+    private boolean isStarted;
     private long totalTimeInPause;
     private final Object lockForSyncPause;
     private List<DtoCountTickPopulation> entityPopulationInEachTick;
@@ -67,6 +69,7 @@ public class WorldInstance implements Serializable, Runnable {
         this.startTheSimulation = -1;
         this.lockForSyncPause = new Object();
         this.entityPopulationInEachTick = new ArrayList<>();
+        this.isStarted = false;
     }
 
 
@@ -150,7 +153,7 @@ public class WorldInstance implements Serializable, Runnable {
         boolean endedByTicks = false, endedBySeconds = false;
         NecessaryVariablesImpl necessaryVariables = new NecessaryVariablesImpl(allEnvironments);
         initializeAllEntityInstancesLists();
-
+        this.isStarted = true;
         necessaryVariables.setWorldPhysicalSpace(this.physicalSpace);
 
         for (EntityDefinition entityDefinition:this.entityDefinitions) {
@@ -158,7 +161,7 @@ public class WorldInstance implements Serializable, Runnable {
         }
         Termination currentTermination = this.informationOfWorld.getTermination();
 
-        int currentTickCount = 0;
+        //int currentTickCount = 0;
         Random random = new Random();
 //        long timeStarted = System.currentTimeMillis();
 //        long currentTime = System.currentTimeMillis();
@@ -166,7 +169,7 @@ public class WorldInstance implements Serializable, Runnable {
         this.startTheSimulation = System.currentTimeMillis();
 
         while (currentTermination.isTicksActive(this.currentTick) && currentTermination.isSecondsActive(getCurrentTimePassed()) && !isStopped){
-            System.out.println("thread number "+Thread.currentThread() +"current tick : "+this.currentTick + "general info: " + this.informationOfWorld );
+ //           System.out.println("thread number "+Thread.currentThread() +"current tick : "+this.currentTick + "general info: " + this.informationOfWorld );
 
             if (isPaused){
                 synchronized (this.lockForSyncPause){
@@ -184,9 +187,8 @@ public class WorldInstance implements Serializable, Runnable {
                 }
                 continue;
             }
-
-            moveAllEntitiesInPhysicalWorld();
-
+            //TODO: change back
+           moveAllEntitiesInPhysicalWorld();
 
             List<IAction> activeActionsInCurrentTick = new ArrayList<>();
             for (Rule rule : this.allRules ) {
@@ -261,32 +263,6 @@ public class WorldInstance implements Serializable, Runnable {
                     }
                 }
             }
-            
-
-//            for(Rule currentRuleToInvokeOnEntities: this.allRules){
-//                List<IAction> allActionsForCurrentRule = currentRuleToInvokeOnEntities.getActions();
-//                float probabilityToCheckAgainstCurrentRuleProbability = random.nextFloat();
-//                ActivationForRule activitionForCurrentRule = currentRuleToInvokeOnEntities.getActivation();
-//                int activitionTicksForCurrentRule = activitionForCurrentRule.getTicks();
-//                float activitionProbabilityForCurrentRule = activitionForCurrentRule.getProbability();
-//                if(activitionProbabilityForCurrentRule >= probabilityToCheckAgainstCurrentRuleProbability
-//                        && (this.currentTick != 0 && this.currentTick % activitionTicksForCurrentRule == 0)){
-//                    //need to invoke the rule for each entity instance
-//                    for (String currentEntityName: allEntities.keySet()) {
-//                        // the current list of entity instances from the map
-//                        List<EntityInstance> currentEntityInstanceList = allEntities.get(currentEntityName);
-//                        // set the list of entities to the "context" object to invoke
-//                        necessaryVariables.setEntityInstanceManager(currentEntityInstanceList);
-//                        // create a copy of the entity instance list to run on it.
-//                        List<EntityInstance> copyOfEntityInstancesList = new ArrayList<>(currentEntityInstanceList);
-//                        // get secondary entities
-//
-//                        // invoke each action on each entity
-//                        invokeActionsOnEntityInstances(necessaryVariables, allActionsForCurrentRule, copyOfEntityInstancesList);
-//                    }
-//                }
-//            }
-
             killAllEntities();
             killAndReplaceAllEntities();
             checkAllPropertyInstancesIfChanged();
@@ -428,7 +404,7 @@ public class WorldInstance implements Serializable, Runnable {
                     this.allEntities.put(entityDefName, new ArrayList<>());
                 }
 
-                this.allEntities.get(entityDefName).add(newEntityInstance);
+               this.allEntities.get(entityDefName).add(newEntityInstance);
                 this.physicalSpace.putEntityInWorld(newEntityInstance);
             }
         }
@@ -470,7 +446,9 @@ public class WorldInstance implements Serializable, Runnable {
 
     private void moveAllInstances(List<EntityInstance> currentEntityInstanceList) {
         for(EntityInstance currentEntityInstance: currentEntityInstanceList){
+            System.out.println("id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
             this.physicalSpace.moveCurrentEntity(currentEntityInstance);
+            System.out.println("--> id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
         }
     }
 
@@ -576,6 +554,7 @@ public class WorldInstance implements Serializable, Runnable {
             EntityInstance instanceToCreate = createAndReplace(currentKillAndReplace);
             this.allEntities.get(instanceToCreate.getDefinitionOfEntity().getEntityName()).add(instanceToCreate);
             removeFromEntityInstancesList(currentKillAndReplace.getKill(), this.allEntities.get(currentKillAndReplace.getKill().getDefinitionOfEntity().getEntityName()));
+
             this.physicalSpace.putEntityInWorld(instanceToCreate);
         }
     }
@@ -600,7 +579,7 @@ public class WorldInstance implements Serializable, Runnable {
     }
 
     private EntityInstance createInstanceFromAnother(EntityInstance kill, EntityDefinition create) {
-        EntityInstance createdInstance = new EntityInstance(create, this.allEntities.size());
+        EntityInstance createdInstance = new EntityInstance(create, this.allEntities.get(create.getEntityName()).size());
         createdInstance.setPositionInWorld(kill.getPositionInWorld());
         Map<String, PropertyDefinitionEntity> propertyDefinitionMap = create.getPropertyDefinition();
         for(String currPropDefName: propertyDefinitionMap.keySet()){
@@ -633,14 +612,6 @@ public class WorldInstance implements Serializable, Runnable {
         return createdInstance;
     }
 
-//    public int getPrimaryEntityPopulation() {
-//        return this.primaryEntityPopulation;
-//    }
-//
-//    public int getSecondaryEntityPopulation() {
-//        return this.secondaryEntityPopulation;
-//    }
-
     public int getCurrentTick() {
         return this.currentTick;
     }
@@ -652,6 +623,9 @@ public class WorldInstance implements Serializable, Runnable {
         else{
             if (isPaused){
                 return (this.currentTimePassed - this.startTheSimulation - this.totalTimeInPause)/1000;
+            }
+            else if (!this.isStarted){
+                return 0;
             }
             else{
                 return (System.currentTimeMillis() - this.startTheSimulation - this.totalTimeInPause)/1000;

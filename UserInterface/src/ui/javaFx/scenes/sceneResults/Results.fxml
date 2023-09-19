@@ -98,9 +98,9 @@
                 </BorderPane>
             <HBox fx:id="hboxFinalDetails" layoutY="312.0">
                <children>
-                  <BarChart fx:id="barchartPopulation" prefHeight="330.0" prefWidth="514.0" title="Population during simulation">
+                  <BarChart fx:id="barchartPopulation" prefHeight="330.0" prefWidth="514.0" stylesheets="@../../../cssDesign/homePageDesign.css" title="Population during simulation">
                     <xAxis>
-                      <CategoryAxis label="Tick(K)" side="BOTTOM" />
+                      <CategoryAxis label="Tick" side="BOTTOM" />
                     </xAxis>
                     <yAxis>
                       <NumberAxis label="Population" side="LEFT" />

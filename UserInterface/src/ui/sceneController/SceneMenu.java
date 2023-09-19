@@ -186,7 +186,7 @@ public class SceneMenu implements Initializable {
                     this.resultsController.fetchAllSimulations();
                 });
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
