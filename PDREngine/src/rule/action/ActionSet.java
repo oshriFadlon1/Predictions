@@ -39,9 +39,9 @@ public class ActionSet extends AbstractAction implements Serializable {
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
-            return;
-        }
+//        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+//            return;
+//        }
 
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(propertyName);
         String type = propertyInstance.getPropertyDefinition().getPropertyType().toLowerCase();
@@ -49,30 +49,24 @@ public class ActionSet extends AbstractAction implements Serializable {
         try {
             result = context.getValueFromString(this.value);
 
-            switch (type){
-                case "decimal":
-                    if (! (result instanceof Integer)){
-                        throw new GeneralException("Set action can't operate on decimal with none decimal value");
-                    }
-                    break;
+            switch (type) {
                 case "float":
-                    if (! (result instanceof Float)){
+                    if (!(result instanceof Float)) {
                         throw new GeneralException("Set action can't operate on float with none float value");
                     }
                     break;
                 case "boolean":
-                    if (! (result instanceof Boolean)){
+                    if (!(result instanceof Boolean)) {
                         throw new GeneralException("Set action can't operate on boolean with none boolean value");
                     }
                     break;
                 case "string":
-                    if (! (result instanceof String)){
+                    if (!(result instanceof String)) {
                         throw new GeneralException("Set action can't operate on String with none String value");
                     }
                     break;
             }
-            propertyInstance.setPropValue(result);
-            propertyInstance.setIsPropertyChangedInCurrTick(true);
+            propertyInstance.updatePropertyValue(result);
         } catch (GeneralException e) {
             throw e;
         }

@@ -58,8 +58,7 @@ public class ActionCalculationDivide extends ActionCalculation implements Serial
 
         // updating result on the property
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement());
-        propertyInstance.setPropValue(result);
-        propertyInstance.setIsPropertyChangedInCurrTick(true);
+        propertyInstance.updatePropertyValue(result);
     }
 
 

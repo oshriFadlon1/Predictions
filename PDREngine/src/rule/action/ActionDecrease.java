@@ -61,11 +61,8 @@ public class ActionDecrease extends AbstractAction implements Serializable {
         Object result;// need to take the value from
         result = ((Number)x).floatValue() - ((Number)y).floatValue();
 
-
-
         // updating result on the property
-        propertyInstance.setPropValue(result);
-        propertyInstance.setIsPropertyChangedInCurrTick(true);
+        propertyInstance.updatePropertyValue(result);
     }
 
     @Override

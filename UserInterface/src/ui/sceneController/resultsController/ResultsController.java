@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
 
 public class ResultsController implements Initializable {
     private SceneMenu sceneMenu;
@@ -37,6 +36,8 @@ public class ResultsController implements Initializable {
     private ObservableList<SimulationPresenter> obsListSimulations;
     private ObservableList<String> obsListEntityNames;
     private ObservableList<String> obsListPropertyNames;
+    private ObservableList<HistogramPresenter> obsListHistogram;
+
     private InterfaceMenu interfaceMenu;
     //private ExecutorService bringDetailsThread;
     // TODO TASK THAT CALL main engine and get a map of integer boolean and by it know which simulation is running and which finished(first, learn how to do task lol XD)
@@ -101,12 +102,14 @@ public class ResultsController implements Initializable {
     private BarChart<String, Integer> barchartPopulation;
 
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.obsListEntities = FXCollections.observableArrayList();
         this.obsListSimulations = FXCollections.observableArrayList();
         this.obsListEntityNames = FXCollections.observableArrayList();
         this.obsListPropertyNames = FXCollections.observableArrayList();
+        this.obsListHistogram = FXCollections.observableArrayList();
         this.tableColumnEntity.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         this.tableColumnPopulation.setCellValueFactory(new PropertyValueFactory<>("population"));
         this.columnValue.setCellValueFactory(new PropertyValueFactory<>("propertyValue"));
@@ -136,24 +139,11 @@ public class ResultsController implements Initializable {
             this.hboxFinalDetails.setVisible(false);
             Thread bringDetailsThread = new Thread(() -> {
                 while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
-                    DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-                    int population1 = currentDetails.getEntity1Population();
-                    int population2 = currentDetails.getEntity2Population();
-
                     Platform.runLater(() -> {
-                        this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
-                        this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
-                        this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
-                        this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
-                        this.obsListEntities.clear();
-                        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
-                        if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
-                            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
-                        }
-                        this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
+                        presentSelectedSimulationInfo();
                     });
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -163,7 +153,26 @@ public class ResultsController implements Initializable {
         }
         else{
             handleSimulationAfterFinish(currentDetailsForSimulation);
+            presentSelectedSimulationInfo();
         }
+    }
+
+    private void presentSelectedSimulationInfo() {
+        DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+        int population1 = currentDetails.getEntity1Population();
+        int population2 = currentDetails.getEntity2Population();
+
+
+        this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
+        this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
+        this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
+        this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
+        this.obsListEntities.clear();
+        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
+        if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
+            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+        }
+        this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
     }
 
     private void handleSimulationAfterFinish(DtoSimulationDetails currentDetailsForSimulation) {
@@ -191,14 +200,28 @@ public class ResultsController implements Initializable {
 
     @FXML
     void onSelectedComboBoxPropertyItem(ActionEvent event) {
+        this.obsListHistogram.clear();
+        this.avgTickValue.setText("");
+        this.avgPropertyValue.setText("");
         String selectedItem = this.comboBoxEntityProperty.getValue();
         if(selectedItem != null){
             int simulationId = this.currSimulationPresenter.getSimulationId();
             DtoHistogramInfo dtoHistogramInfo = this.interfaceMenu.fetchInfoOnChosenProperty(simulationId, this.comboBoxEntityName.getValue(), selectedItem);
             if(dtoHistogramInfo.getAvgInFinalPopulation() != -1) {
                 this.avgPropertyValue.setText(String.valueOf(dtoHistogramInfo.getAvgInFinalPopulation()));
+            }else {
+                this.avgPropertyValue.setText("The property is not float value \n/ the population is 0.");
             }
-            this.avgTickValue.setText(String.valueOf(dtoHistogramInfo.getAvgChangeInTicks()));
+            if (dtoHistogramInfo.getAvgChangeInTicks() != -1){
+                this.avgTickValue.setText(String.valueOf(dtoHistogramInfo.getAvgChangeInTicks()));
+            } else {
+                this.avgTickValue.setText("The population is 0.");
+            }
+
+            for (String str : dtoHistogramInfo.getValue2Count().keySet()) {
+                Integer countOfProperty = dtoHistogramInfo.getValue2Count().get(str);
+                obsListHistogram.add(new HistogramPresenter(str, countOfProperty));
+            }
         }
     }
 

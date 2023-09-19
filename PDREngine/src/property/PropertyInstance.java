@@ -32,8 +32,7 @@ public class PropertyInstance implements Serializable {
     }
 
     public void setPropValue(Object propValue) {
-        if (this.propertyDefinition.getPropertyType().equalsIgnoreCase("float")||
-                this.propertyDefinition.getPropertyType().equalsIgnoreCase("decimal")){
+        if (this.propertyDefinition.getPropertyType().equalsIgnoreCase("float")){
             if (this.propertyDefinition.checkIfValueInRange(propValue)){
                 this.propValue = propValue;
             } else {
@@ -44,6 +43,40 @@ public class PropertyInstance implements Serializable {
             this.propValue = propValue;
         }
     }
+
+    public void updatePropertyValue(Object propValue){
+        if (this.propertyDefinition.getPropertyType().equalsIgnoreCase("float")){
+            if (this.propertyDefinition.checkIfValueInRange(propValue)){
+                float resultInF = ((Float) propValue).floatValue();
+                float propertyValueInF = ((Float) this.propValue).floatValue();
+                if (resultInF != propertyValueInF) {
+                    this.propValue = propValue;
+                    isPropertyChangedInCurrTick = true;
+                }
+            } else {
+                this.propValue = this.propertyDefinition.getValueInRange(this.propertyDefinition.getPropertyType(),propValue);
+            }
+        }
+        else {
+            if (propertyDefinition.getPropertyType().equalsIgnoreCase("boolean")) {
+                boolean resultInB = ((Boolean) propValue).booleanValue();
+                boolean propertyValueInB = ((Boolean) this.propValue).booleanValue();
+                if (resultInB != propertyValueInB) {
+                    this.propValue = propValue;
+                    isPropertyChangedInCurrTick = true;
+                }
+            } else {
+                String resultInS = ((String) propValue);
+                String propertyValueInS = ((String) this.propValue);
+                if (!resultInS.equals(propertyValueInS)) {
+                    this.propValue = propValue;
+                    isPropertyChangedInCurrTick = true;
+                }
+            }
+        }
+    }
+
+
 
     public Object getPropValue() {
         return propValue;

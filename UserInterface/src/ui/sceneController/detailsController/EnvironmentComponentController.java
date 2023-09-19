@@ -16,19 +16,27 @@ public class EnvironmentComponentController {
     @FXML
     private Label envType;
 
+    @FXML
+    private Label valueOfName;
+
+    @FXML
+    private Label valueOfRange;
+
+    @FXML
+    private Label valueOfType;
+
         public void updateLabelEnv(EnvironmentDefinition environmentDefinition){
         if (environmentDefinition == null){
             return;
         }
         PropertyDefinition propertyDefinition = environmentDefinition.getEnvPropertyDefinition();
-        envName.setText("Environment property name: " + propertyDefinition.getPropertyName());
-        envType.setText("Environment property type: " + propertyDefinition.getPropertyType());
+            valueOfName.setText(propertyDefinition.getPropertyName());
+            valueOfType.setText(propertyDefinition.getPropertyType());
         if (propertyDefinition.getPropertyRange() == null) {
-            envRange.setText("");
+            valueOfRange.setText("The following environment variable has no range of values.");
         }
         else {
-
-            envRange.setText("Range: "+propertyDefinition.getPropertyRange().getFrom()+" -> "+propertyDefinition.getPropertyRange().getTo());
+            valueOfRange.setText(propertyDefinition.getPropertyRange().getFrom()+" -> "+propertyDefinition.getPropertyRange().getTo());
         }
 
     }

@@ -229,6 +229,8 @@ public class XmlParser {
         int ticks = 1;
 
         for (PRDRule prdRule:prdRules.getPRDRule()) {
+            probability = 1;
+            ticks = 1;
             String prdRuleName = prdRule.getName();
             if(ruleMap.containsKey(prdRuleName)){
                 throw new GeneralException("Rule name already exists");

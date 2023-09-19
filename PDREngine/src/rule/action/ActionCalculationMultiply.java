@@ -38,9 +38,9 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
 
     @Override
     public void invoke(NecessaryVariablesImpl context) throws GeneralException {
-        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
-            return;
-        }
+//        if (!context.getPrimaryEntityInstance().getDefinitionOfEntity().getEntityName().equalsIgnoreCase(super.getEntityDefinition().getEntityName())){
+//            return;
+//        }
         Object y = null,x = null,result = null;
 
         try {
@@ -53,8 +53,7 @@ public class ActionCalculationMultiply extends ActionCalculation implements Seri
 
         // updating result on the property
         PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(super.getPropertyPlacement());
-        propertyInstance.setPropValue(result);
-        propertyInstance.setIsPropertyChangedInCurrTick(true);
+        propertyInstance.updatePropertyValue(result);
     }
 
     @Override
