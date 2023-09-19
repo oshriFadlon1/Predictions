@@ -414,5 +414,16 @@ public class NewExecutionController implements Initializable{
         this.labelErrorEntity1.setText("");
         this.labelErrorEntity2.setText("");
     }
+
+    public void resetAllComponent() {
+        this.labelErrorEntity1.setText("");
+        this.labelError.setText("");
+        this.labelErrorEntity2.setText("");
+        this.textFieldValue.setText("");
+        this.textFieldEntity1.setText("");
+        this.textFieldEntity2.setText("");
+        this.tableEntities.setVisible(false);
+        this.tableEnvironments.setVisible(false);
+    }
 }
 

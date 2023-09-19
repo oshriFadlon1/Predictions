@@ -337,4 +337,12 @@ public class ResultsController implements Initializable {
         this.obsListEntities.clear();
         this.obsListSimulations.clear();
     }
+
+    public void resetAllComponent() {
+        this.labelCurrTick.setText("");
+        this.labelCurrTimer.setText("");
+        this.labelIdSimulation.setText("");
+        this.labelSimulationStatus.setText("");
+        this.hboxFinalDetails.setVisible(false);
+    }
 }

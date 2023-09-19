@@ -4,14 +4,14 @@
 }
 
 #QueueManagment{
-    -fx-text-fill: #4472C4;
+    -fx-text-fill: #f6d600;
 }
 .backGroundColor{
     -fx-background-color: #e5e5e5;
 }
 
 .title{
-    -fx-font-size: 20px;
+    -fx-font-size: 25px;
     -fx-font-family: "Arial";
     -fx-text-fill: #007bff;
     -fx-border-color: #007bff;
@@ -20,10 +20,10 @@
 }
 
 .default-color0.chart-bar{
-    -fx-bar-fill: #ff0000;
+    -fx-bar-fill:red;
 }
 .default-color1.chart-bar{
-    -fx-bar-fill: #0000ff;
+    -fx-bar-fill:blue;
 }
 
 #backGroundStyle{
@@ -40,7 +40,7 @@
 }
 
 #Env {
-    -fx-background-color: #acd8e7;
+    -fx-background-color: lightblue;
     -fx-border-width: 5px;
     -fx-border-color: #2e8b57;
     -fx-background-radius: 5.0;
@@ -62,11 +62,11 @@
 
 .buttonExecution{
     -fx-background-color: #4472C4;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
 }
 .buttonExecution:hover{
     -fx-background-color: #bbbbfc;
-    -fx-text-fill: #000000;
+    -fx-text-fill: black;
 }
 #labelError{
     -fx-text-fill: #49ff00;

@@ -446,9 +446,7 @@ public class WorldInstance implements Serializable, Runnable {
 
     private void moveAllInstances(List<EntityInstance> currentEntityInstanceList) {
         for(EntityInstance currentEntityInstance: currentEntityInstanceList){
-            System.out.println("id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
             this.physicalSpace.moveCurrentEntity(currentEntityInstance);
-            System.out.println("--> id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
         }
     }
 

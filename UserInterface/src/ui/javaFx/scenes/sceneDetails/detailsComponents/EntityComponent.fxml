@@ -3,11 +3,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="backGroudStyle" prefHeight="221.0" prefWidth="409.0" stylesheets="@../../../../cssDesign/terminationComponentDesign/TerminationComponentDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EntityComponentController">
+<AnchorPane id="backGroundStyle" stylesheets="@../../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EntityComponentController">
    <children>
-      <Label id="terminationInfo" fx:id="entPropName" layoutX="29.0" layoutY="29.0" prefHeight="26.0" prefWidth="359.0" text="ent Prop name" />
-      <Label id="terminationInfo" fx:id="propType" layoutX="29.0" layoutY="66.0" prefHeight="26.0" prefWidth="359.0" text="Type" />
-      <Label id="terminationInfo" fx:id="propRange" layoutX="25.0" layoutY="146.0" prefHeight="26.0" prefWidth="359.0" text="Range" />
-      <Label id="terminationInfo" fx:id="randomInit" layoutX="28.0" layoutY="102.0" prefHeight="26.0" prefWidth="359.0" text="Ramdom init" />
+      <Label id="terminationInfo" fx:id="entPropName" layoutX="25.0" layoutY="16.0" prefHeight="26.0" prefWidth="366.0" text="Entity property name :" />
+      <Label id="terminationInfo" fx:id="propType" layoutX="25.0" layoutY="68.0" prefHeight="26.0" prefWidth="366.0" text="Type :" />
+      <Label id="terminationInfo" fx:id="propRange" layoutX="25.0" layoutY="158.0" prefHeight="26.0" prefWidth="366.0" text="Range :" />
+      <Label id="terminationInfo" fx:id="randomInit" layoutX="25.0" layoutY="115.0" prefHeight="26.0" prefWidth="366.0" text="Ramdom Initialized :" />
+      <Label id="terminationInfo" fx:id="propNameValue" layoutX="25.0" layoutY="42.0" text="Label" />
+      <Label id="terminationInfo" fx:id="typeValue" layoutX="25.0" layoutY="91.0" text="Label" />
+      <Label id="terminationInfo" fx:id="randomValue" layoutX="25.0" layoutY="136.0" text="Label" />
+      <Label id="terminationInfo" fx:id="rangeValue" layoutX="25.0" layoutY="182.0" text="Label" />
    </children>
 </AnchorPane>
