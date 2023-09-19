@@ -10,6 +10,7 @@ import environment.EnvironmentInstance;
 import exceptions.GeneralException;
 import interfaces.IConditionComponent;
 import necessaryVariables.NecessaryVariablesImpl;
+import pointCoord.PointCoord;
 import property.PropertyDefinition;
 import property.PropertyDefinitionEntity;
 import property.PropertyInstance;
@@ -184,9 +185,8 @@ public class WorldInstance implements Serializable, Runnable {
                 }
                 continue;
             }
-
-            moveAllEntitiesInPhysicalWorld();
-
+            //TODO: change back
+           moveAllEntitiesInPhysicalWorld();
 
             List<IAction> activeActionsInCurrentTick = new ArrayList<>();
             for (Rule rule : this.allRules ) {
@@ -428,7 +428,7 @@ public class WorldInstance implements Serializable, Runnable {
                     this.allEntities.put(entityDefName, new ArrayList<>());
                 }
 
-                this.allEntities.get(entityDefName).add(newEntityInstance);
+               this.allEntities.get(entityDefName).add(newEntityInstance);
                 this.physicalSpace.putEntityInWorld(newEntityInstance);
             }
         }
@@ -576,6 +576,7 @@ public class WorldInstance implements Serializable, Runnable {
             EntityInstance instanceToCreate = createAndReplace(currentKillAndReplace);
             this.allEntities.get(instanceToCreate.getDefinitionOfEntity().getEntityName()).add(instanceToCreate);
             removeFromEntityInstancesList(currentKillAndReplace.getKill(), this.allEntities.get(currentKillAndReplace.getKill().getDefinitionOfEntity().getEntityName()));
+
             this.physicalSpace.putEntityInWorld(instanceToCreate);
         }
     }
@@ -633,14 +634,6 @@ public class WorldInstance implements Serializable, Runnable {
         return createdInstance;
     }
 
-//    public int getPrimaryEntityPopulation() {
-//        return this.primaryEntityPopulation;
-//    }
-//
-//    public int getSecondaryEntityPopulation() {
-//        return this.secondaryEntityPopulation;
-//    }
-
     public int getCurrentTick() {
         return this.currentTick;
     }
@@ -652,6 +645,9 @@ public class WorldInstance implements Serializable, Runnable {
         else{
             if (isPaused){
                 return (this.currentTimePassed - this.startTheSimulation - this.totalTimeInPause)/1000;
+            }
+            else if (!this.isStarted){
+                return 0;
             }
             else{
                 return (System.currentTimeMillis() - this.startTheSimulation - this.totalTimeInPause)/1000;

@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import ui.presenter.CustomItemCell;
 import ui.presenter.EntityPresenter;
+import ui.presenter.HistogramPresenter;
 import ui.presenter.SimulationPresenter;
 import ui.sceneController.SceneMenu;
 
@@ -81,10 +82,10 @@ public class ResultsController implements Initializable {
     private Label avgTickValue;
 
     @FXML
-    private TableColumn<?, ?> columnCount;
+    private TableColumn<HistogramPresenter, Integer> columnCount;
 
     @FXML
-    private TableColumn<?, ?> columnValue;
+    private TableColumn<HistogramPresenter, String> columnValue;
 
     @FXML
     private ComboBox<String> comboBoxEntityName;
@@ -93,7 +94,7 @@ public class ResultsController implements Initializable {
     private ComboBox<String> comboBoxEntityProperty;
 
     @FXML
-    private TableView<?> tableViewHistogram;
+    private TableView<HistogramPresenter> tableViewHistogram;
     @FXML
     private HBox hboxFinalDetails;
     @FXML
@@ -108,8 +109,11 @@ public class ResultsController implements Initializable {
         this.obsListPropertyNames = FXCollections.observableArrayList();
         this.tableColumnEntity.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         this.tableColumnPopulation.setCellValueFactory(new PropertyValueFactory<>("population"));
+        this.columnValue.setCellValueFactory(new PropertyValueFactory<>("propertyValue"));
+        this.columnCount.setCellValueFactory(new PropertyValueFactory<>("countOfProperty"));
         this.tableViewEntities.setItems(this.obsListEntities);
         this.listViewSimulations.setItems(this.obsListSimulations);
+        this.tableViewHistogram.setItems(this.obsListHistogram);
         this.listViewSimulations.setCellFactory(param -> new CustomItemCell());
         this.comboBoxEntityName.setItems(this.obsListEntityNames);
         this.comboBoxEntityProperty.setItems(this.obsListPropertyNames);
@@ -124,6 +128,7 @@ public class ResultsController implements Initializable {
     private void selectedItem(){
         this.obsListEntityNames.clear();
         this.obsListPropertyNames.clear();
+        this.obsListHistogram.clear();
         this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
         DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
