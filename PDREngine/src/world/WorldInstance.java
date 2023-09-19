@@ -590,6 +590,7 @@ public class WorldInstance implements Serializable, Runnable {
             }
             else{
                 PropertyInstance newPropInstance = new PropertyInstance(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition());
+
                 switch(newPropInstance.getPropertyDefinition().getPropertyType().toLowerCase()){
                     case "float":
                         float floatVal = Utilities.initializeRandomFloat(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition().getPropertyRange());

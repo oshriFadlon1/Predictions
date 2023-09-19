@@ -107,6 +107,7 @@ public class SceneMenu implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
         // Load the FXML of the nested controller
         ScrollPane nestedControllersContainer;
         FXMLLoader loaderDetail = new FXMLLoader();
@@ -192,6 +193,22 @@ public class SceneMenu implements Initializable {
                 }
             }
         }).start();
+    }
+
+    @FXML
+    void onSelectedComboBoxSkins(ActionEvent event) {
+        String selectedSkin = this.comboBoxSkins.getValue();
+        switch(selectedSkin){
+            case "Skin 1":
+                switchCSS("/ui/cssDesign/homePageDesign.css",this.primaryStage.getScene());
+                break;
+            case "Skin 2":
+                switchCSS("/ui/cssDesign/homePageDesign2.css",this.primaryStage.getScene());
+                break;
+            case "Skin 3":
+                switchCSS("/ui/cssDesign/homePageDesign3.css",this.primaryStage.getScene());
+                break;
+        }
     }
 
     public void navigateToNewExecutionTab(int idOfSimulation){
