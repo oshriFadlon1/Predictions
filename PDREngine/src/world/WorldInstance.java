@@ -563,6 +563,8 @@ public class WorldInstance implements Serializable, Runnable {
             case SCRATCH:
                 createdInstance = initializeEntityInstanceAccordingToEntityDefinition(currentKillAndReplace.getCreate(),
                         this.allEntities.get(currentKillAndReplace.getCreate().getEntityName()).size());
+                this.physicalSpace.replaceEntities(createdInstance, currentKillAndReplace.getKill().getPositionInWorld());
+
                 break;
             case DERIVED:
                 createdInstance = createInstanceFromAnother(currentKillAndReplace.getKill(), currentKillAndReplace.getCreate());
