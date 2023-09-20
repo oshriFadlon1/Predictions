@@ -36,6 +36,7 @@ public interface InterfaceMenu {
     void executeSimulation(DtoUiToEngine envInputFromUser);
 
     DtoSimulationDetails getSimulationById(int idOfCurrentSimulation);
+    int getNumberOfSimulation();
     DtoAllSimulationDetails getAllSimulations();
 
     void pauseCurrentSimulation(int simulationId);

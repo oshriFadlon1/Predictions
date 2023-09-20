@@ -3,13 +3,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="backGroundStyle" stylesheets="@../../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EnvironmentComponentController">
+<AnchorPane id="backGroundStyle" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.EnvironmentComponentController">
    <children>
-      <Label id="terminationInfo" fx:id="envType" layoutX="14.0" layoutY="52.0" prefHeight="26.0" prefWidth="50.0" text="Type :" />
-      <Label id="terminationInfo" fx:id="envRange" layoutX="14.0" layoutY="96.0" prefHeight="26.0" prefWidth="57.0" text="Range :" />
-      <Label id="terminationInfo" fx:id="envName" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="154.0" text="Environment name :" />
-      <Label id="terminationInfo" fx:id="valueOfName" layoutX="162.0" layoutY="14.0" text="Label" />
-      <Label id="terminationInfo" fx:id="valueOfType" layoutX="62.0" layoutY="52.0" text="Label" />
-      <Label id="terminationInfo" fx:id="valueOfRange" layoutX="72.0" layoutY="96.0" text="Label" />
+      <Label id="terminationInfo" fx:id="envType" layoutX="5.0" layoutY="41.0" text="Type :" />
+      <Label id="terminationInfo" fx:id="envRange" layoutX="6.0" layoutY="79.0" text="Range :" />
+      <Label id="terminationInfo" fx:id="envName" layoutX="5.0" layoutY="4.0" text="Environment name :" />
+      <Label id="terminationInfo" fx:id="valueOfName" layoutX="7.0" layoutY="24.0" text="Label" />
+      <Label id="terminationInfo" fx:id="valueOfType" layoutX="6.0" layoutY="58.0" text="Label" />
+      <Label id="terminationInfo" fx:id="valueOfRange" layoutX="6.0" layoutY="99.0" text="Label" />
    </children>
 </AnchorPane>

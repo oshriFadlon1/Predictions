@@ -63,7 +63,7 @@ public class RuleComponentController {
                 this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
                 this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
                 this.actionProperty.setText("Depth: " + DtoActionResponse.getActionProperty());
-                this.actionValue.setText("");
+                this.actionValue.setText("Number of action: "+ DtoActionResponse.getActionValue());
                 this.actionArg2.setText("");
                 this.ActionElse.setText("");
                 break;
