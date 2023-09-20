@@ -134,26 +134,31 @@ public class ResultsController implements Initializable {
         this.obsListHistogram.clear();
         this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-        if(!currentDetailsForSimulation.isSimulationFinished()) {
-            this.hboxFinalDetails.setVisible(false);
-            Thread bringDetailsThread = new Thread(() -> {
-                while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
-                    Platform.runLater(() -> {
-                        presentSelectedSimulationInfo();
-                    });
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            bringDetailsThread.start();
+        if(this.currSimulationPresenter == null && this.obsListSimulations.size() == 1){
+            this.listViewSimulations.getSelectionModel().select(0);
+            this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
         }
-        else{
-            handleSimulationAfterFinish(currentDetailsForSimulation);
-            presentSelectedSimulationInfo();
+        if(this.currSimulationPresenter != null) {
+            DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+            if (!currentDetailsForSimulation.isSimulationFinished()) {
+                this.hboxFinalDetails.setVisible(false);
+                Thread bringDetailsThread = new Thread(() -> {
+                    while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
+                        Platform.runLater(() -> {
+                            presentSelectedSimulationInfo();
+                        });
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                bringDetailsThread.start();
+            } else {
+                handleSimulationAfterFinish(currentDetailsForSimulation);
+                presentSelectedSimulationInfo();
+            }
         }
     }
 

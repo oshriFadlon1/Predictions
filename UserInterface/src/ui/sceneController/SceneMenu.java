@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -26,6 +27,10 @@ import java.util.ResourceBundle;
 public class SceneMenu implements Initializable {
 
     private InterfaceMenu interfaceMenu = null;
+    private String theme1Url = getClass().getResource("/ui/cssDesign/Skin1.css").toExternalForm();
+    private String theme2Url = getClass().getResource("/ui/cssDesign/homePageDesign.css").toExternalForm();
+    private Scene scene;
+
     private DetailsController detailsController;
     private NewExecutionController newExecutionController;
     private ResultsController resultsController;
@@ -36,6 +41,7 @@ public class SceneMenu implements Initializable {
     @FXML private Tab tabOfDetails;
     @FXML private Tab tabOfNewExecution;
     @FXML private Tab tabOfResults;
+    @FXML private ComboBox<String> comboBoxSkins;
 
     @FXML private Button ButtonLoadFile;
     @FXML private TextField textFilePath;
@@ -109,6 +115,7 @@ public class SceneMenu implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Load the FXML of the nested controller
         ScrollPane nestedControllersContainer;
+        this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
         FXMLLoader loaderDetail = new FXMLLoader();
         URL mainFXML = getClass().getResource("/ui/javaFx/scenes/sceneDetails/Details.fxml");
         loaderDetail.setLocation(mainFXML);
@@ -192,6 +199,18 @@ public class SceneMenu implements Initializable {
                 }
             }
         }).start();
+    }
+    @FXML
+    private void onComboBoxStylesClicked(){
+        this.scene = this.comboBoxSkins.getScene();
+        String selectedStyle = this.comboBoxSkins.getSelectionModel().getSelectedItem();
+        switch(selectedStyle){
+            case "Skin 1":
+                this.scene.getStylesheets().remove("homePageDesign.css");
+                this.scene.getStylesheets().add(this.theme1Url);
+                break;
+
+        }
     }
 
     public void navigateToNewExecutionTab(int idOfSimulation){
