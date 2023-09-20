@@ -19,7 +19,7 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.resultsController.ResultsController">
     <content>
-        <AnchorPane prefHeight="654.0" prefWidth="1070.0" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
+        <AnchorPane prefHeight="654.0" prefWidth="1070.0" styleClass="backGroundColor">
             <children>
                 <ListView fx:id="listViewSimulations" layoutX="31.0" layoutY="44.0" onMouseClicked="#selectedItem" prefHeight="257.0" prefWidth="248.0" />
                 <Label id="terminationInfo" layoutX="37.0" layoutY="15.0" text="All simulations">

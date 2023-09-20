@@ -305,73 +305,6 @@ public class WorldInstance implements Serializable, Runnable {
         }
     }
 
-//    private void invokeActionsOnEntityInstances(NecessaryVariablesImpl necessaryVariables, List<IAction> allActionsForCurrentRule, List<EntityInstance> copyOfEntityInstancesList) throws GeneralException {
-//        // for each entity instance in the list
-//        for(EntityInstance currentEntityInstance: copyOfEntityInstancesList){
-//            // for each action in current rule in action list
-//            for(IAction currentActionToInvoke: allActionsForCurrentRule) {
-//
-//                necessaryVariables.setPrimaryEntityInstance(currentEntityInstance);
-//                // check if we have a secondary entity
-//                if (currentActionToInvoke.getSecondaryEntity() == null) {
-//
-//                    if (currentActionToInvoke instanceof ActionReplace) {
-//                        ActionReplace parsedAction = (ActionReplace)currentActionToInvoke;
-//                        EntityDefinition definitionOfSecondEntity = getDefinitionByName(parsedAction.getEntityToCreate());
-//                        //EntityDefinition definitionOfSecondEntity = getDefinitionByName(worldDefinitionForSimulation, parsedAction.getEntityToCreate());
-//                        necessaryVariables.setSecondaryEntityDefinition(definitionOfSecondEntity);
-//                    }
-//
-//                    currentActionToInvoke.invoke(necessaryVariables);
-//                    if (necessaryVariables.getEntityToKill() != null) {
-//                        this.entitiesToKill.add(necessaryVariables.getEntityToKill());
-//                    }
-//                    if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
-//                            necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
-//                        this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
-//                    }
-//                    necessaryVariables.resetKillAndCreateAndKill();
-//                }
-//                else {
-//                    SecondEntity secondEntity = currentActionToInvoke.getSecondaryEntity();
-//                    List<EntityInstance> secondaryEntityInstances;
-//                    {
-//                        if (secondEntity.getCondition() == null) {
-//                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
-//                                secondaryEntityInstances = this.allEntities.get(secondEntity.getEntity().getEntityName());
-//                            } else {
-//                                secondaryEntityInstances = getSecondaryInstancesByNumber(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCount());
-//                            }
-//
-//                        } else {
-//                            if (secondEntity.getCount().equalsIgnoreCase("all")) {
-//                                secondaryEntityInstances = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
-//                            } else {
-//                                List<EntityInstance> conditionList = generateSecondaryInstancesListFromCondition(this.allEntities.get(secondEntity.getEntity().getEntityName()), secondEntity.getCondition(), new NecessaryVariablesImpl(allEnvironments));
-//                                secondaryEntityInstances = getSecondaryInstancesByNumber(conditionList, secondEntity.getCount());
-//                            }
-//                        }
-//
-//                        for (EntityInstance currSecondaryEntityInstance : secondaryEntityInstances) {
-//                            necessaryVariables.setSecondaryEntityInstance(currSecondaryEntityInstance);
-//                            currentActionToInvoke.invoke(necessaryVariables);
-//                            if (necessaryVariables.getEntityToKill() != null) { //i dont know if i really need this. i think so
-//                                this.entitiesToKill.add(necessaryVariables.getEntityToKill());
-//                                break;
-//                            }
-//                            if (necessaryVariables.getEntityToKillAndCreate().getCreate() != null &&
-//                                    necessaryVariables.getEntityToKillAndCreate().getKill() != null) {
-//                                this.entitiesToKillAndReplace.add(necessaryVariables.getEntityToKillAndCreate());
-//                                break;
-//                            }
-//                        }
-//                        necessaryVariables.resetKillAndCreateAndKill();
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private void checkAllPropertyInstancesIfChanged() {
         for(String currEntityName: this.allEntities.keySet()){
             List<EntityInstance> currentEntityInstancesList = this.allEntities.get(currEntityName);
@@ -563,6 +496,8 @@ public class WorldInstance implements Serializable, Runnable {
             case SCRATCH:
                 createdInstance = initializeEntityInstanceAccordingToEntityDefinition(currentKillAndReplace.getCreate(),
                         this.allEntities.get(currentKillAndReplace.getCreate().getEntityName()).size());
+                this.physicalSpace.replaceEntities(createdInstance, currentKillAndReplace.getKill().getPositionInWorld());
+
                 break;
             case DERIVED:
                 createdInstance = createInstanceFromAnother(currentKillAndReplace.getKill(), currentKillAndReplace.getCreate());
