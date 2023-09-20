@@ -446,9 +446,7 @@ public class WorldInstance implements Serializable, Runnable {
 
     private void moveAllInstances(List<EntityInstance> currentEntityInstanceList) {
         for(EntityInstance currentEntityInstance: currentEntityInstanceList){
-            System.out.println("id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
             this.physicalSpace.moveCurrentEntity(currentEntityInstance);
-            System.out.println("--> id: " + currentEntityInstance.getId() + " entity: " + currentEntityInstance.getDefinitionOfEntity().getEntityName() + " point: " + currentEntityInstance.getPositionInWorld().getRow() + ", " + currentEntityInstance.getPositionInWorld().getCol());
         }
     }
 
@@ -590,6 +588,7 @@ public class WorldInstance implements Serializable, Runnable {
             }
             else{
                 PropertyInstance newPropInstance = new PropertyInstance(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition());
+
                 switch(newPropInstance.getPropertyDefinition().getPropertyType().toLowerCase()){
                     case "float":
                         float floatVal = Utilities.initializeRandomFloat(create.getPropertyDefinition().get(currPropDefName).getPropertyDefinition().getPropertyRange());

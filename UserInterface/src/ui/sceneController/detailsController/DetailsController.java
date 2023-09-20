@@ -105,7 +105,7 @@ public class DetailsController implements Initializable {
         if (selectedItem == null || this.worldPreview == null || selectedItem.getValue().equalsIgnoreCase(world)){
             return;
         }
-
+        try {
         // case choose general (termination and grid)
         if (selectedItem.getValue().equalsIgnoreCase(general)){
             loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/TerminationComponent.fxml", general);
@@ -131,7 +131,7 @@ public class DetailsController implements Initializable {
             loadAndAddFXML("/ui/javaFx/scenes/sceneDetails/detailsComponents/RuleComponent.fxml", "Rule");
             this.ruleComponentController.updateLabelRule(getSelectedAction(selectedItem));
         }
-
+        } catch (Exception ignore){}
     }
 
     private PropertyDefinitionEntity getSelectedPropertyEntity(TreeItem<String> selectedItem) {
@@ -208,5 +208,11 @@ public class DetailsController implements Initializable {
     public void clearScreen() {
         this.treeView.getRoot().getChildren().clear();
         addBasicTreeItems(this.treeView.getRoot());
+    }
+
+    public void resetAllComponent() {
+        if (mainAnchorPane.getChildren().size() > 0){
+            mainAnchorPane.getChildren().remove(mainAnchorPane.getChildren().get(0));
+        }
     }
 }

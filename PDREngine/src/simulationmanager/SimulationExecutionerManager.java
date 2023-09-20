@@ -155,14 +155,17 @@ public class SimulationExecutionerManager {
                 avgOfProp = getAvgOfPropertyIfFloat(entityName, propertyName, worldInstance, entityInstanceList);
             }
         }
-        float avgPropertyPerTick = 0;
+        float avgPropertyPerTick = -1;
         for(EntityInstance currEntityInstance: entityInstanceList){
+            if (avgPropertyPerTick == -1){
+                avgPropertyPerTick = 0;
+            }
             PropertyInstance propertyInstance =  currEntityInstance.getPropertyByName(propertyName);
             if (propertyInstance.getNumberOfReset() != 0){
-                avgPropertyPerTick = ( (float) propertyInstance.getTotalTickWithoutChange() / propertyInstance.getNumberOfReset());
+                avgPropertyPerTick += ((float) propertyInstance.getTotalTickWithoutChange() / propertyInstance.getNumberOfReset());
             }
             else {
-                avgPropertyPerTick = (float) propertyInstance.getCurrentTicksWithoutChange();
+                avgPropertyPerTick += (float) propertyInstance.getCurrentTicksWithoutChange();
             }
         }
         int populationFinal = 0;
@@ -176,6 +179,8 @@ public class SimulationExecutionerManager {
         float avgTotalPerProperty = -1;
         if (populationFinal > 0){
             avgTotalPerProperty = avgPropertyPerTick / populationFinal ;
+        } else {
+            avgTotalPerProperty = avgPropertyPerTick;
         }
         Map<String,Integer> value2Count = fetchPropertyHistogram(entityInstanceList, propertyName);
         return new DtoHistogramInfo(value2Count, avgOfProp, avgTotalPerProperty);

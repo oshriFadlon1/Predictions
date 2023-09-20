@@ -25,7 +25,10 @@ public class MainUiGui extends Application {
         sceneMenu.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Prediction");
-        Scene scene = new Scene(root, 1075, 775);
+        Scene scene = new Scene(root, 1200, 800);
+        scene.getStylesheets().add("/ui/cssDesign/homePageDesign.css");
+        scene.getStylesheets().add("/ui/cssDesign/homePageDesign2.css");
+        scene.getStylesheets().add("/ui/cssDesign/homePageDesign3.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

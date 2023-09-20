@@ -60,7 +60,10 @@ public class RuleComponentController {
                 break;
             case "proximity":
                 this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
-                this.actionProperty.setText("Action property: " + DtoActionResponse.getActionProperty());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Depth: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText("");
                 this.actionArg2.setText("");
                 this.ActionElse.setText("");
                 break;
@@ -75,23 +78,31 @@ public class RuleComponentController {
                 break;
             case "calculation divide":
             case "calculation multiply":
+                this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Property result: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText("Arg 1: " + DtoActionResponse.getActionValue());
+                this.actionArg2.setText("Arg 2: " + DtoActionResponse.getArg2());
+                this.ActionElse.setText("");
+                break;
             case "single condition":
                 this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
-                this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
-                this.EntitySecond.setText(DtoActionResponse.getSecEntityName());
-                this.actionProperty.setText(DtoActionResponse.getActionProperty());
-                this.actionValue.setText(DtoActionResponse.getActionValue());
-                this.actionArg2.setText(DtoActionResponse.getArg2());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Property: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText( "Operator: " + DtoActionResponse.getActionValue());
+                this.actionArg2.setText("Value: "+DtoActionResponse.getArg2());
                 this.ActionElse.setText("");
                 break;
             case "multiple condition":
                 this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
-                this.actionEntity.setText(DtoActionResponse.getPrimEntityName());
-                this.EntitySecond.setText(DtoActionResponse.getSecEntityName());
-                this.actionProperty.setText(DtoActionResponse.getActionProperty());
-                this.actionValue.setText(DtoActionResponse.getActionValue());
-                this.actionArg2.setText(DtoActionResponse.getArg2());
-                this.ActionElse.setText(DtoActionResponse.getActionElse());
+                this.actionEntity.setText("Primary entity: " + DtoActionResponse.getPrimEntityName());
+                this.EntitySecond.setText("Secondary entity: " + DtoActionResponse.getSecEntityName());
+                this.actionProperty.setText("Logical: " + DtoActionResponse.getActionProperty());
+                this.actionValue.setText("Number of condition: " + DtoActionResponse.getActionValue());
+                this.actionArg2.setText("Number of action in then: " + DtoActionResponse.getArg2());
+                this.ActionElse.setText("Number of action in else: " + DtoActionResponse.getActionElse());
                 break;
         }
     }

@@ -32,7 +32,7 @@
                             <children>
                                 <VBox fx:id="vboxValues" prefHeight="355.0" prefWidth="188.0" GridPane.columnIndex="2">
                                     <children>
-                                        <Label id="title" fx:id="labelValue" prefHeight="25.0" prefWidth="155.0" stylesheets="@../../../cssDesign/newExecution.css" text="Value" visible="false">
+                                        <Label id="title" fx:id="labelValue" prefHeight="25.0" prefWidth="155.0" text="Value" visible="false">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
@@ -49,52 +49,52 @@
                                 </TableView>
                             </children>
                         </GridPane>
-                        <Label id="labelErrorEnvironments" fx:id="labelError" layoutX="496.0" layoutY="548.0" prefHeight="43.0" prefWidth="573.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" visible="false" />
-                        <Label id="title" layoutX="60.0" layoutY="25.0" stylesheets="@../../../cssDesign/newExecution.css" text="Entities population">
+                        <Label id="terminationInfo" fx:id="labelError" layoutX="496.0" layoutY="548.0" prefHeight="43.0" prefWidth="573.0" text="Label" visible="false" />
+                        <Label id="title" layoutX="60.0" layoutY="25.0" text="Entities population">
                             <font>
                                 <Font size="20.0" />
                             </font>
                         </Label>
-                        <VBox layoutX="60.0" layoutY="45.0" prefHeight="146.0" prefWidth="313.0">
+                        <VBox layoutX="60.0" layoutY="47.0" prefHeight="134.0" prefWidth="310.0">
                             <children>
-                                <Label fx:id="entity1Label" prefHeight="45.0" prefWidth="323.0" text="Entity 1:">
+                                <Label fx:id="entity1Label" styleClass="title" text="Entity 1:">
                                     <font>
                                         <Font size="20.0" />
                                     </font>
                                 </Label>
-                                <Label text="Please enter population for following entity">
+                                <Label id="terminationInfo" text="Please enter population for following entity">
                                     <font>
                                         <Font size="16.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="textFieldEntity1" prefHeight="25.0" prefWidth="260.0" />
-                                <Button fx:id="buttonValueEntity1" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity1" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Set value" />
-                                <Label id="labelError" fx:id="labelErrorEntity1" prefHeight="43.0" prefWidth="573.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" visible="false" />
+                                <TextField fx:id="textFieldEntity1" />
+                                <Button fx:id="buttonValueEntity1" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity1" styleClass="buttonExecution" text="Set value" />
+                                <Label id="terminationInfo" fx:id="labelErrorEntity1" text="Label" visible="false" />
                             </children>
                         </VBox>
-                        <VBox layoutX="60.0" layoutY="180.0" prefHeight="138.0" prefWidth="313.0">
+                        <VBox layoutX="60.0" layoutY="187.0" prefHeight="134.0" prefWidth="310.0">
                             <children>
-                                <Label fx:id="entity2Label" disable="true" prefHeight="45.0" prefWidth="323.0" text="Entity 2:" visible="false">
+                                <Label fx:id="entity2Label" disable="true" styleClass="title" text="Entity 2:" visible="false">
                                     <font>
                                         <Font size="20.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="subTitleEntity2" text="Please enter population for following entity" visible="false">
+                                <Label id="terminationInfo" fx:id="subTitleEntity2" text="Please enter population for following entity" visible="false">
                                     <font>
                                         <Font size="16.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="textFieldEntity2" disable="true" visible="false" />
-                                <Button fx:id="buttonValueEntity2" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity2" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Set value" visible="false" />
-                                <Label id="labelError" fx:id="labelErrorEntity2" prefHeight="48.0" prefWidth="313.0" stylesheets="@../../../cssDesign/newExecution.css" text="Label" visible="false" />
+                                <TextField fx:id="textFieldEntity2" disable="true" prefHeight="26.0" prefWidth="296.0" visible="false" />
+                                <Button fx:id="buttonValueEntity2" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity2" styleClass="buttonExecution" text="Set value" visible="false" />
+                                <Label id="terminationInfo" fx:id="labelErrorEntity2" text="Label" visible="false" />
                             </children>
                         </VBox>
-                        <Label id="title" layoutX="500.0" layoutY="77.0" stylesheets="@../../../cssDesign/newExecution.css" text="Environment properties">
+                        <Label id="title" layoutX="500.0" layoutY="77.0" text="Environment properties">
                             <font>
                                 <Font size="20.0" />
                             </font>
                         </Label>
-                        <Label layoutX="500.0" layoutY="107.0" prefHeight="27.0" prefWidth="566.0" stylesheets="@../../../cssDesign/newExecution.css" text="Please select the row of the environment you wish to initialize, and insert init value to the textfeld">
+                        <Label id="terminationInfo" layoutX="500.0" layoutY="107.0" text="Please select the row of the environment you wish to initialize, and insert init value to the textfeld.">
                             <font>
                                 <Font size="13.0" />
                             </font>
@@ -111,15 +111,15 @@
                                 <TableColumn fx:id="valueColumn" prefWidth="153.0" text="Value" />
                             </columns>
                         </TableView>
-                        <Button fx:id="buttonValue" disable="true" layoutX="860.0" layoutY="497.0" mnemonicParsing="false" onAction="#OnClickedSetValueOfEnvProp" prefHeight="25.0" prefWidth="133.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Set value" />
+                        <Button fx:id="buttonValue" disable="true" layoutX="860.0" layoutY="497.0" mnemonicParsing="false" onAction="#OnClickedSetValueOfEnvProp" prefHeight="25.0" prefWidth="133.0" styleClass="buttonExecution" text="Set value" />
                     </children>
                 </AnchorPane>
             </center>
          <bottom>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                        <Button fx:id="buttonClear" disable="true" layoutX="57.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedClear" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Clear" />
-                        <Button fx:id="buttonStart" disable="true" layoutX="896.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedStartSimulation" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" stylesheets="@../../../cssDesign/newExecution.css" text="Start!" />
+                        <Button fx:id="buttonClear" disable="true" layoutX="57.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedClear" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" text="Clear" />
+                        <Button fx:id="buttonStart" disable="true" layoutX="896.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedStartSimulation" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" text="Start!" />
                </children>
             </AnchorPane>
          </bottom>

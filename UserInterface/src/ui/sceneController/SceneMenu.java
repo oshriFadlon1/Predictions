@@ -36,8 +36,11 @@ public class SceneMenu implements Initializable {
     private ResultsController resultsController;
     private Stage primaryStage;
 
+
     private Thread queueManager;
 
+    @FXML
+    private ComboBox<String> comboBoxSkins;
     @FXML private Tab tabOfDetails;
     @FXML private Tab tabOfNewExecution;
     @FXML private Tab tabOfResults;
@@ -90,6 +93,11 @@ public class SceneMenu implements Initializable {
             loadEverythingFromWorldDefinition(wrldDef);
             textFilePath.setText(absolutePath);
             fileStatus.setText(fileStatus.getText() + dtoResponse.getResponse());
+            // navgit to detail tab
+            this.tabPaneManager.getSelectionModel().select(tabOfDetails);
+            this.newExecutionController.resetAllComponent();
+            this.detailsController.resetAllComponent();
+            this.resultsController.resetAllComponent();
         }else {
             fileStatus.setText(fileStatus.getText() + dtoResponse.getResponse());
         }
@@ -113,6 +121,7 @@ public class SceneMenu implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
         // Load the FXML of the nested controller
         ScrollPane nestedControllersContainer;
         this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
@@ -213,10 +222,29 @@ public class SceneMenu implements Initializable {
         }
     }
 
+    @FXML
+    void onSelectedComboBoxSkins(ActionEvent event) {
+        String selectedSkin = this.comboBoxSkins.getValue();
+        switch(selectedSkin){
+            case "Skin 1":
+                switchCSS("/ui/cssDesign/homePageDesign.css",this.primaryStage.getScene());
+                break;
+            case "Skin 2":
+                switchCSS("/ui/cssDesign/homePageDesign2.css",this.primaryStage.getScene());
+                break;
+            case "Skin 3":
+                switchCSS("/ui/cssDesign/homePageDesign3.css",this.primaryStage.getScene());
+                break;
+        }
+    }
+
     public void navigateToNewExecutionTab(int idOfSimulation){
         this.newExecutionController.loadSimulationDetailsAgain(idOfSimulation);
         this.tabPaneManager.getSelectionModel().select(tabOfNewExecution);
     }
 
-
+    public void switchCSS(String newCSSFileName, Scene scene) {
+        scene.getStylesheets().clear(); // Remove all existing CSS files
+        scene.getStylesheets().add(newCSSFileName); // Add the new CSS file
+    }
 }

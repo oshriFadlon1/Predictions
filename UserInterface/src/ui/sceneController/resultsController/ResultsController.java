@@ -134,10 +134,6 @@ public class ResultsController implements Initializable {
         this.obsListHistogram.clear();
         this.comboBoxEntityProperty.setDisable(true);
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        if(this.currSimulationPresenter == null && this.obsListSimulations.size() == 1){
-            this.listViewSimulations.getSelectionModel().select(0);
-            this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        }
         if(this.currSimulationPresenter != null) {
             DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
             if (!currentDetailsForSimulation.isSimulationFinished()) {
@@ -340,5 +336,13 @@ public class ResultsController implements Initializable {
     public void clearScreen() {
         this.obsListEntities.clear();
         this.obsListSimulations.clear();
+    }
+
+    public void resetAllComponent() {
+        this.labelCurrTick.setText("");
+        this.labelCurrTimer.setText("");
+        this.labelIdSimulation.setText("");
+        this.labelSimulationStatus.setText("");
+        this.hboxFinalDetails.setVisible(false);
     }
 }
