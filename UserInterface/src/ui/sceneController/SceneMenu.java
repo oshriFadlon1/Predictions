@@ -39,8 +39,7 @@ public class SceneMenu implements Initializable {
 
     private Thread queueManager;
 
-    @FXML
-    private ComboBox<String> comboBoxSkins;
+
     @FXML private Tab tabOfDetails;
     @FXML private Tab tabOfNewExecution;
     @FXML private Tab tabOfResults;
@@ -124,7 +123,6 @@ public class SceneMenu implements Initializable {
         this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
         // Load the FXML of the nested controller
         ScrollPane nestedControllersContainer;
-        this.comboBoxSkins.getItems().addAll("Skin 1", "Skin 2", "Skin 3");
         FXMLLoader loaderDetail = new FXMLLoader();
         URL mainFXML = getClass().getResource("/ui/javaFx/scenes/sceneDetails/Details.fxml");
         loaderDetail.setLocation(mainFXML);
