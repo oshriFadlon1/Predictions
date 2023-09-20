@@ -1,20 +1,22 @@
 #title{
-    -fx-text-fill: #4472C4;
+    -fx-text-fill: #ff0000;
     -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-font-family: "Times New Roman";
 }
 
 #QueueManagment{
-    -fx-text-fill: #4472C4;
+    -fx-text-fill: #ff0000;
 }
 .backGroundColor{
-    -fx-background-color: #e5e5e5;
+    -fx-background-color: #007bff;
 }
 
 .title{
-    -fx-font-size: 20px;
-    -fx-font-family: "Arial";
-    -fx-text-fill: #007bff;
-    -fx-border-color: #007bff;
+    -fx-font-size: 14px;
+    -fx-font-family: "Times New Roman";
+    -fx-text-fill: #ff0000;
+    -fx-border-color: #ff0000;
     -fx-border-width: 0 0 2 0;
     -fx-padding: 0 0 3 0;
 }
@@ -27,48 +29,53 @@
 }
 
 #backGroundStyle{
-    -fx-background-color: #d0e7d0;
-    -fx-border-color: #ff5e5e;
-    -fx-background-radius: 5.0;
-    -fx-border-width: 5px;
+    -fx-background-color: #aaaaff;
+    -fx-border-color: #be1d00;
+    -fx-background-radius: 10.0;
+    -fx-border-width: 4px;
 }
 
 #terminationInfo{
-    -fx-font-size: 16px;
-    -fx-font-family: "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-family: "Times New Roman";
     -fx-text-fill: #333;
 }
 
-#Env {
-    -fx-background-color: #acd8e7;
-    -fx-border-width: 5px;
-    -fx-border-color: #2e8b57;
-    -fx-background-radius: 5.0;
-}
-
-#Entity{
-    -fx-background-color: #e6f3fa;
-    -fx-border-width: 5px;
-    -fx-border-color: #c7f3d6;
-    -fx-background-radius: 5.0;
-}
-
-#Rules{
-    -fx-background-color: #ffffff;
-    -fx-border-width: 5px;
-    -fx-border-color: #8c8cf8;
-    -fx-background-radius: 5.0;
-}
-
 .buttonExecution{
-    -fx-background-color: #4472C4;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: linear-gradient(#ff5400,#be1d00);
+    -fx-background-radius: 30;
+    -fx-background-insets: 0;
+    -fx-text-fill: white;
 }
 .buttonExecution:hover{
-    -fx-background-color: #bbbbfc;
-    -fx-text-fill: #000000;
+    -fx-background-color: linear-gradient(#be1d00,#ff5400);
+    -fx-background-radius: 30;
+    -fx-background-insets: 0;
+    -fx-text-fill: white;
 }
 #labelError{
     -fx-text-fill: #49ff00;
     -fx-font-weight: bold;
+    -fx-font-family: "Times New Roman";
 }
+
+/*#Env {*/
+/*    -fx-background-color: #acd8e7;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #2e8b57;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/
+
+/*#Entity{*/
+/*    -fx-background-color: #e6f3fa;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #c7f3d6;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/
+
+/*#Rules{*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #8c8cf8;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/

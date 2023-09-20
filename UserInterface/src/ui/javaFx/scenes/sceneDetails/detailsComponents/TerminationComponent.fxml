@@ -3,13 +3,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="backGroundStyle" stylesheets="@../../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.TreminationComponentController">
+<AnchorPane id="backGroundStyle" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.TreminationComponentController">
    <children>
       <Label layoutX="14.0" layoutY="98.0" styleClass="title" text="Termination" />
       <Label id="terminationInfo" fx:id="Ticks" layoutX="14.0" layoutY="166.0" text="Ticks: " />
       <Label id="terminationInfo" fx:id="Seconds" layoutX="14.0" layoutY="191.0" text="Seconds: " />
       <Label id="terminationInfo" fx:id="User" layoutX="14.0" layoutY="138.0" text="User: " />
-      <Label layoutX="14.0" layoutY="10.0" styleClass="title" stylesheets="@../../../../cssDesign/homePageDesign.css" text="Grid " />
+      <Label layoutX="14.0" layoutY="10.0" styleClass="title" text="Grid " />
       <Label id="terminationInfo" fx:id="row" layoutX="14.0" layoutY="45.0" text="Rows: " />
       <Label id="terminationInfo" fx:id="col" layoutX="14.0" layoutY="70.0" text="Column: " />
    </children>

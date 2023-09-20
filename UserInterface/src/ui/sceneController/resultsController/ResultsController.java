@@ -137,8 +137,8 @@ public class ResultsController implements Initializable {
         this.obsListPropertyNames.clear();
         this.obsListHistogram.clear();
         this.comboBoxEntityProperty.setDisable(true);
-        this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
-        if(this.currSimulationPresenter != null) {
+        if(this.listViewSimulations.getSelectionModel().getSelectedItem() != null) {
+            this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
             DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
             this.buttonRerun.setDisable(false);
             this.buttonPause.setDisable(false);
@@ -148,9 +148,7 @@ public class ResultsController implements Initializable {
                 this.hboxFinalDetails.setVisible(false);
                 Thread bringDetailsThread = new Thread(() -> {
                     while (this.currSimulationPresenter == this.listViewSimulations.getSelectionModel().getSelectedItem()) {
-                        Platform.runLater(() -> {
-                            presentSelectedSimulationInfo();
-                        });
+                        Platform.runLater(this::presentSelectedSimulationInfo);
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
@@ -167,21 +165,23 @@ public class ResultsController implements Initializable {
     }
 
     private void presentSelectedSimulationInfo() {
-        DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
-        int population1 = currentDetails.getEntity1Population();
-        int population2 = currentDetails.getEntity2Population();
+        if (this.interfaceMenu.getNumberOfSimulation() > 0){
+            DtoSimulationDetails currentDetails = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+            int population1 = currentDetails.getEntity1Population();
+            int population2 = currentDetails.getEntity2Population();
 
 
-        this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
-        this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
-        this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
-        this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
-        this.obsListEntities.clear();
-        this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
-        if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
-            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+            this.labelCurrTick.setText(Integer.toString(currentDetails.getSimulationTick()));
+            this.labelCurrTimer.setText(Long.toString(currentDetails.getSimulationTimePassed()));
+            this.labelIdSimulation.setText(Integer.toString(currentDetails.getSimulationId()));
+            this.labelSimulationStatus.setText(getModeOfCurrentSimulation(currentDetails));
+            this.obsListEntities.clear();
+            this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity1Name(), population1));
+            if (population2 != -1 && !currentDetails.getEntity2Name().equalsIgnoreCase("")) {
+                this.obsListEntities.add(new EntityPresenter(currentDetails.getEntity2Name(), population2));
+            }
+            this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
         }
-        this.buttonRerun.setDisable(!currentDetails.isSimulationFinished());
     }
 
     private void handleSimulationAfterFinish(DtoSimulationDetails currentDetailsForSimulation) {
@@ -333,11 +333,15 @@ public class ResultsController implements Initializable {
     }
 
     public void onResumePressed(){
-        this.interfaceMenu.resumeCurretnSimulation(currSimulationPresenter.getSimulationId());
+        if(this.currSimulationPresenter != null){
+            this.interfaceMenu.resumeCurretnSimulation(currSimulationPresenter.getSimulationId());
+        }
     }
 
     public void onStopPressed(){
-        this.interfaceMenu.stopCurrentSimulation(currSimulationPresenter.getSimulationId());
+        if(this.currSimulationPresenter != null){
+            this.interfaceMenu.stopCurrentSimulation(currSimulationPresenter.getSimulationId());
+        }
     }
 
 

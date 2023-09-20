@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.resultsController.ResultsController">
+<ScrollPane styleClass="backGroundColor" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.resultsController.ResultsController">
     <content>
         <AnchorPane prefHeight="654.0" prefWidth="1070.0" styleClass="backGroundColor">
             <children>
@@ -67,17 +67,17 @@
                                         <TableColumn fx:id="tableColumnPopulation" prefWidth="131.0" text="Population" />
                                     </columns>
                                 </TableView>
-                                <Label id="terminationInfo" fx:id="labelSimulationStatus" layoutX="152.0" layoutY="28.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label id="terminationInfo" fx:id="labelSimulationStatus" layoutX="203.0" layoutY="28.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
                                 </Label>
-                                <Label id="terminationInfo" fx:id="labelCurrTick" layoutX="152.0" layoutY="61.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label id="terminationInfo" fx:id="labelCurrTick" layoutX="203.0" layoutY="61.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
                                 </Label>
-                                <Label id="terminationInfo" fx:id="labelCurrTimer" layoutX="152.0" layoutY="96.0" prefHeight="17.0" prefWidth="66.0" text="Label">
+                                <Label id="terminationInfo" fx:id="labelCurrTimer" layoutX="203.0" layoutY="96.0" text="Label">
                                     <font>
                                         <Font size="15.0" />
                                     </font>
@@ -88,8 +88,8 @@
                <bottom>
                   <AnchorPane BorderPane.alignment="CENTER">
                      <children>
-                                <Button fx:id="buttonStop" layoutX="457.0" layoutY="7.0" mnemonicParsing="false" onAction="#onStopPressed" styleClass="buttonExecution" text="Stop" />
-                                <Button fx:id="buttonPause" layoutX="513.0" layoutY="7.0" mnemonicParsing="false" onAction="#onPausePressed" styleClass="buttonExecution" text="Pause" />
+                                <Button fx:id="buttonStop" layoutX="409.0" layoutY="7.0" mnemonicParsing="false" onAction="#onStopPressed" styleClass="buttonExecution" text="Stop" />
+                                <Button fx:id="buttonPause" layoutX="493.0" layoutY="7.0" mnemonicParsing="false" onAction="#onPausePressed" styleClass="buttonExecution" text="Pause" />
                                 <Button fx:id="buttonResume" layoutX="578.0" layoutY="7.0" mnemonicParsing="false" onAction="#onResumePressed" styleClass="buttonExecution" text="Resume" />
                                 <Button fx:id="buttonRerun" layoutX="28.0" layoutY="7.0" mnemonicParsing="false" onAction="#ReRunSimulation" styleClass="buttonExecution" text="Re-Run" />
                      </children>
