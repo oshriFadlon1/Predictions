@@ -1,23 +1,32 @@
 #title{
-    -fx-text-fill: #4472C4;
+    -fx-text-fill: gray;
     -fx-font-weight: bold;
+    -fx-font-size: 16px;
 }
 
 #QueueManagment{
-    -fx-text-fill: #4472C4;
+    -fx-text-fill: gray;
+    -fx-font-weight: bold;
 }
 .backGroundColor{
-    -fx-background-color: #e5e5e5;
+    -fx-background-color: lime;
 }
 
 .title{
-    -fx-font-size: 20px;
-    -fx-font-family: "Arial";
-    -fx-text-fill: #007bff;
-    -fx-border-color: #007bff;
+    -fx-font-size: 16px;
+    -fx-font-family: "Courier New";
+    -fx-text-fill: gray;
+    -fx-border-color: gray;
     -fx-border-width: 0 0 2 0;
     -fx-padding: 0 0 3 0;
 }
+
+.label{
+    fx-font-size: 16px;
+    -fx-font-family: "Courier New";
+    -fx-text-fill: gray;
+}
+
 
 .default-color0.chart-bar{
     -fx-bar-fill: #ff0000;
@@ -27,8 +36,8 @@
 }
 
 #backGroundStyle{
-    -fx-background-color: #d0e7d0;
-    -fx-border-color: #ff5e5e;
+    -fx-background-color: gray;
+    -fx-border-color: gray;
     -fx-background-radius: 5.0;
     -fx-border-width: 5px;
 }
@@ -61,12 +70,32 @@
 }
 
 .buttonExecution{
-    -fx-background-color: #4472C4;
-    -fx-text-fill: #ffffff;
+    -fx-background-color:
+            linear-gradient(#ffd65b, #e68400),
+            linear-gradient(#ffef84, #f2ba44),
+            linear-gradient(#ffea6a, #efaa22),
+            linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
+            linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 30;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #654b00;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20 10 20;
 }
 .buttonExecution:hover{
-    -fx-background-color: #bbbbfc;
-    -fx-text-fill: #000000;
+    -fx-background-color:
+            linear-gradient(#e68400, #ffd65b),
+            linear-gradient(#f2ba44, #ffef84),
+            linear-gradient(#efaa22, #ffea6a),
+            linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
+            linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 30;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #654b00;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20 10 20;
 }
 #labelError{
     -fx-text-fill: #49ff00;

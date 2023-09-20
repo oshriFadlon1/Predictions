@@ -121,6 +121,10 @@ public class ResultsController implements Initializable {
         this.comboBoxEntityName.setItems(this.obsListEntityNames);
         this.comboBoxEntityProperty.setItems(this.obsListPropertyNames);
         this.hboxFinalDetails.setVisible(false);
+        this.buttonRerun.setDisable(true);
+        this.buttonPause.setDisable(true);
+        this.buttonResume.setDisable(true);
+        this.buttonStop.setDisable(true);
     }
 
     public void setSceneMenu(SceneMenu sceneMenu) {
@@ -136,6 +140,10 @@ public class ResultsController implements Initializable {
         this.currSimulationPresenter = this.listViewSimulations.getSelectionModel().getSelectedItem();
         if(this.currSimulationPresenter != null) {
             DtoSimulationDetails currentDetailsForSimulation = this.interfaceMenu.getSimulationById(this.currSimulationPresenter.getSimulationId());
+            this.buttonRerun.setDisable(false);
+            this.buttonPause.setDisable(false);
+            this.buttonResume.setDisable(false);
+            this.buttonStop.setDisable(false);
             if (!currentDetailsForSimulation.isSimulationFinished()) {
                 this.hboxFinalDetails.setVisible(false);
                 Thread bringDetailsThread = new Thread(() -> {
@@ -344,5 +352,9 @@ public class ResultsController implements Initializable {
         this.labelIdSimulation.setText("");
         this.labelSimulationStatus.setText("");
         this.hboxFinalDetails.setVisible(false);
+        this.buttonRerun.setDisable(true);
+        this.buttonPause.setDisable(true);
+        this.buttonResume.setDisable(true);
+        this.buttonStop.setDisable(true);
     }
 }
