@@ -16,9 +16,9 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.newExecutionController.NewExecutionController">
     <content>
-        <BorderPane styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css">
+        <BorderPane styleClass="backGroundColor">
             <center>
-                <AnchorPane minHeight="-Infinity" minWidth="-Infinity" styleClass="backGroundColor" stylesheets="@../../../cssDesign/homePageDesign.css" BorderPane.alignment="CENTER">
+                <AnchorPane minHeight="-Infinity" minWidth="-Infinity" styleClass="backGroundColor" BorderPane.alignment="CENTER">
                     <children>
                         <GridPane layoutX="500.0" layoutY="135.0" prefHeight="355.0" prefWidth="539.0">
                             <columnConstraints>
