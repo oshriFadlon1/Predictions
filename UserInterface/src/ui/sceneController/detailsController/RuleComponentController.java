@@ -53,7 +53,7 @@ public class RuleComponentController {
                 this.actionName.setText("Action name: " + DtoActionResponse.getActionName());
                 this.actionEntity.setText("Entity to Kill: " + DtoActionResponse.getPrimEntityName());
                 this.EntitySecond.setText("Entity to create: " + DtoActionResponse.getSecEntityName());
-                this.actionProperty.setText("In mode: " + DtoActionResponse.getActionValue());
+                this.actionProperty.setText("In mode: " + DtoActionResponse.getActionProperty());
                 this.actionValue.setText("");
                 this.actionArg2.setText("");
                 this.ActionElse.setText("");
