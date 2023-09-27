@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -50,45 +51,6 @@
                             </children>
                         </GridPane>
                         <Label id="terminationInfo" fx:id="labelError" layoutX="496.0" layoutY="548.0" prefHeight="43.0" prefWidth="573.0" text="Label" visible="false" />
-                        <Label id="title" layoutX="60.0" layoutY="25.0" text="Entities population">
-                            <font>
-                                <Font size="20.0" />
-                            </font>
-                        </Label>
-                        <VBox layoutX="60.0" layoutY="47.0" prefHeight="134.0" prefWidth="310.0">
-                            <children>
-                                <Label fx:id="entity1Label" styleClass="title" text="Entity 1:">
-                                    <font>
-                                        <Font size="20.0" />
-                                    </font>
-                                </Label>
-                                <Label id="terminationInfo" text="Please enter population for following entity">
-                                    <font>
-                                        <Font size="16.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="textFieldEntity1" />
-                                <Button fx:id="buttonValueEntity1" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity1" styleClass="buttonExecution" text="Set value" />
-                                <Label id="terminationInfo" fx:id="labelErrorEntity1" text="Label" visible="false" />
-                            </children>
-                        </VBox>
-                        <VBox layoutX="60.0" layoutY="187.0" prefHeight="134.0" prefWidth="310.0">
-                            <children>
-                                <Label fx:id="entity2Label" disable="true" styleClass="title" text="Entity 2:" visible="false">
-                                    <font>
-                                        <Font size="20.0" />
-                                    </font>
-                                </Label>
-                                <Label id="terminationInfo" fx:id="subTitleEntity2" text="Please enter population for following entity" visible="false">
-                                    <font>
-                                        <Font size="16.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="textFieldEntity2" disable="true" prefHeight="26.0" prefWidth="296.0" visible="false" />
-                                <Button fx:id="buttonValueEntity2" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity2" styleClass="buttonExecution" text="Set value" visible="false" />
-                                <Label id="terminationInfo" fx:id="labelErrorEntity2" text="Label" visible="false" />
-                            </children>
-                        </VBox>
                         <Label id="title" layoutX="500.0" layoutY="77.0" text="Environment properties">
                             <font>
                                 <Font size="20.0" />
@@ -99,19 +61,61 @@
                                 <Font size="13.0" />
                             </font>
                         </Label>
-                        <TableView fx:id="tableEntities" layoutX="18.0" layoutY="350.0" prefHeight="200.0" prefWidth="169.0" visible="false">
-                            <columns>
-                                <TableColumn fx:id="entityColumn" prefWidth="83.0" text="Entity" />
-                                <TableColumn fx:id="populationColumn" prefWidth="85.0" text="Population" />
-                            </columns>
-                        </TableView>
-                        <TableView fx:id="tableEnvironments" layoutX="191.0" layoutY="350.0" prefHeight="191.0" prefWidth="299.0" visible="false">
-                            <columns>
-                                <TableColumn fx:id="environmentColumn" prefWidth="145.0" text="Environment" />
-                                <TableColumn fx:id="valueColumn" prefWidth="153.0" text="Value" />
-                            </columns>
-                        </TableView>
                         <Button fx:id="buttonValue" disable="true" layoutX="860.0" layoutY="497.0" mnemonicParsing="false" onAction="#OnClickedSetValueOfEnvProp" prefHeight="25.0" prefWidth="133.0" styleClass="buttonExecution" text="Set value" />
+                  <VBox layoutX="10.0" layoutY="14.0" prefHeight="562.0" prefWidth="466.0">
+                     <children>
+                              <VBox alignment="CENTER">
+                                  <children>
+                                      <Label fx:id="entity1Label" styleClass="title" text="Entity 1:">
+                                          <font>
+                                              <Font size="20.0" />
+                                          </font>
+                                      </Label>
+                                      <Label id="terminationInfo" text="Please enter population for following entity">
+                                          <font>
+                                              <Font size="16.0" />
+                                          </font>
+                                      </Label>
+                                      <TextField fx:id="textFieldEntity1" />
+                                      <Button fx:id="buttonValueEntity1" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity1" styleClass="buttonExecution" text="Set value" />
+                                      <Label id="terminationInfo" fx:id="labelErrorEntity1" text="Label" visible="false" />
+                                  </children>
+                              </VBox>
+                              <VBox alignment="CENTER">
+                                  <children>
+                                      <Label fx:id="entity2Label" disable="true" styleClass="title" text="Entity 2:" visible="false">
+                                          <font>
+                                              <Font size="20.0" />
+                                          </font>
+                                      </Label>
+                                      <Label id="terminationInfo" fx:id="subTitleEntity2" text="Please enter population for following entity" visible="false">
+                                          <font>
+                                              <Font size="16.0" />
+                                          </font>
+                                      </Label>
+                                      <TextField fx:id="textFieldEntity2" disable="true" prefHeight="26.0" prefWidth="296.0" visible="false" />
+                                      <Button fx:id="buttonValueEntity2" disable="true" mnemonicParsing="false" onAction="#OnClickSetValueOfPopulationEntity2" styleClass="buttonExecution" text="Set value" visible="false" />
+                                      <Label id="terminationInfo" fx:id="labelErrorEntity2" text="Label" visible="false" />
+                                  </children>
+                              </VBox>
+                        <HBox alignment="BOTTOM_LEFT" prefHeight="239.0" prefWidth="466.0">
+                           <children>
+                                    <TableView fx:id="tableEntities" visible="false">
+                                        <columns>
+                                            <TableColumn fx:id="entityColumn" prefWidth="83.0" text="Entity" />
+                                            <TableColumn fx:id="populationColumn" prefWidth="85.0" text="Population" />
+                                        </columns>
+                                    </TableView>
+                                    <TableView fx:id="tableEnvironments" visible="false">
+                                        <columns>
+                                            <TableColumn fx:id="environmentColumn" prefWidth="145.0" text="Environment" />
+                                            <TableColumn fx:id="valueColumn" prefWidth="153.0" text="Value" />
+                                        </columns>
+                                    </TableView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                     </children>
                 </AnchorPane>
             </center>
