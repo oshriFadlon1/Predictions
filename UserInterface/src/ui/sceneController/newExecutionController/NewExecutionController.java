@@ -269,14 +269,14 @@ public class NewExecutionController implements Initializable{
         this.labelErrorEntity1.setTextFill(Color.RED);
         int sizeOfWorld = this.worldPreview.getWorldSize().getRow() * this.worldPreview.getWorldSize().getCol();
         if(!Utilities.isInteger(valueOfTextField)){
-            labelErrorEntity1.setText("Invalid value for population. Please enter a number between 0 to" + (sizeOfWorld-this.population2));
+            labelErrorEntity1.setText("Invalid value for population.\nPlease enter a number between 0 to " + (sizeOfWorld-this.population2));
             labelErrorEntity1.setVisible(true);
             return;
         }
         else {
             int parsedValue = Integer.parseInt(valueOfTextField);
             if(parsedValue > sizeOfWorld - this.population2){
-                labelErrorEntity1.setText("Quantity of population cannot be bigger than actual world size. Please enter a number between 0 to" + (sizeOfWorld-this.population2));
+                labelErrorEntity1.setText("Quantity of population cannot be bigger than actual world size.\nPlease enter a number between 0 to " + (sizeOfWorld-this.population2));
                 labelErrorEntity1.setVisible(true);
             }
             else{
@@ -298,13 +298,13 @@ public class NewExecutionController implements Initializable{
         this.labelErrorEntity2.setTextFill(Color.RED);
         int sizeOfWorld = this.worldPreview.getWorldSize().getRow() * this.worldPreview.getWorldSize().getCol();
         if(!Utilities.isInteger(valueOfTextField)){
-            labelErrorEntity2.setText("Invalid value for population. Please enter a number between 0 to" + (sizeOfWorld - this.population1));
+            labelErrorEntity2.setText("Invalid value for population.\nPlease enter a number between 0 to " + (sizeOfWorld - this.population1));
             labelErrorEntity2.setVisible(true);
         }
         else {
             int parsedValue = Integer.parseInt(valueOfTextField);
             if(parsedValue > sizeOfWorld - this.population1){
-                labelErrorEntity2.setText("Quantity of population cannot be bigger than actual world size. Please enter a number between 0 to" + (sizeOfWorld - this.population1));
+                labelErrorEntity2.setText("Quantity of population cannot be bigger than actual world size.\nPlease enter a number between 0 to " + (sizeOfWorld - this.population1));
                 labelErrorEntity2.setVisible(true);
             }
             else{
