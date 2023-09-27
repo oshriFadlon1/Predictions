@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.SceneMenu">
+<VBox styleClass="backGroundColor" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.SceneMenu">
    <children>
-      <ScrollPane>
+      <ScrollPane styleClass="backGroundColor">
          <content>
             <BorderPane styleClass="backGroundColor">
                <center>
@@ -33,9 +33,9 @@
                       </Tab>
                         <Tab fx:id="tabOfResults" text="Results">
                           <content>
-                              <AnchorPane prefHeight="502.0" prefWidth="963.0">
+                              <AnchorPane prefHeight="502.0" prefWidth="963.0" styleClass="backGroundColor">
                                  <children>
-                                    <ScrollPane>
+                                    <ScrollPane styleClass="backGroundColor">
                                        <content>
                                           <fx:include source="sceneResults/Results.fxml" />
                                        </content>
@@ -50,7 +50,7 @@
                <top>
                   <AnchorPane BorderPane.alignment="CENTER">
                      <children>
-                        <Label id="title" layoutX="475.0" layoutY="12.0" stylesheets="@../../cssDesign/homePageDesign.css" text="Predictions" textAlignment="CENTER">
+                        <Label id="title" layoutX="475.0" layoutY="12.0" text="Predictions" textAlignment="CENTER">
                            <font>
                               <Font size="17.0" />
                            </font>
@@ -62,13 +62,13 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="967.0" layoutY="44.0" prefHeight="18.0" prefWidth="165.0" text="Simulations in progress :" />
-                        <Label layoutX="967.0" layoutY="62.0" prefHeight="18.0" prefWidth="165.0" text="Ended simulations :" />
-                        <Label fx:id="fileStatus" layoutX="213.0" layoutY="67.0" prefHeight="25.0" prefWidth="564.0" text="File status :" />
-                        <Label fx:id="numberOfSimulationInProgress" layoutX="1137.0" layoutY="44.0" text="Label" />
-                        <Label layoutX="967.0" layoutY="79.0" prefHeight="18.0" prefWidth="165.0" text="Simulations pending :" />
-                        <Label fx:id="endedSimulation" layoutX="1137.0" layoutY="62.0" text="Label" />
-                        <Label fx:id="simulationInWaiting" layoutX="1137.0" layoutY="79.0" text="Label" />
+                        <Label id="terminationInfo" layoutX="967.0" layoutY="44.0" text="Simulations in progress :" />
+                        <Label id="terminationInfo" layoutX="967.0" layoutY="62.0" text="Ended simulations :" />
+                        <Label id="terminationInfo" fx:id="fileStatus" layoutX="213.0" layoutY="67.0" prefHeight="25.0" prefWidth="564.0" text="File status :" />
+                        <Label id="terminationInfo" fx:id="numberOfSimulationInProgress" layoutX="1208.0" layoutY="44.0" text="Label" />
+                        <Label id="terminationInfo" layoutX="967.0" layoutY="79.0" text="Simulations pending :" />
+                        <Label id="terminationInfo" fx:id="endedSimulation" layoutX="1208.0" layoutY="62.0" text="Label" />
+                        <Label id="terminationInfo" fx:id="simulationInWaiting" layoutX="1208.0" layoutY="79.0" text="Label" />
                         <Label layoutX="792.0" layoutY="2.0" prefHeight="35.0" styleClass="title" text="Skins" />
                         <ComboBox fx:id="comboBoxSkins" layoutX="792.0" layoutY="49.0" onAction="#onSelectedComboBoxSkins" prefWidth="150.0" />
                      </children>
