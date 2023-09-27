@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ExecutionsHistoryController">
+  <content>
+    <AnchorPane>
+         <children>
+            <GridPane>
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="All simulations" GridPane.columnSpan="2" />
+                  <ListView prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="6" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="10" GridPane.rowIndex="7" GridPane.rowSpan="5">
+                     <children>
+                        <BarChart title="Population during simulation">
+                          <xAxis>
+                            <CategoryAxis label="Tick" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis label="Population" side="LEFT" />
+                          </yAxis>
+                        </BarChart>
+                        <VBox>
+                           <children>
+                              <Label text="entity name:" />
+                              <ComboBox prefWidth="150.0" />
+                              <Label text="entity property: " />
+                              <ComboBox prefWidth="150.0" />
+                              <Label text="Histogram of property" />
+                              <TableView>
+                                <columns>
+                                  <TableColumn prefWidth="130.39999389648438" text="Property value" />
+                                  <TableColumn prefWidth="113.60003662109375" text="count" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text=" avg. consistency " GridPane.columnSpan="2" />
+                              <Label text="avg. value" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Label text="avg. in final population" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                              <Label text="avg. in final population value" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </GridPane>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+                  <Label text="Simulation id: " GridPane.columnIndex="3" GridPane.columnSpan="2" />
+                  <Label text="ID" GridPane.columnIndex="5" />
+                  <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.columnSpan="4" GridPane.rowIndex="4" GridPane.rowSpan="3">
+                    <columns>
+                      <TableColumn prefWidth="152.0" text="Entity" />
+                      <TableColumn prefWidth="144.800048828125" text="Population start" />
+                        <TableColumn prefWidth="99.2000732421875" text="Population End" />
+                    </columns>
+                  </TableView>
+                  <Label text="Simultaion Name:" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                  <Label text="Simultaion run by:" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                  <Label text="Request number:" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                  <Label text="Label" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                  <Label text="Label" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                  <Label text="Label" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                  <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="3">
+                     <columns>
+                        <TableColumn prefWidth="152.0" text="env" />
+                        <TableColumn prefWidth="144.800048828125" text="value" />
+                     </columns>
+                  </TableView>
+               </children>
+            </GridPane>
+         </children></AnchorPane>
+  </content>
+</ScrollPane>

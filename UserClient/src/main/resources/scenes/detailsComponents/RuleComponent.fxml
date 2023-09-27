@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="backGroundStyle" stylesheets="@../../../../cssDesign/homePageDesign.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.detailsController.RuleComponentController">
+   <children>
+      <Label id="terminationInfo" fx:id="actionName" layoutX="18.0" layoutY="13.0" text="Action Name" />
+      <Label id="terminationInfo" fx:id="actionEntity" layoutX="18.0" layoutY="43.0" text="Action entity" />
+      <Label id="terminationInfo" fx:id="actionProperty" layoutX="18.0" layoutY="76.0" text="Action property" />
+      <Label id="terminationInfo" fx:id="actionValue" layoutX="18.0" layoutY="145.0" text="Action value" />
+      <Label id="terminationInfo" fx:id="actionArg2" layoutX="18.0" layoutY="176.0" text="Action arg2" />
+      <Label id="terminationInfo" fx:id="ActionElse" layoutX="18.0" layoutY="211.0" text="Action else" />
+      <Label id="terminationInfo" fx:id="EntitySecond" layoutX="18.0" layoutY="110.0" text="Entity Second" />
+   </children>
+</AnchorPane>
