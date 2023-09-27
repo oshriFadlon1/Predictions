@@ -1,6 +1,7 @@
 #title{
     -fx-text-fill: gray;
     -fx-font-weight: bold;
+    -fx-font-size: 16px;
 }
 
 #QueueManagment{
@@ -43,30 +44,30 @@
 
 #terminationInfo{
     -fx-font-size: 16px;
-    -fx-font-family: "Helvetica Neue", Arial, sans-serif;
+    -fx-font-family: "Courier New";
     -fx-text-fill: #333;
 }
 
-#Env {
-    -fx-background-color: #acd8e7;
-    -fx-border-width: 5px;
-    -fx-border-color: #2e8b57;
-    -fx-background-radius: 5.0;
-}
+/*#Env {*/
+/*    -fx-background-color: #acd8e7;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #2e8b57;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/
 
-#Entity{
-    -fx-background-color: #e6f3fa;
-    -fx-border-width: 5px;
-    -fx-border-color: #c7f3d6;
-    -fx-background-radius: 5.0;
-}
+/*#Entity{*/
+/*    -fx-background-color: #e6f3fa;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #c7f3d6;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/
 
-#Rules{
-    -fx-background-color: #ffffff;
-    -fx-border-width: 5px;
-    -fx-border-color: #8c8cf8;
-    -fx-background-radius: 5.0;
-}
+/*#Rules{*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-width: 5px;*/
+/*    -fx-border-color: #8c8cf8;*/
+/*    -fx-background-radius: 5.0;*/
+/*}*/
 
 .buttonExecution{
     -fx-background-color:

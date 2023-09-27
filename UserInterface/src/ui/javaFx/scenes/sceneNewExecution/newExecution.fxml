@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.newExecutionController.NewExecutionController">
+<ScrollPane styleClass="backGroundColor" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.sceneController.newExecutionController.NewExecutionController">
     <content>
         <BorderPane styleClass="backGroundColor">
             <center>
@@ -116,7 +116,7 @@
                 </AnchorPane>
             </center>
          <bottom>
-            <AnchorPane BorderPane.alignment="CENTER">
+            <AnchorPane styleClass="backGroundColor" BorderPane.alignment="CENTER">
                <children>
                         <Button fx:id="buttonClear" disable="true" layoutX="57.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedClear" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" text="Clear" />
                         <Button fx:id="buttonStart" disable="true" layoutX="896.0" layoutY="2.0" mnemonicParsing="false" onAction="#OnClickedStartSimulation" prefHeight="25.0" prefWidth="115.0" styleClass="buttonExecution" text="Start!" />

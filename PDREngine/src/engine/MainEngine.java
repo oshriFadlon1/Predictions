@@ -180,6 +180,11 @@ public class MainEngine implements InterfaceMenu {
         return this.simulationExecutionerManager.getSimulationById(idOfCurrentSimulation);
     }
 
+    @Override
+    public int getNumberOfSimulation() {
+        return this.simulationExecutionerManager.getNumberOfSimulation();
+    }
+
     public DtoUiToEngine getSimulationStartingInfoById(int idOfChosenSimulation){
         return this.dtoAllSimulationsStartingInfo.getChosenRerunSimulation(idOfChosenSimulation);
     }

@@ -1,7 +1,6 @@
 package simulationmanager;
 
 import dto.*;
-import entity.EntityDefinition;
 import entity.EntityInstance;
 import entity.EntityToPopulation;
 import enums.SimulationState;
@@ -9,7 +8,6 @@ import property.PropertyInstance;
 import world.GeneralInformation;
 import world.WorldInstance;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -229,5 +227,9 @@ public class SimulationExecutionerManager {
         }
 
         return avgOfProp;
+    }
+
+    public int getNumberOfSimulation(){
+        return this.idToSimulationMap.size();
     }
 }
