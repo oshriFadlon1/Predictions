@@ -27,6 +27,10 @@ import java.util.ResourceBundle;
 public class SceneMenu implements Initializable {
 
     private InterfaceMenu interfaceMenu = null;
+    private String theme1Url = getClass().getResource("/ui/cssDesign/Skin1.css").toExternalForm();
+    private String theme2Url = getClass().getResource("/ui/cssDesign/homePageDesign.css").toExternalForm();
+    private Scene scene;
+
     private DetailsController detailsController;
     private NewExecutionController newExecutionController;
     private ResultsController resultsController;
@@ -35,11 +39,11 @@ public class SceneMenu implements Initializable {
 
     private Thread queueManager;
 
-    @FXML
-    private ComboBox<String> comboBoxSkins;
+
     @FXML private Tab tabOfDetails;
     @FXML private Tab tabOfNewExecution;
     @FXML private Tab tabOfResults;
+    @FXML private ComboBox<String> comboBoxSkins;
 
     @FXML private Button ButtonLoadFile;
     @FXML private TextField textFilePath;
@@ -202,6 +206,18 @@ public class SceneMenu implements Initializable {
                 }
             }
         }).start();
+    }
+    @FXML
+    private void onComboBoxStylesClicked(){
+        this.scene = this.comboBoxSkins.getScene();
+        String selectedStyle = this.comboBoxSkins.getSelectionModel().getSelectedItem();
+        switch(selectedStyle){
+            case "Skin 1":
+                this.scene.getStylesheets().remove("homePageDesign.css");
+                this.scene.getStylesheets().add(this.theme1Url);
+                break;
+
+        }
     }
 
     @FXML

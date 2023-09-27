@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailsController">
+    <content>
+        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="1068.0" styleClass="backGroundColor">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints minWidth="10.0" prefWidth="50.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+            <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="30.0" percentHeight="17.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="17.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="17.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="16.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="16.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" percentHeight="17.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints />
+            <RowConstraints />
+            </rowConstraints>
+            <children>
+                <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowSpan="8" />
+                <TreeView fx:id="treeView" onContextMenuRequested="#SelectedItem" onMouseClicked="#SelectedItem" GridPane.rowSpan="8" />
+            <AnchorPane fx:id="mainAnchorPane" GridPane.columnIndex="2" GridPane.rowSpan="3" />
+            </children>
+        </GridPane>
+    </content>
+</ScrollPane>

@@ -1,0 +1,35 @@
+#LoadXmlFileButton{
+    -fx-background-color: #4472C4;
+    -fx-text-fill: white;
+}
+#LoadXmlFileButton:hover{
+    -fx-background-color: #bbbbfc;
+    -fx-text-fill: black;
+}
+#title{
+    -fx-text-fill: #4472C4;
+    -fx-font-weight: bold;
+}
+
+#QueueManagment{
+    -fx-text-fill: #4472C4;
+}
+.backGroundColor{
+    -fx-background-color: black;
+}
+
+.title{
+    -fx-font-size: 25px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #007bff;
+    -fx-border-color: #007bff;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 3 0;
+}
+
+.default-color0.chart-bar{
+    -fx-bar-fill:red;
+}
+.default-color1.chart-bar{
+    -fx-bar-fill:blue;
+}

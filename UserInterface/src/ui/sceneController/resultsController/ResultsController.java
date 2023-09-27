@@ -154,7 +154,9 @@ public class ResultsController implements Initializable {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+
                     }
+                    System.out.println("Creating new thread current thread" + Thread.currentThread());
                 });
                 bringDetailsThread.start();
             } else {

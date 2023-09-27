@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<ScrollPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserMenuController">
+   <content>
+      <BorderPane prefHeight="796.0" prefWidth="1198.0">
+         <center>
+            <TabPane prefHeight="670.0" prefWidth="1183.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab fx:id="tabOfDetails" text="Details">
+                  <content>
+                    <AnchorPane />
+                  </content>
+                </Tab>
+                <Tab fx:id="tabOfRequests" text="Requests">
+                  <content>
+                    <AnchorPane />
+                  </content>
+                </Tab>
+                  <Tab fx:id="tabOfNewExecution" text="New Execution">
+                    <content>
+                      <AnchorPane prefHeight="451.0" prefWidth="696.0" />
+                    </content>
+                  </Tab>
+                  <Tab fx:id="tabOfResults" text="Results">
+                    <content>
+                      <AnchorPane prefHeight="270.0" prefWidth="464.0" />
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+      </BorderPane>
+   </content>
+</ScrollPane>
